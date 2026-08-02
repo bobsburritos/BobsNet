@@ -177,22 +177,20 @@
     outline:3px solid var(--sunbeam);
     outline-offset:-3px;
   }
-  /* Full-size photo lightbox — must NOT block page when closed */
+  /* Full-size photo lightbox — fully inert when closed (desktop was still eating clicks) */
   .lightbox{
     position:fixed;inset:0;z-index:1000;
-    display:none;
+    display:none !important;
     align-items:center;justify-content:center;
     padding:20px;
     background:rgba(42,17,64,.88);
-    pointer-events:none;
+    pointer-events:none !important;
+    visibility:hidden;
   }
   .lightbox.is-open{
     display:flex !important;
-    pointer-events:auto;
-  }
-  .lightbox[hidden]{
-    display:none !important;
-    pointer-events:none !important;
+    pointer-events:auto !important;
+    visibility:visible;
   }
   .lightbox__panel{
     position:relative;
@@ -393,6 +391,9 @@
     color:var(--cream);
     border-radius:var(--radius-md);
     padding:22px;
+    position:relative;
+    z-index:20;
+    isolation:isolate;
   }
   .confirm.show{display:block;animation:pop .3s cubic-bezier(.22,1.4,.36,1);}
   @keyframes pop{from{transform:scale(.94);opacity:0;}to{transform:scale(1);opacity:1;}}
@@ -405,8 +406,10 @@
     padding:14px;
     font-size:.9rem;
     margin:12px 0;
+    user-select:text;
+    -webkit-user-select:text;
   }
-  .confirm #paystep{margin-bottom:18px;padding-bottom:18px;border-bottom:2px dashed rgba(255,244,220,.35);}
+  .confirm #paystep{margin-bottom:18px;padding-bottom:18px;border-bottom:2px dashed rgba(255,244,220,.35);position:relative;z-index:21;}
   .confirm button, .confirm .pay-btn{
     font-family:'Fredoka',sans-serif;
     font-weight:700;
@@ -420,6 +423,8 @@
     display:inline-block;
     text-decoration:none;
     text-align:center;
+    position:relative;
+    z-index:22;
   }
   .confirm .pay-actions{
     display:flex;flex-direction:column;gap:10px;margin-top:14px;
@@ -702,32 +707,42 @@
 
   function copyText(text, btn, okLabel){
     var prev = btn ? btn.textContent : '';
-    function ok(){
+    function flash(msg){
       if(!btn) return;
-      btn.textContent = okLabel || 'Copied!';
-      setTimeout(function(){ btn.textContent = prev; }, 1600);
+      btn.textContent = msg;
+      setTimeout(function(){ btn.textContent = prev; }, 1800);
     }
-    function fallback(){
-      try {
-        var ta = document.createElement('textarea');
-        ta.value = text;
-        ta.setAttribute('readonly', '');
-        ta.style.position = 'fixed';
-        ta.style.left = '-9999px';
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-        ok();
-      } catch (e) {
-        window.prompt('Copy this:', text);
-      }
+    /* Desktop browsers often block async clipboard after await — copy SYNCHRONOUSLY first. */
+    var succeeded = false;
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text == null ? '' : String(text);
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:0;left:0;width:2px;height:2px;padding:0;border:0;opacity:0;';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      succeeded = document.execCommand('copy');
+      document.body.removeChild(ta);
+    } catch (e) {
+      succeeded = false;
+    }
+    if(succeeded){
+      flash(okLabel || 'Copied!');
+      return;
     }
     if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text).then(ok).catch(fallback);
-    } else {
-      fallback();
+      navigator.clipboard.writeText(String(text)).then(function(){
+        flash(okLabel || 'Copied!');
+      }).catch(function(){
+        flash('Select & copy below');
+        window.prompt('Copy this payment note:', String(text));
+      });
+      return;
     }
+    flash('Select & copy below');
+    window.prompt('Copy this payment note:', String(text));
   }
   document.querySelectorAll('.card__img').forEach(function(img){
     function openFromImg(){
@@ -1033,18 +1048,21 @@
     if(sq){ sq.style.display = 'none'; document.querySelector('.share-label').style.display = 'none'; }
   }
 
-  document.getElementById('copy-note').addEventListener('click', function(e){
-    e.preventDefault();
-    copyText(payNoteEl.textContent, this, 'Copied!');
-  });
-
-  document.getElementById('copy').addEventListener('click', function(e){
-    e.preventDefault();
-    copyText(orderTextEl.textContent, this, 'Copied!');
-  });
+  function wireCopy(id, getText, okLabel){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('click', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      copyText(getText(), el, okLabel);
+    });
+  }
+  wireCopy('copy-note', function(){ return payNoteEl.textContent; }, 'Copied!');
+  wireCopy('copy', function(){ return orderTextEl.textContent; }, 'Copied!');
 
   /* Safety: never leave lightbox blocking the page on load */
   closeLightbox();
+  document.body.style.overflow = '';
 })();
 </script>
 </body>
