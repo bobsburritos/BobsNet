@@ -24,7 +24,7 @@
  *   M Total  N Paid (YES/NO)  O PaidAt (ISO)  P PaidRef (how it was matched)
  */
 
-var OWNER_EMAIL = 'bobsburritosco@gmail.com';                     // <-- change me
+var OWNER_EMAIL = 'bobsburritosco@gmail.com'; // sheet: 1zC1mxVI3cAnyktj7yqSEhiCd4_YkbwFa024lOGtg7IE                     // <-- change me
 var PORTAL_KEY = 'change-me-to-a-long-random-string';    // <-- change me; must match kitchen.html / reconciler
 
 var SHEET_ORDERS = 'Orders';
