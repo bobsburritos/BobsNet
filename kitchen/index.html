@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bob's Burritos — Kitchen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --grape:#3D1A5C; --grape-deep:#2A1140; --sunbeam:#FFD23F;
+    --cream:#FFF4DC; --tangerine:#FF8A3D; --lilac:#C9A7F0;
+    --ok:#3E9B4F; --bad:#C0392B;
+    --outline:3px solid var(--grape); --pop:5px 5px 0 var(--grape);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Fredoka',sans-serif;background:var(--cream);color:var(--grape);padding-bottom:60px;min-height:100vh;}
+
+  /* ---------- Login gate ---------- */
+  #login-gate{
+    min-height:100vh;display:flex;align-items:center;justify-content:center;
+    padding:24px;background:
+      radial-gradient(ellipse at 20% 0%, var(--lilac) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, var(--sunbeam) 0%, transparent 45%),
+      var(--cream);
+  }
+  #login-gate[hidden]{display:none !important;}
+  .login-card{
+    width:min(420px,100%);background:#fff;border:var(--outline);border-radius:28px;
+    box-shadow:var(--pop);padding:36px 28px 28px;text-align:center;
+  }
+  .login-card h1{
+    font-family:'Shrikhand',cursive;font-size:1.85rem;color:var(--grape);
+    margin-bottom:6px;
+  }
+  .login-card .sub{font-weight:500;opacity:.8;margin-bottom:22px;line-height:1.4;}
+  .login-card label{
+    display:block;text-align:left;font-weight:700;font-size:.85rem;
+    text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;
+  }
+  .login-card input[type="password"],
+  .login-card input[type="text"]{
+    width:100%;font-family:'Fredoka',sans-serif;font-size:1.05rem;font-weight:500;
+    padding:14px 16px;border:var(--outline);border-radius:16px;background:var(--cream);
+    color:var(--grape);margin-bottom:14px;
+  }
+  .login-card input:focus{outline:3px solid var(--tangerine);outline-offset:2px;}
+  .login-card .row{display:flex;align-items:center;gap:8px;margin:4px 0 18px;font-weight:500;font-size:.9rem;}
+  .login-card .row input{width:18px;height:18px;accent-color:var(--tangerine);}
+  .login-card button#login-btn{
+    width:100%;font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.05rem;
+    background:var(--grape);color:var(--sunbeam);border:none;border-radius:999px;
+    padding:14px 20px;cursor:pointer;box-shadow:4px 4px 0 var(--tangerine);
+  }
+  .login-card button#login-btn:hover{transform:translateY(-1px);}
+  .login-err{color:var(--bad);font-weight:600;min-height:1.3em;margin-bottom:10px;font-size:.95rem;}
+  .login-note{margin-top:16px;font-size:.8rem;opacity:.65;line-height:1.35;}
+
+  #app[hidden]{display:none !important;}
+
+  header{
+    background:var(--grape);color:var(--cream);
+    padding:22px 20px;display:flex;flex-wrap:wrap;gap:14px;
+    align-items:center;justify-content:space-between;
+  }
+  header h1{font-family:'Shrikhand',cursive;font-size:1.6rem;color:var(--sunbeam);}
+  .daypick{display:flex;align-items:center;gap:10px;}
+  .daypick button{
+    width:38px;height:38px;border-radius:50%;border:none;cursor:pointer;
+    background:var(--sunbeam);color:var(--grape);font-size:1.2rem;font-weight:700;
+  }
+  .daypick .day{font-weight:700;font-size:1.05rem;min-width:200px;text-align:center;}
+  #refresh, #logout{
+    font-family:'Fredoka',sans-serif;font-weight:700;
+    border:none;border-radius:999px;padding:10px 20px;cursor:pointer;font-size:.95rem;
+  }
+  #refresh{background:var(--tangerine);color:var(--grape);}
+  #logout{background:transparent;color:var(--cream);border:2px solid var(--lilac);}
+
+  .wrap{max-width:1100px;margin:0 auto;padding:26px 20px;}
+  .status{font-weight:600;padding:14px 0;text-align:center;}
+  .status.error{color:var(--bad);}
+
+  h2{font-family:'Shrikhand',cursive;font-size:1.5rem;margin:34px 0 16px;}
+
+  .bignums{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;}
+  .bignum{
+    background:#fff;border:var(--outline);border-radius:20px;box-shadow:var(--pop);
+    padding:18px;text-align:center;
+  }
+  .bignum .n{font-family:'Shrikhand',cursive;font-size:2.6rem;line-height:1;}
+  .bignum .l{font-weight:600;font-size:.85rem;margin-top:6px;text-transform:uppercase;letter-spacing:.05em;}
+  .bignum.total{background:var(--sunbeam);}
+  .bignum .sub{font-size:.8rem;font-weight:500;opacity:.75;margin-top:2px;}
+
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:26px;}
+  @media(max-width:760px){.cols{grid-template-columns:1fr;}}
+
+  ul.check{list-style:none;background:#fff;border:var(--outline);border-radius:20px;box-shadow:var(--pop);padding:10px 0;}
+  ul.check li{
+    display:flex;align-items:center;gap:12px;
+    padding:10px 18px;font-weight:500;border-bottom:2px dashed rgba(61,26,92,.15);
+  }
+  ul.check li:last-child{border-bottom:none;}
+  ul.check input{width:22px;height:22px;accent-color:var(--tangerine);flex:none;cursor:pointer;}
+  ul.check li.done{opacity:.45;text-decoration:line-through;}
+  ul.check .amt{margin-left:auto;font-weight:700;white-space:nowrap;}
+
+  table{width:100%;border-collapse:collapse;background:#fff;border:var(--outline);border-radius:20px;box-shadow:var(--pop);overflow:hidden;}
+  thead th{
+    background:var(--grape);color:var(--sunbeam);
+    text-align:left;padding:12px 14px;font-size:.82rem;text-transform:uppercase;letter-spacing:.05em;
+  }
+  tbody td{padding:12px 14px;font-size:.95rem;border-bottom:2px dashed rgba(61,26,92,.12);vertical-align:top;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr.unpaid{background:#FFE9E4;}
+  .pill{display:inline-block;border-radius:999px;padding:3px 12px;font-size:.78rem;font-weight:700;color:#fff;}
+  .pill.yes{background:var(--ok);}
+  .pill.no{background:var(--bad);}
+  .oid{font-weight:700;}
+  .items small{display:block;font-weight:500;opacity:.8;}
+
+  table.grocery td, table.grocery th{padding:9px 10px;font-size:.88rem;}
+  table.grocery tbody tr.done td{opacity:.4;text-decoration:line-through;}
+  table.grocery input{width:20px;height:20px;accent-color:var(--tangerine);cursor:pointer;}
+  table.grocery tfoot td{padding:12px 10px;border-top:3px solid var(--grape);}
+  .markpaid{
+    margin-top:6px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:.78rem;
+    background:var(--grape);color:var(--sunbeam);border:none;border-radius:999px;
+    padding:5px 12px;cursor:pointer;
+  }
+  .money{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;}
+  .money .bignum.paid .n{color:var(--ok);}
+  .money .bignum.owed .n{color:var(--bad);}
+</style>
+</head>
+<body>
+
+<!-- ========== LOGIN (shown first) ========== -->
+<div id="login-gate">
+  <div class="login-card">
+    <h1>Bob's Kitchen</h1>
+    <p class="sub">Staff only. Sign in with the business email and kitchen password.</p>
+    <p class="login-err" id="login-err" aria-live="polite"></p>
+    <label for="login-email">Email</label>
+    <input id="login-email" type="email" autocomplete="username" value="bobsburritosco@gmail.com" autofocus>
+    <label for="login-pass">Password</label>
+    <input id="login-pass" type="password" autocomplete="current-password">
+    <div class="row">
+      <input type="checkbox" id="show-pass">
+      <label for="show-pass" style="margin:0;text-transform:none;letter-spacing:0;font-weight:500;">Show password</label>
+    </div>
+    <button type="button" id="login-btn">Unlock kitchen</button>
+    <p class="login-note">Password is stored only in kitchen-config.js (gitignored). Never commit that file or publish this portal on the public site.</p>
+  </div>
+</div>
+
+<!-- ========== APP (hidden until login) ========== -->
+<div id="app" hidden>
+<header>
+  <h1>Bob's Kitchen</h1>
+  <div class="daypick">
+    <button id="prev" type="button" aria-label="Previous Sunday">‹</button>
+    <span class="day" id="day-label">—</span>
+    <button id="next" type="button" aria-label="Next Sunday">›</button>
+  </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+    <button type="button" id="refresh">Refresh orders</button>
+    <button type="button" id="logout">Log out</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <p class="status" id="status">Loading…</p>
+
+  <div id="board" style="display:none">
+    <h2>Cook Board</h2>
+    <div class="bignums" id="cook"></div>
+
+    <div class="cols">
+      <div>
+        <h2>Grocery List <small style="font-family:'Fredoka';font-size:.8rem;font-weight:500">(Costco run — prices are estimates until receipts are logged)</small></h2>
+        <table class="grocery">
+          <thead><tr><th></th><th>Item</th><th>Need</th><th>Buy</th><th>Est</th></tr></thead>
+          <tbody id="grocery"></tbody>
+          <tfoot><tr><td></td><td colspan="3"><strong>Estimated grocery total</strong></td><td id="grocery-total"><strong>—</strong></td></tr></tfoot>
+        </table>
+      </div>
+      <div>
+        <h2>Money</h2>
+        <div class="money" id="money"></div>
+        <h2>Unpaid — chase these</h2>
+        <ul class="check" id="chase"></ul>
+      </div>
+    </div>
+
+    <h2>Delivery Run <small style="font-family:'Fredoka';font-size:.9rem;font-weight:500">(sorted by unit)</small></h2>
+    <table>
+      <thead><tr><th>✓</th><th>Unit</th><th>Name</th><th>Order</th><th>Items</th><th>Total</th><th>Paid</th></tr></thead>
+      <tbody id="orders"></tbody>
+    </table>
+  </div>
+</div>
+</div><!-- /#app -->
+
+<!-- Secrets live in kitchen-config.js (gitignored). Never hardcode the password here. -->
+<script src="kitchen-config.js"></script>
+<script>
+(function(){
+  /* ===== Auth + API from gitignored kitchen-config.js ===== */
+  var cfg = window.BB_KITCHEN || null;
+  var SCRIPT_URL = cfg && cfg.scriptUrl ? cfg.scriptUrl : '';
+  var KEY = cfg && cfg.portalKey ? cfg.portalKey : '';
+  var KITCHEN_EMAIL = (cfg && cfg.email ? cfg.email : 'bobsburritosco@gmail.com').toLowerCase();
+  var KITCHEN_PASSWORD = cfg && cfg.password ? String(cfg.password) : '';
+
+  var AUTH_KEY = 'bb_kitchen_session_v2';
+  var loginGate = document.getElementById('login-gate');
+  var appEl = document.getElementById('app');
+  var loginErr = document.getElementById('login-err');
+  var emailInput = document.getElementById('login-email');
+  var passInput = document.getElementById('login-pass');
+
+  function sessionToken(){
+    /* Light session token — not bank-grade crypto. */
+    var s = KITCHEN_EMAIL + '|' + KITCHEN_PASSWORD + '|bobs-kitchen|' + SCRIPT_URL;
+    var h = 2166136261;
+    for (var i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return 'ok:' + (h >>> 0).toString(16);
+  }
+
+  function isAuthed(){
+    try { return sessionStorage.getItem(AUTH_KEY) === sessionToken(); }
+    catch (e) { return false; }
+  }
+
+  function setAuthed(on){
+    try {
+      if (on) sessionStorage.setItem(AUTH_KEY, sessionToken());
+      else sessionStorage.removeItem(AUTH_KEY);
+    } catch (e) {}
+  }
+
+  function showApp(){
+    loginGate.hidden = true;
+    appEl.hidden = false;
+    load();
+  }
+
+  function showLogin(msg){
+    appEl.hidden = true;
+    loginGate.hidden = false;
+    loginErr.textContent = msg || '';
+    passInput.value = '';
+    if (!emailInput.value) emailInput.value = KITCHEN_EMAIL;
+    setTimeout(function(){ (passInput.value ? passInput : emailInput).focus(); }, 50);
+  }
+
+  function tryLogin(){
+    if (!cfg || !KITCHEN_PASSWORD) {
+      loginErr.textContent = 'Missing kitchen-config.js. Copy kitchen-config.example.js and set your password.';
+      return;
+    }
+    var email = (emailInput.value || '').trim().toLowerCase();
+    var entered = passInput.value;
+    if (email !== KITCHEN_EMAIL) {
+      loginErr.textContent = 'Unknown email. Use the business kitchen account.';
+      emailInput.select();
+      return;
+    }
+    if (entered === KITCHEN_PASSWORD) {
+      setAuthed(true);
+      loginErr.textContent = '';
+      showApp();
+    } else {
+      loginErr.textContent = 'Wrong password. Try again.';
+      passInput.select();
+    }
+  }
+
+  document.getElementById('login-btn').addEventListener('click', tryLogin);
+  emailInput.addEventListener('keydown', function(e){
+    if (e.key === 'Enter') { e.preventDefault(); passInput.focus(); }
+  });
+  passInput.addEventListener('keydown', function(e){
+    if (e.key === 'Enter') tryLogin();
+  });
+  document.getElementById('show-pass').addEventListener('change', function(){
+    passInput.type = this.checked ? 'text' : 'password';
+  });
+  document.getElementById('logout').addEventListener('click', function(){
+    setAuthed(false);
+    showLogin('Logged out.');
+  });
+
+  /* ===== Kitchen app (only after login) ===== */
+  var statusEl = document.getElementById('status');
+  var boardEl = document.getElementById('board');
+  var weekOffset = 0;
+  var current = null;
+
+  function laNow(){
+    var parts = new Intl.DateTimeFormat('en-US', {
+      timeZone:'America/Los_Angeles',
+      year:'numeric', month:'numeric', day:'numeric',
+      hour:'numeric', minute:'numeric', hour12:false
+    }).formatToParts(new Date());
+    var v = {};
+    parts.forEach(function(p){ v[p.type] = p.value; });
+    return new Date(+v.year, +v.month - 1, +v.day, +v.hour % 24, +v.minute);
+  }
+
+  function targetSunday(){
+    var now = laNow();
+    var dow = now.getDay();
+    var days = (7 - dow) % 7;
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate() + days + weekOffset * 7);
+  }
+  function sundayLabel(){
+    return targetSunday().toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric'});
+  }
+  function sundayISO(){
+    var t = targetSunday();
+    return t.getFullYear() + '-' + ('0' + (t.getMonth() + 1)).slice(-2) + '-' + ('0' + t.getDate()).slice(-2);
+  }
+
+  function money(n){ return '$' + n.toFixed(2); }
+
+  var GROCERY = [
+    {item:'Large flour tortillas', unit:'tortillas', need:function(t){return t.totalB;},
+     pack:'20-ct pack', packSize:20, packPrice:8.00},
+    {item:'Eggs (2 per burrito)', unit:'eggs', need:function(t){return t.totalB*2;},
+     pack:'2-dozen (24)', packSize:24, packPrice:5.50},
+    {item:'Shredded cheese (2 oz ea)', unit:'oz', need:function(t){return t.totalB*2;},
+     pack:'2.5 lb bag (40 oz)', packSize:40, packPrice:9.00},
+    {item:'Hash browns (3 oz ea)', unit:'oz', need:function(t){return t.totalB*3;},
+     pack:'6 lb bag (96 oz)', packSize:96, packPrice:9.50},
+    {item:'Soy chorizo (4 oz ea)', unit:'oz', need:function(t){return t.soy*4;},
+     pack:'12 oz pack (Trader Joe\u2019s)', packSize:12, packPrice:3.00},
+    {item:'Ground beef (4 oz ea)', unit:'oz', need:function(t){return t.cali*4;},
+     pack:'per lb (16 oz)', packSize:16, packPrice:5.50},
+    {item:'Breakfast sausage (2 oz ea)', unit:'oz', need:function(t){return t.heavy*2;},
+     pack:'3 lb pack (48 oz)', packSize:48, packPrice:12.00},
+    {item:'Bacon (2 slices ea)', unit:'slices', need:function(t){return t.heavy*2;},
+     pack:'1 lb (~18 slices)', packSize:18, packPrice:4.50},
+    {item:'Avocados (\u00bd ea)', unit:'halves', need:function(t){return t.avoHalves;},
+     pack:'6-ct bag (12 halves)', packSize:12, packPrice:7.00},
+    {item:'Onions (1 oz ea)', unit:'oz', need:function(t){return t.totalB;},
+     pack:'3 lb bag (48 oz)', packSize:48, packPrice:3.50},
+    {item:'Cilantro', unit:'bunches', need:function(t){return Math.max(1, Math.ceil(t.totalB/20));},
+     pack:'bunch', packSize:1, packPrice:1.00},
+    {item:'Mayo (1.5 oz per cup)', unit:'oz', need:function(t){return t.totalB*1.5;},
+     pack:'30 oz jar', packSize:30, packPrice:5.00},
+    {item:'Chipotles in adobo', unit:'cans', need:function(t){return Math.max(1, Math.ceil(t.totalB/15));},
+     pack:'7 oz can', packSize:1, packPrice:2.00},
+    {item:'Taco seasoning', unit:'packets', need:function(t){return Math.max(1, Math.ceil(t.cali/8));},
+     pack:'packet', packSize:1, packPrice:1.25},
+    {item:'2 oz sauce cups + lids', unit:'cups', need:function(t){return t.totalB;},
+     pack:'100-ct', packSize:100, packPrice:8.50},
+    {item:'Kraft #3 boxes', unit:'boxes', need:function(t){return t.totalB;},
+     pack:'50-ct', packSize:50, packPrice:12.00},
+    {item:'Heavy-duty foil (12x14 in sheets)', unit:'sheets', need:function(t){return t.totalB;},
+     pack:'~130-sheet roll', packSize:130, packPrice:10.00}
+  ];
+
+  function renderGrocery(t){
+    var totalCost = 0;
+    var html = GROCERY.map(function(gr){
+      var need = gr.need(t);
+      if(need <= 0){ return ''; }
+      var packs = Math.ceil(need / gr.packSize);
+      var cost = packs * gr.packPrice;
+      totalCost += cost;
+      return '<tr>' +
+        '<td><input type="checkbox" onchange="this.closest(\'tr\').classList.toggle(\'done\', this.checked)"></td>' +
+        '<td>' + gr.item + '</td>' +
+        '<td>' + need + ' ' + gr.unit + '</td>' +
+        '<td>' + packs + ' \u00d7 ' + gr.pack + '</td>' +
+        '<td>' + money(cost) + '</td>' +
+        '</tr>';
+    }).join('');
+    document.getElementById('grocery').innerHTML = html;
+    document.getElementById('grocery-total').innerHTML = '<strong>' + money(totalCost) + '</strong>';
+  }
+
+  function load(){
+    if (!isAuthed()) { showLogin(); return; }
+    var label = sundayLabel();
+    document.getElementById('day-label').textContent = label;
+    boardEl.style.display = 'none';
+    statusEl.className = 'status';
+    if(!SCRIPT_URL || !KEY){
+      statusEl.className = 'status error';
+      statusEl.textContent = 'Set SCRIPT_URL and KEY in this file first.';
+      return;
+    }
+    statusEl.textContent = 'Loading orders for ' + label + '\u2026';
+    fetch(SCRIPT_URL + '?key=' + encodeURIComponent(KEY) + '&date=' + sundayISO())
+      .then(function(r){ return r.json(); })
+      .then(function(res){
+        if(!res.ok){ throw new Error(res.error || 'backend error'); }
+        current = res.orders;
+        render(res.orders, label);
+      })
+      .catch(function(err){
+        statusEl.className = 'status error';
+        statusEl.textContent = 'Could not load orders: ' + err.message;
+      });
+  }
+
+  function render(orders, label){
+    if(!orders.length){
+      statusEl.textContent = 'No orders yet for ' + label + '.';
+      boardEl.style.display = 'none';
+      return;
+    }
+    statusEl.textContent = orders.length + ' order' + (orders.length === 1 ? '' : 's') + ' for ' + label;
+
+    var t = {soy:0, soyAvo:0, cali:0, heavy:0, heavyAvo:0, revenue:0, paidRev:0};
+    orders.forEach(function(o){
+      t.soy += o.soyrizo; t.soyAvo += o.soyrizoAvo;
+      t.cali += o.cali;
+      t.heavy += o.heavy; t.heavyAvo += o.heavyAvo;
+      t.revenue += o.total;
+      if(o.paid){ t.paidRev += o.total; }
+    });
+    var totalB = t.soy + t.cali + t.heavy;
+    var avoHalves = t.cali + t.soyAvo + t.heavyAvo;
+
+    document.getElementById('cook').innerHTML =
+      '<div class="bignum total"><div class="n">' + totalB + '</div><div class="l">Total burritos</div></div>' +
+      '<div class="bignum"><div class="n">' + t.soy + '</div><div class="l">Soyrizo</div><div class="sub">' + t.soyAvo + ' with avo</div></div>' +
+      '<div class="bignum"><div class="n">' + t.cali + '</div><div class="l">Cali</div><div class="sub">all with avo</div></div>' +
+      '<div class="bignum"><div class="n">' + t.heavy + '</div><div class="l">Heavyweight</div><div class="sub">' + t.heavyAvo + ' with avo</div></div>';
+
+    t.totalB = totalB;
+    t.avoHalves = avoHalves;
+    renderGrocery(t);
+
+    document.getElementById('money').innerHTML =
+      '<div class="bignum"><div class="n">' + money(t.revenue) + '</div><div class="l">Expected</div></div>' +
+      '<div class="bignum paid"><div class="n">' + money(t.paidRev) + '</div><div class="l">Paid</div></div>' +
+      '<div class="bignum owed"><div class="n">' + money(t.revenue - t.paidRev) + '</div><div class="l">Unpaid</div></div>';
+
+    var chase = orders.filter(function(o){ return !o.paid; });
+    document.getElementById('chase').innerHTML = chase.length
+      ? chase.map(function(o){
+          return '<li><span class="oid">' + o.orderId + '</span> ' + o.name + ' \u00b7 Unit ' + o.unit +
+                 (o.phone ? ' \u00b7 ' + o.phone : '') + '<span class="amt">' + money(o.total) + '</span></li>';
+        }).join('')
+      : '<li>Everyone has paid</li>';
+
+    var sorted = orders.slice().sort(function(a, b){
+      return a.unit.localeCompare(b.unit, undefined, {numeric:true});
+    });
+    document.getElementById('orders').innerHTML = sorted.map(function(o){
+      var items = [];
+      if(o.soyrizo - o.soyrizoAvo > 0){ items.push((o.soyrizo - o.soyrizoAvo) + ' Soyrizo'); }
+      if(o.soyrizoAvo > 0){ items.push(o.soyrizoAvo + ' Soyrizo +avo'); }
+      if(o.cali > 0){ items.push(o.cali + ' Cali'); }
+      if(o.heavy - o.heavyAvo > 0){ items.push((o.heavy - o.heavyAvo) + ' Heavyweight'); }
+      if(o.heavyAvo > 0){ items.push(o.heavyAvo + ' Heavyweight +avo'); }
+      return '<tr class="' + (o.paid ? '' : 'unpaid') + '">' +
+        '<td><input type="checkbox" class="delcheck" onchange="this.closest(\'tr\').style.opacity = this.checked ? .35 : 1"></td>' +
+        '<td><strong>' + o.unit + '</strong></td>' +
+        '<td>' + o.name + (o.phone ? '<br><small>' + o.phone + '</small>' : '') + '</td>' +
+        '<td class="oid">' + o.orderId + '</td>' +
+        '<td class="items">' + items.join('<br>') + '</td>' +
+        '<td>' + money(o.total) + '</td>' +
+        '<td><span class="pill ' + (o.paid ? 'yes">PAID' : 'no">NO') + '</span>' +
+        (o.paid ? '' : '<br><button class="markpaid" onclick="bbMarkPaid(\'' + o.orderId + '\', this)">Mark paid</button>') +
+        '</td></tr>';
+    }).join('');
+
+    boardEl.style.display = 'block';
+  }
+
+  window.bbMarkPaid = function(orderId, btn){
+    if (!isAuthed()) { showLogin('Session expired. Log in again.'); return; }
+    if(!confirm('Mark ' + orderId + ' as PAID?')){ return; }
+    btn.disabled = true;
+    btn.textContent = '\u2026';
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'text/plain;charset=utf-8'},
+      body: JSON.stringify({action:'markPaid', key: KEY, orderId: orderId, ref: 'kitchen-portal-manual'})
+    }).then(function(r){ return r.json(); }).then(function(res){
+      if(res.ok){ load(); }
+      else { alert('Failed: ' + res.error); btn.disabled = false; btn.textContent = 'Mark paid'; }
+    }).catch(function(err){
+      alert('Failed: ' + err.message); btn.disabled = false; btn.textContent = 'Mark paid';
+    });
+  };
+
+  document.getElementById('prev').addEventListener('click', function(){ weekOffset--; load(); });
+  document.getElementById('next').addEventListener('click', function(){ weekOffset++; load(); });
+  document.getElementById('refresh').addEventListener('click', load);
+
+  /* Boot: login first, never fetch orders until unlocked */
+  if (isAuthed()) showApp();
+  else showLogin();
+})();
+</script>
+</body>
+</html>

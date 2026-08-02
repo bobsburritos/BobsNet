@@ -29,16 +29,34 @@ Ignore any **Library** URL. Only the Web app `/exec` URL matters.
 
 ## Kitchen portal
 
-Path (this machine only):
+**Open (preferred):**
 
-`D:\MiguelAznar\007_PersonalProjects\200_BobsBurritos\local\bobs-kitchen.html`
+`D:\MiguelAznar\007_PersonalProjects\200_BobsBurritos\kitchen\index.html`
 
-- Double-click or open in Chrome.  
-- **Login required** — password is set in the file as `KITCHEN_PASSWORD` (also in `local/kitchen-password.txt`).  
-- Session stays unlocked in that browser tab until you click **Log out** or close the tab.  
-- Must stay **off** GitHub (contains portal key + kitchen password).  
-- After login, **Refresh** loads that Sunday’s orders from the Web app.  
-- Change the password anytime by editing `KITCHEN_PASSWORD` near the top of the kitchen HTML.  
+(or `local\bobs-kitchen.html` — same UI)
+
+### Login
+| Field | Value |
+|--------|--------|
+| **Email** | `bobsburritosco@gmail.com` |
+| **Password** | Stored only in **gitignored** `kitchen/kitchen-config.js` |
+
+### Secrets file (never commit)
+Real file: `kitchen/kitchen-config.js` (gitignored)  
+Template: `kitchen-config.example.js` (safe to commit)
+
+```js
+window.BB_KITCHEN = {
+  email: 'bobsburritosco@gmail.com',
+  password: 'your-secret-password',
+  scriptUrl: 'https://script.google.com/macros/s/.../exec',
+  portalKey: '…'  // same as PORTAL_KEY in Apps Script
+};
+```
+
+- Session stays unlocked in that browser tab until **Log out** or you close the tab.  
+- After login, **Refresh** loads that Sunday’s orders.  
+- Do **not** put the real password in any tracked HTML file or in the public GitHub Pages site.  
 
 ## After editing Apps Script
 

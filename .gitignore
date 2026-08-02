@@ -9,6 +9,12 @@ local/
 .env
 .env.*
 
+# Kitchen login + API secrets (copy from kitchen-config.example.js)
+kitchen-config.js
+**/kitchen-config.js
+!kitchen-config.example.js
+!**/kitchen-config.example.js
+
 # OS / editor
 .DS_Store
 Thumbs.db
