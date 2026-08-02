@@ -433,24 +433,45 @@
     document.getElementById('grocery-total').innerHTML = '<strong>' + money(totalCost) + '</strong>';
   }
 
+  /** Normalize many date shapes to yyyy-mm-dd (Sheets often returns Date strings). */
+  function toISODate(v){
+    if (v == null || v === '') return '';
+    var s = String(v).trim();
+    if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
+    var d = new Date(s);
+    if (!isNaN(d.getTime())) {
+      var y = d.getFullYear();
+      var m = ('0' + (d.getMonth() + 1)).slice(-2);
+      var day = ('0' + d.getDate()).slice(-2);
+      return y + '-' + m + '-' + day;
+    }
+    return s;
+  }
+
   function load(){
     if (!isAuthed()) { showLogin(); return; }
     var label = sundayLabel();
+    var want = sundayISO();
     document.getElementById('day-label').textContent = label;
     boardEl.style.display = 'none';
     statusEl.className = 'status';
     if(!SCRIPT_URL || !KEY){
       statusEl.className = 'status error';
-      statusEl.textContent = 'Set SCRIPT_URL and KEY in this file first.';
+      statusEl.textContent = 'Missing scriptUrl/portalKey in kitchen-config.js.';
       return;
     }
     statusEl.textContent = 'Loading orders for ' + label + '\u2026';
-    fetch(SCRIPT_URL + '?key=' + encodeURIComponent(KEY) + '&date=' + sundayISO())
+    /* Fetch all, filter client-side — Apps Script/Sheet date formats vary */
+    fetch(SCRIPT_URL + '?key=' + encodeURIComponent(KEY))
       .then(function(r){ return r.json(); })
       .then(function(res){
         if(!res.ok){ throw new Error(res.error || 'backend error'); }
-        current = res.orders;
-        render(res.orders, label);
+        var all = res.orders || [];
+        var filtered = all.filter(function(o){
+          return toISODate(o.deliveryDate) === want;
+        });
+        current = filtered;
+        render(filtered, label);
       })
       .catch(function(err){
         statusEl.className = 'status error';
