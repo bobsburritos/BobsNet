@@ -164,18 +164,16 @@
   .card__img{
     aspect-ratio:4/3;
     background:repeating-linear-gradient(-45deg,var(--lilac),var(--lilac) 14px,#DCC4F7 14px,#DCC4F7 28px);
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    display:block;
+    width:100%;
+    object-fit:cover;
     border-bottom:var(--outline);
     color:var(--grape);
     font-weight:600;
     font-size:.9rem;
     text-align:center;
-    padding:12px;
+    padding:0;
   }
-  .card:nth-child(2) .card__img{background:repeating-linear-gradient(-45deg,var(--sunbeam),var(--sunbeam) 14px,#FFE28A 14px,#FFE28A 28px);}
-  .card:nth-child(3) .card__img{background:repeating-linear-gradient(-45deg,var(--tangerine),var(--tangerine) 14px,#FFAE73 14px,#FFAE73 28px);}
   .card__body{padding:22px 22px 26px;display:flex;flex-direction:column;gap:14px;flex:1;}
   .card__head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
   .card__name{font-family:'Shrikhand',cursive;font-size:1.45rem;line-height:1.1;}
@@ -417,7 +415,7 @@
     <div class="cards">
 
       <article class="card" data-id="soyrizo" data-name="Soyrizo Sunrise" data-price="10" data-avo="2">
-        <div class="card__img">[ Your Soyrizo Sunrise photo goes here ]</div>
+        <img class="card__img" src="assets/food/soyrizo-sunrise.jpeg" alt="Soyrizo Sunrise burrito" width="800" height="600" loading="lazy">
         <div class="card__body">
           <div class="card__head">
             <h3 class="card__name">Soyrizo Sunrise</h3>
@@ -447,7 +445,7 @@
       </article>
 
       <article class="card" data-id="cali" data-name="The Cali" data-price="12">
-        <div class="card__img">[ Your Cali photo goes here ]</div>
+        <img class="card__img" src="assets/food/the-cali.jpeg" alt="The Cali burrito" width="800" height="600" loading="lazy">
         <div class="card__body">
           <div class="card__head">
             <h3 class="card__name">The Cali</h3>
@@ -469,7 +467,7 @@
       </article>
 
       <article class="card" data-id="heavy" data-name="The Heavyweight" data-price="10" data-avo="2">
-        <div class="card__img">[ Your Heavyweight photo goes here ]</div>
+        <img class="card__img" src="assets/food/the-heavyweight.jpeg" alt="The Heavyweight burrito" width="800" height="600" loading="lazy">
         <div class="card__body">
           <div class="card__head">
             <h3 class="card__name">The Heavyweight</h3>
