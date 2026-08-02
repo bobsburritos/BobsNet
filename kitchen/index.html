@@ -160,7 +160,7 @@
       <label for="show-pass" style="margin:0;text-transform:none;letter-spacing:0;font-weight:500;">Show password</label>
     </div>
     <button type="button" id="login-btn">Unlock kitchen</button>
-    <p class="login-note">Password is stored only in kitchen-config.js (gitignored). Never commit that file or publish this portal on the public site.</p>
+    <p class="login-note">Works on any computer via this site. Passwords are not stored in the page — they unlock an encrypted kitchen key in your browser only for this session.</p>
   </div>
 </div>
 
@@ -212,69 +212,137 @@
 </div>
 </div><!-- /#app -->
 
-<!-- Secrets live in kitchen-config.js (gitignored). Never hardcode the password here. -->
-<script src="kitchen-config.js"></script>
+<!-- Public encrypted vault (safe on GitHub Pages). Optional local kitchen-config.js overrides for offline. -->
+<script src="vault.js"></script>
+<script src="kitchen-config.js" onerror=""></script>
 <script>
 (function(){
-  /* ===== Auth + API from gitignored kitchen-config.js (never put pw in .gitignore) ===== */
-  var cfg = window.BB_KITCHEN || null;
-  var SCRIPT_URL = cfg && cfg.scriptUrl ? cfg.scriptUrl : '';
-  var KEY = cfg && cfg.portalKey ? cfg.portalKey : '';
+  /* ===== Multi-device kitchen auth =====
+     - Hosted: decrypt portal key from vault.js using email+password (Web Crypto)
+     - Local optional: plain kitchen-config.js if present (gitignored)
+  */
+  var SCRIPT_URL = '';
+  var KEY = '';
+  var sessionUser = null;
 
-  function allowedUsers(){
-    var list = [];
-    if (cfg && cfg.users && cfg.users.length) {
-      for (var i = 0; i < cfg.users.length; i++) {
-        var u = cfg.users[i];
-        if (u && u.email && u.password) {
-          list.push({ email: String(u.email).toLowerCase(), password: String(u.password) });
-        }
-      }
-    }
-    if (!list.length && cfg && cfg.email && cfg.password) {
-      list.push({ email: String(cfg.email).toLowerCase(), password: String(cfg.password) });
-    }
-    return list;
-  }
-
-  var AUTH_KEY = 'bb_kitchen_session_v3';
+  var AUTH_KEY = 'bb_kitchen_session_v4';
   var loginGate = document.getElementById('login-gate');
   var appEl = document.getElementById('app');
   var loginErr = document.getElementById('login-err');
   var emailInput = document.getElementById('login-email');
   var passInput = document.getElementById('login-pass');
-  var sessionUser = null;
+  var loginBtn = document.getElementById('login-btn');
 
-  function sessionToken(email, password){
-    var s = email + '|' + password + '|bobs-kitchen|' + SCRIPT_URL;
-    var h = 2166136261;
-    for (var i = 0; i < s.length; i++) {
-      h ^= s.charCodeAt(i);
-      h = Math.imul(h, 16777619);
-    }
-    return 'ok:' + (h >>> 0).toString(16) + ':' + email;
+  function b64ToBytes(b64){
+    var bin = atob(b64);
+    var out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
   }
 
-  function isAuthed(){
+  function bytesToB64(buf){
+    var bytes = new Uint8Array(buf);
+    var s = '';
+    for (var i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+    return btoa(s);
+  }
+
+  async function decryptVaultUser(entry, password){
+    if (!window.crypto || !crypto.subtle) {
+      throw new Error('This browser cannot decrypt kitchen secrets (needs HTTPS or localhost).');
+    }
+    var enc = new TextEncoder();
+    var salt = b64ToBytes(entry.salt);
+    var iv = b64ToBytes(entry.iv);
+    var tag = b64ToBytes(entry.tag);
+    var data = b64ToBytes(entry.data);
+    // Web Crypto expects ciphertext || tag
+    var combined = new Uint8Array(data.length + tag.length);
+    combined.set(data, 0);
+    combined.set(tag, data.length);
+
+    var baseKey = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
+    var key = await crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt: salt, iterations: 120000, hash: 'SHA-256' },
+      baseKey,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['decrypt']
+    );
+    var plainBuf = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv: iv, additionalData: enc.encode(String(entry.email).toLowerCase()) },
+      key,
+      combined
+    );
+    return JSON.parse(new TextDecoder().decode(plainBuf));
+  }
+
+  function tryLocalConfig(email, password){
+    var cfg = window.BB_KITCHEN;
+    if (!cfg) return null;
+    var list = [];
+    if (cfg.users && cfg.users.length) {
+      for (var i = 0; i < cfg.users.length; i++) {
+        var u = cfg.users[i];
+        if (u && u.email && u.password) list.push({ email: String(u.email).toLowerCase(), password: String(u.password) });
+      }
+    } else if (cfg.email && cfg.password) {
+      list.push({ email: String(cfg.email).toLowerCase(), password: String(cfg.password) });
+    }
+    for (var j = 0; j < list.length; j++) {
+      if (list[j].email === email && list[j].password === password) {
+        return {
+          portalKey: cfg.portalKey || '',
+          scriptUrl: cfg.scriptUrl || ''
+        };
+      }
+    }
+    return null;
+  }
+
+  function saveSession(email, portalKey, scriptUrl){
+    sessionUser = email;
+    SCRIPT_URL = scriptUrl || '';
+    KEY = portalKey || '';
+    try {
+      sessionStorage.setItem(AUTH_KEY, JSON.stringify({
+        email: email,
+        portalKey: portalKey,
+        scriptUrl: scriptUrl,
+        t: Date.now()
+      }));
+    } catch (e) {}
+  }
+
+  function clearSession(){
+    sessionUser = null;
+    SCRIPT_URL = '';
+    KEY = '';
+    try { sessionStorage.removeItem(AUTH_KEY); } catch (e) {}
+  }
+
+  function restoreSession(){
     try {
       var raw = sessionStorage.getItem(AUTH_KEY);
       if (!raw) return false;
-      var users = allowedUsers();
-      for (var i = 0; i < users.length; i++) {
-        if (raw === sessionToken(users[i].email, users[i].password)) {
-          sessionUser = users[i].email;
-          return true;
-        }
+      var s = JSON.parse(raw);
+      if (!s || !s.portalKey || !s.scriptUrl) return false;
+      // 12-hour session
+      if (s.t && (Date.now() - s.t > 12 * 60 * 60 * 1000)) {
+        clearSession();
+        return false;
       }
+      sessionUser = s.email;
+      SCRIPT_URL = s.scriptUrl;
+      KEY = s.portalKey;
+      return true;
+    } catch (e) {
       return false;
-    } catch (e) { return false; }
+    }
   }
 
-  function setAuthed(user){
-    try {
-      if (user) sessionStorage.setItem(AUTH_KEY, sessionToken(user.email, user.password));
-      else sessionStorage.removeItem(AUTH_KEY);
-    } catch (e) {}
+  function isAuthed(){
+    return !!(KEY && SCRIPT_URL);
   }
 
   function showApp(){
@@ -292,33 +360,65 @@
     setTimeout(function(){ (passInput.value ? passInput : emailInput).focus(); }, 50);
   }
 
-  function tryLogin(){
-    var users = allowedUsers();
-    if (!cfg || !users.length) {
-      loginErr.textContent = 'Missing kitchen-config.js. Copy kitchen-config.example.js and set users/passwords.';
-      return;
-    }
+  async function tryLogin(){
     var email = (emailInput.value || '').trim().toLowerCase();
-    var entered = passInput.value;
-    var match = null;
-    for (var i = 0; i < users.length; i++) {
-      if (users[i].email === email && users[i].password === entered) {
-        match = users[i];
-        break;
-      }
-    }
-    if (!match) {
-      loginErr.textContent = 'Wrong email or password.';
-      passInput.select();
+    var password = passInput.value;
+    if (!email || !password) {
+      loginErr.textContent = 'Enter email and password.';
       return;
     }
-    sessionUser = match.email;
-    setAuthed(match);
-    loginErr.textContent = '';
-    showApp();
+    loginBtn.disabled = true;
+    loginErr.textContent = 'Signing in…';
+
+    try {
+      // 1) Optional local plain config (offline / gitignored)
+      var local = tryLocalConfig(email, password);
+      if (local && local.portalKey && local.scriptUrl) {
+        saveSession(email, local.portalKey, local.scriptUrl);
+        loginErr.textContent = '';
+        showApp();
+        return;
+      }
+
+      // 2) Public encrypted vault (GitHub Pages)
+      var vault = window.BB_KITCHEN_VAULT;
+      if (!vault || !vault.users || !vault.users.length) {
+        throw new Error('Kitchen vault missing. Open from https://bobsburritos.github.io/BobsNet/kitchen/');
+      }
+      var entry = null;
+      for (var i = 0; i < vault.users.length; i++) {
+        if (String(vault.users[i].email).toLowerCase() === email) {
+          entry = vault.users[i];
+          break;
+        }
+      }
+      if (!entry) {
+        loginErr.textContent = 'Wrong email or password.';
+        passInput.select();
+        return;
+      }
+      var secrets;
+      try {
+        secrets = await decryptVaultUser(entry, password);
+      } catch (decErr) {
+        loginErr.textContent = 'Wrong email or password.';
+        passInput.select();
+        return;
+      }
+      if (!secrets.portalKey || !secrets.scriptUrl) {
+        throw new Error('Vault decrypt succeeded but secrets incomplete.');
+      }
+      saveSession(email, secrets.portalKey, secrets.scriptUrl);
+      loginErr.textContent = '';
+      showApp();
+    } catch (err) {
+      loginErr.textContent = err.message || String(err);
+    } finally {
+      loginBtn.disabled = false;
+    }
   }
 
-  document.getElementById('login-btn').addEventListener('click', tryLogin);
+  document.getElementById('login-btn').addEventListener('click', function(){ tryLogin(); });
   emailInput.addEventListener('keydown', function(e){
     if (e.key === 'Enter') { e.preventDefault(); passInput.focus(); }
   });
@@ -329,7 +429,7 @@
     passInput.type = this.checked ? 'text' : 'password';
   });
   document.getElementById('logout').addEventListener('click', function(){
-    setAuthed(false);
+    clearSession();
     showLogin('Logged out.');
   });
 
@@ -573,8 +673,8 @@
   document.getElementById('next').addEventListener('click', function(){ weekOffset++; load(); });
   document.getElementById('refresh').addEventListener('click', load);
 
-  /* Boot: login first, never fetch orders until unlocked */
-  if (isAuthed()) showApp();
+  /* Boot: restore session or show login */
+  if (restoreSession() && isAuthed()) showApp();
   else showLogin();
 })();
 </script>

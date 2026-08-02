@@ -27,36 +27,28 @@ Ignore any **Library** URL. Only the Web app `/exec` URL matters.
 5. Mark paid via kitchen portal only (not by typing in the sheet).  
 6. Sunday delivery run from kitchen “Delivery Run” section.
 
-## Kitchen portal
+## Kitchen portal (any computer)
 
-**Open (preferred):**
-
-`D:\MiguelAznar\007_PersonalProjects\200_BobsBurritos\kitchen\index.html`
-
-(or `local\bobs-kitchen.html` — same UI)
+**Live URL (use this):**  
+https://bobsburritos.github.io/BobsNet/kitchen/
 
 ### Login
 | Field | Value |
 |--------|--------|
-| **Email** | `bobsburritosco@gmail.com` |
-| **Password** | Stored only in **gitignored** `kitchen/kitchen-config.js` |
+| **Email** | Staff emails configured in vault (e.g. `bobsburritosco@gmail.com`) |
+| **Password** | Your kitchen password (never stored in the public page as plain text) |
 
-### Secrets file (never commit)
-Real file: `kitchen/kitchen-config.js` (gitignored)  
-Template: `kitchen-config.example.js` (safe to commit)
+### How multi-device auth works
+- Public file `kitchen/vault.js` holds the **portal key encrypted** with each user’s password.
+- On login, the browser decrypts secrets with your password (needs **HTTPS** — Pages is fine).
+- Session lasts ~12 hours in that browser tab (sessionStorage).
 
-```js
-window.BB_KITCHEN = {
-  email: 'bobsburritosco@gmail.com',
-  password: 'your-secret-password',
-  scriptUrl: 'https://script.google.com/macros/s/.../exec',
-  portalKey: '…'  // same as PORTAL_KEY in Apps Script
-};
-```
+### Change passwords / add staff
+1. Edit **private** `kitchen/kitchen-config.js` (gitignored) with users + portalKey + scriptUrl  
+2. Run: `node scripts/build-kitchen-vault.js`  
+3. Commit + push **only** `kitchen/vault.js` (not kitchen-config.js)
 
-- Session stays unlocked in that browser tab until **Log out** or you close the tab.  
-- After login, **Refresh** loads that Sunday’s orders.  
-- Do **not** put the real password in any tracked HTML file or in the public GitHub Pages site.  
+Template: `kitchen-config.example.js`
 
 ## After editing Apps Script
 
