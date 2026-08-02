@@ -34,8 +34,11 @@ Path (this machine only):
 `D:\MiguelAznar\007_PersonalProjects\200_BobsBurritos\local\bobs-kitchen.html`
 
 - Double-click or open in Chrome.  
-- Must stay **off** GitHub (contains portal key).  
-- Refresh loads that Sunday’s orders from the Web app.
+- **Login required** — password is set in the file as `KITCHEN_PASSWORD` (also in `local/kitchen-password.txt`).  
+- Session stays unlocked in that browser tab until you click **Log out** or close the tab.  
+- Must stay **off** GitHub (contains portal key + kitchen password).  
+- After login, **Refresh** loads that Sunday’s orders from the Web app.  
+- Change the password anytime by editing `KITCHEN_PASSWORD` near the top of the kitchen HTML.  
 
 ## After editing Apps Script
 
