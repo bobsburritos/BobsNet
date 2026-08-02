@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
 <title>Bob's Burritos — Kitchen</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -133,6 +134,13 @@
   .money{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;}
   .money .bignum.paid .n{color:var(--ok);}
   .money .bignum.owed .n{color:var(--bad);}
+
+  @media print{
+    #login-gate, #logout, #refresh, .daypick button{display:none !important;}
+    header{break-after:avoid;}
+    body{background:#fff;padding:0;}
+    .bignum, table, ul.check{box-shadow:none;}
+  }
 </style>
 </head>
 <body>
@@ -328,7 +336,17 @@
     return t.getFullYear() + '-' + ('0' + (t.getMonth() + 1)).slice(-2) + '-' + ('0' + t.getDate()).slice(-2);
   }
 
-  function money(n){ return '$' + n.toFixed(2); }
+  function money(n){ return '$' + Number(n).toFixed(2); }
+
+  /** Escape text before innerHTML (orders come from the network). */
+  function esc(s){
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
 
   var GROCERY = [
     {item:'Large flour tortillas', unit:'tortillas', need:function(t){return t.totalB;},
@@ -449,13 +467,13 @@
     var chase = orders.filter(function(o){ return !o.paid; });
     document.getElementById('chase').innerHTML = chase.length
       ? chase.map(function(o){
-          return '<li><span class="oid">' + o.orderId + '</span> ' + o.name + ' \u00b7 Unit ' + o.unit +
-                 (o.phone ? ' \u00b7 ' + o.phone : '') + '<span class="amt">' + money(o.total) + '</span></li>';
+          return '<li><span class="oid">' + esc(o.orderId) + '</span> ' + esc(o.name) + ' \u00b7 Unit ' + esc(o.unit) +
+                 (o.phone ? ' \u00b7 ' + esc(o.phone) : '') + '<span class="amt">' + money(o.total) + '</span></li>';
         }).join('')
       : '<li>Everyone has paid</li>';
 
     var sorted = orders.slice().sort(function(a, b){
-      return a.unit.localeCompare(b.unit, undefined, {numeric:true});
+      return String(a.unit).localeCompare(String(b.unit), undefined, {numeric:true});
     });
     document.getElementById('orders').innerHTML = sorted.map(function(o){
       var items = [];
@@ -464,18 +482,24 @@
       if(o.cali > 0){ items.push(o.cali + ' Cali'); }
       if(o.heavy - o.heavyAvo > 0){ items.push((o.heavy - o.heavyAvo) + ' Heavyweight'); }
       if(o.heavyAvo > 0){ items.push(o.heavyAvo + ' Heavyweight +avo'); }
+      var safeId = esc(o.orderId).replace(/'/g, '');
       return '<tr class="' + (o.paid ? '' : 'unpaid') + '">' +
         '<td><input type="checkbox" class="delcheck" onchange="this.closest(\'tr\').style.opacity = this.checked ? .35 : 1"></td>' +
-        '<td><strong>' + o.unit + '</strong></td>' +
-        '<td>' + o.name + (o.phone ? '<br><small>' + o.phone + '</small>' : '') + '</td>' +
-        '<td class="oid">' + o.orderId + '</td>' +
-        '<td class="items">' + items.join('<br>') + '</td>' +
+        '<td><strong>' + esc(o.unit) + '</strong></td>' +
+        '<td>' + esc(o.name) + (o.phone ? '<br><small>' + esc(o.phone) + '</small>' : '') + '</td>' +
+        '<td class="oid">' + esc(o.orderId) + '</td>' +
+        '<td class="items">' + items.map(esc).join('<br>') + '</td>' +
         '<td>' + money(o.total) + '</td>' +
         '<td><span class="pill ' + (o.paid ? 'yes">PAID' : 'no">NO') + '</span>' +
-        (o.paid ? '' : '<br><button class="markpaid" onclick="bbMarkPaid(\'' + o.orderId + '\', this)">Mark paid</button>') +
+        (o.paid ? '' : '<br><button type="button" class="markpaid" data-oid="' + safeId + '">Mark paid</button>') +
         '</td></tr>';
     }).join('');
 
+    document.querySelectorAll('.markpaid').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        bbMarkPaid(btn.getAttribute('data-oid'), btn);
+      });
+    });
     boardEl.style.display = 'block';
   }
 

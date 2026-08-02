@@ -14,6 +14,9 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="description" content="Small-batch breakfast burritos delivered to your door at 1111 Wilshire. Sundays 9 AM–12 PM. Order by Saturday 3 PM.">
+<meta name="theme-color" content="#3D1A5C">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -516,7 +519,7 @@
     <div class="cards">
 
       <article class="card" data-id="soyrizo" data-name="Soyrizo Sunrise" data-price="10" data-avo="2">
-        <img class="card__img" src="assets/food/soyrizo-sunrise.jpeg?v=20260802b" alt="Soyrizo Sunrise burrito" width="800" height="600" loading="lazy" tabindex="0" role="button" data-full="assets/food/soyrizo-sunrise.jpeg?v=20260802b" data-caption="Soyrizo Sunrise" title="Tap to enlarge">
+        <img class="card__img" src="assets/food/soyrizo-sunrise.jpeg?v=20260802c" alt="Soyrizo Sunrise burrito" width="800" height="600" loading="lazy" tabindex="0" role="button" data-full="assets/food/soyrizo-sunrise.jpeg?v=20260802c" data-caption="Soyrizo Sunrise" title="Tap to enlarge">
         <div class="card__body">
           <div class="card__head">
             <h3 class="card__name">Soyrizo Sunrise</h3>
@@ -546,7 +549,7 @@
       </article>
 
       <article class="card" data-id="cali" data-name="The Cali" data-price="12">
-        <img class="card__img" src="assets/food/the-cali.jpeg?v=20260802b" alt="The Cali burrito" width="800" height="600" loading="lazy" tabindex="0" role="button" data-full="assets/food/the-cali.jpeg?v=20260802b" data-caption="The Cali" title="Tap to enlarge">
+        <img class="card__img" src="assets/food/the-cali.jpeg?v=20260802c" alt="The Cali burrito" width="800" height="600" loading="lazy" tabindex="0" role="button" data-full="assets/food/the-cali.jpeg?v=20260802c" data-caption="The Cali" title="Tap to enlarge">
         <div class="card__body">
           <div class="card__head">
             <h3 class="card__name">The Cali</h3>
@@ -568,7 +571,7 @@
       </article>
 
       <article class="card" data-id="heavy" data-name="The Heavyweight" data-price="10" data-avo="2">
-        <img class="card__img" src="assets/food/the-heavyweight.jpeg?v=20260802b" alt="The Heavyweight burrito" width="800" height="600" loading="lazy" tabindex="0" role="button" data-full="assets/food/the-heavyweight.jpeg?v=20260802b" data-caption="The Heavyweight" title="Tap to enlarge">
+        <img class="card__img" src="assets/food/the-heavyweight.jpeg?v=20260802c" alt="The Heavyweight burrito" width="800" height="600" loading="lazy" tabindex="0" role="button" data-full="assets/food/the-heavyweight.jpeg?v=20260802c" data-caption="The Heavyweight" title="Tap to enlarge">
         <div class="card__body">
           <div class="card__head">
             <h3 class="card__name">The Heavyweight</h3>
@@ -609,15 +612,20 @@
       <div class="notice" id="notice" aria-live="polite"></div>
       <div class="field">
         <label for="f-name">Your name</label>
-        <input id="f-name" type="text" autocomplete="name" placeholder="Miguel R.">
+        <input id="f-name" type="text" autocomplete="name" placeholder="Miguel R." maxlength="80" required>
       </div>
       <div class="field">
         <label for="f-unit">Unit number</label>
-        <input id="f-unit" type="text" placeholder="e.g. 704">
+        <input id="f-unit" type="text" placeholder="e.g. 704" maxlength="20" required inputmode="text">
       </div>
       <div class="field">
         <label for="f-phone">Phone (for delivery ping)</label>
-        <input id="f-phone" type="tel" autocomplete="tel" placeholder="(310) 555-0134">
+        <input id="f-phone" type="tel" autocomplete="tel" placeholder="(310) 555-0134" maxlength="30" inputmode="tel">
+      </div>
+      <!-- Honeypot: leave empty. Hidden from real users. -->
+      <div class="field" aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">
+        <label for="f-company">Company</label>
+        <input id="f-company" type="text" tabindex="-1" autocomplete="off">
       </div>
 
       <div class="summary" id="summary" aria-live="polite">
@@ -946,15 +954,36 @@
   renderNotice();
   setInterval(renderNotice, 60000);
 
+  var submitting = false;
   document.getElementById('submit').addEventListener('click', function(){
+    if(submitting) return;
     var items = state().filter(function(i){ return i.qty > 0; });
     var name = document.getElementById('f-name').value.trim();
     var unit = document.getElementById('f-unit').value.trim();
     var phone = document.getElementById('f-phone').value.trim();
+    var honeypot = document.getElementById('f-company');
+    if(honeypot && honeypot.value){
+      /* bot: pretend success without sending */
+      confirmEl.querySelector('h3').textContent = 'Order received!';
+      confirmEl.classList.add('show');
+      return;
+    }
 
     if(!items.length || !name || !unit){
       errEl.style.display = 'block';
+      errEl.textContent = 'Add at least one burrito and fill in your name and unit.';
       confirmEl.classList.remove('show');
+      return;
+    }
+    if(name.length > 80 || unit.length > 20 || phone.length > 30){
+      errEl.style.display = 'block';
+      errEl.textContent = 'Please shorten your name, unit, or phone.';
+      return;
+    }
+    var totalQty = items.reduce(function(s,i){ return s + i.qty; }, 0);
+    if(totalQty > 40){
+      errEl.style.display = 'block';
+      errEl.textContent = 'That is a lot of burritos — max 40 per order. Split into two orders if needed.';
       return;
     }
     errEl.style.display = 'none';
@@ -989,6 +1018,7 @@
 
     if(SCRIPT_URL){
       var btn = this;
+      submitting = true;
       btn.disabled = true;
       btn.textContent = 'Sending\u2026';
       var payload = {
@@ -998,7 +1028,7 @@
         deliveryDate: sc.iso,
         total: total,
         items: items.map(function(i){
-          return {id: i.id, qty: i.qty, avo: i.avo};
+          return {id: i.id, qty: i.qty, avo: !!i.avo};
         })
       };
       fetch(SCRIPT_URL, {
@@ -1006,6 +1036,7 @@
         headers: {'Content-Type': 'text/plain;charset=utf-8'},
         body: JSON.stringify(payload)
       }).then(function(r){ return r.json(); }).then(function(res){
+        submitting = false;
         btn.disabled = false;
         btn.textContent = 'Place my order';
         if(res && res.ok){
@@ -1017,6 +1048,7 @@
           fallbackConfirm();
         }
       }).catch(function(){
+        submitting = false;
         btn.disabled = false;
         btn.textContent = 'Place my order';
         fallbackConfirm();

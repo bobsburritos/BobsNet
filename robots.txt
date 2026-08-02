@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Kitchen portal is staff-only (no secrets in HTML, but still not for crawlers)
+Disallow: /kitchen/

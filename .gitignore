@@ -21,3 +21,9 @@ Thumbs.db
 *.swp
 .vscode/
 .idea/
+
+#kitchen log in user
+# (credentials removed - use kitchen-config.js)
+pw:[REDACTED]
+# (credentials removed)
+pw:[REDACTED]
