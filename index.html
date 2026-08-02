@@ -171,6 +171,62 @@
     font-size:.9rem;
     text-align:center;
     padding:0;
+    cursor:zoom-in;
+  }
+  .card__img:focus-visible{
+    outline:3px solid var(--sunbeam);
+    outline-offset:-3px;
+  }
+  /* Full-size photo lightbox */
+  .lightbox{
+    position:fixed;inset:0;z-index:1000;
+    display:flex;align-items:center;justify-content:center;
+    padding:20px;
+    background:rgba(42,17,64,.88);
+    opacity:0;visibility:hidden;pointer-events:none;
+    transition:opacity .2s ease, visibility .2s ease;
+  }
+  .lightbox.is-open{
+    opacity:1;visibility:visible;pointer-events:auto;
+  }
+  .lightbox__panel{
+    position:relative;
+    max-width:min(960px,100%);
+    max-height:min(90vh,100%);
+    animation:pop .22s ease;
+  }
+  .lightbox__img{
+    display:block;
+    max-width:100%;
+    max-height:min(82vh,900px);
+    width:auto;height:auto;
+    object-fit:contain;
+    border:var(--outline);
+    border-radius:var(--radius-md);
+    box-shadow:var(--pop);
+    background:var(--cream);
+  }
+  .lightbox__cap{
+    margin-top:12px;text-align:center;
+    color:var(--cream);font-weight:600;font-size:1.05rem;
+  }
+  .lightbox__close{
+    position:absolute;top:-12px;right:-12px;
+    width:44px;height:44px;border-radius:50%;
+    border:var(--outline);background:var(--sunbeam);color:var(--grape);
+    font-size:1.4rem;font-weight:700;line-height:1;cursor:pointer;
+    font-family:'Fredoka',sans-serif;
+    box-shadow:3px 3px 0 var(--grape);
+  }
+  .lightbox__close:hover{transform:scale(1.05);}
+  .lightbox__hint{
+    position:absolute;bottom:14px;left:0;right:0;
+    text-align:center;color:rgba(255,244,220,.7);font-size:.8rem;font-weight:500;
+    pointer-events:none;
+  }
+  @media (prefers-reduced-motion:reduce){
+    .lightbox{transition:none;}
+    .lightbox__panel{animation:none;}
   }
   .card__body{padding:22px 22px 26px;display:flex;flex-direction:column;gap:14px;flex:1;}
   .card__head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
@@ -413,7 +469,7 @@
     <div class="cards">
 
       <article class="card" data-id="soyrizo" data-name="Soyrizo Sunrise" data-price="10" data-avo="2">
-        <img class="card__img" src="assets/food/soyrizo-sunrise.jpeg?v=20260802b" alt="Soyrizo Sunrise burrito" width="800" height="600" loading="lazy">
+        <img class="card__img" src="assets/food/soyrizo-sunrise.jpeg?v=20260802b" alt="Soyrizo Sunrise burrito" width="800" height="600" loading="lazy" tabindex="0" role="button" data-full="assets/food/soyrizo-sunrise.jpeg?v=20260802b" data-caption="Soyrizo Sunrise" title="Tap to enlarge">
         <div class="card__body">
           <div class="card__head">
             <h3 class="card__name">Soyrizo Sunrise</h3>
@@ -443,7 +499,7 @@
       </article>
 
       <article class="card" data-id="cali" data-name="The Cali" data-price="12">
-        <img class="card__img" src="assets/food/the-cali.jpeg?v=20260802b" alt="The Cali burrito" width="800" height="600" loading="lazy">
+        <img class="card__img" src="assets/food/the-cali.jpeg?v=20260802b" alt="The Cali burrito" width="800" height="600" loading="lazy" tabindex="0" role="button" data-full="assets/food/the-cali.jpeg?v=20260802b" data-caption="The Cali" title="Tap to enlarge">
         <div class="card__body">
           <div class="card__head">
             <h3 class="card__name">The Cali</h3>
@@ -465,7 +521,7 @@
       </article>
 
       <article class="card" data-id="heavy" data-name="The Heavyweight" data-price="10" data-avo="2">
-        <img class="card__img" src="assets/food/the-heavyweight.jpeg?v=20260802b" alt="The Heavyweight burrito" width="800" height="600" loading="lazy">
+        <img class="card__img" src="assets/food/the-heavyweight.jpeg?v=20260802b" alt="The Heavyweight burrito" width="800" height="600" loading="lazy" tabindex="0" role="button" data-full="assets/food/the-heavyweight.jpeg?v=20260802b" data-caption="The Heavyweight" title="Tap to enlarge">
         <div class="card__body">
           <div class="card__head">
             <h3 class="card__name">The Heavyweight</h3>
@@ -548,13 +604,76 @@
   <p class="share-label">Show a neighbor — scan to order</p>
 </footer>
 
+<!-- Full-size burrito photo viewer -->
+<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Burrito photo">
+  <div class="lightbox__panel">
+    <button type="button" class="lightbox__close" id="lightbox-close" aria-label="Close photo">×</button>
+    <img class="lightbox__img" id="lightbox-img" src="" alt="">
+    <p class="lightbox__cap" id="lightbox-cap"></p>
+  </div>
+  <p class="lightbox__hint">Tap outside or press Esc to close</p>
+</div>
+
 <script>
 (function(){
   /* Paste your Apps Script Web app URL between the quotes. Leave empty to use copy-order mode. */
   var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwpvyRwhYQJIiz-lmPypoKC-2GvWzzMOzfD_RL_0-GLO36U2r2voebsNX6lpIyPqcIO/exec';
 
-  var cards = Array.prototype.slice.call(document.querySelectorAll('.card'));
-  var summaryEl = document.getElementById('summary');
+  /* ---- Image lightbox (tap menu photo to enlarge) ---- */
+  var lb = document.getElementById('lightbox');
+  var lbImg = document.getElementById('lightbox-img');
+  var lbCap = document.getElementById('lightbox-cap');
+  var lbClose = document.getElementById('lightbox-close');
+  var lbLastFocus = null;
+
+  function openLightbox(src, caption, alt){
+    lbLastFocus = document.activeElement;
+    lbImg.src = src;
+    lbImg.alt = alt || caption || 'Burrito photo';
+    lbCap.textContent = caption || '';
+    lb.hidden = false;
+    // force reflow so transition plays
+    void lb.offsetWidth;
+    lb.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    lbClose.focus();
+  }
+  function closeLightbox(){
+    lb.classList.remove('is-open');
+    document.body.style.overflow = '';
+    setTimeout(function(){
+      if(!lb.classList.contains('is-open')){
+        lb.hidden = true;
+        lbImg.removeAttribute('src');
+      }
+    }, 200);
+    if(lbLastFocus && lbLastFocus.focus) lbLastFocus.focus();
+  }
+  document.querySelectorAll('.card__img').forEach(function(img){
+    function openFromImg(){
+      openLightbox(
+        img.getAttribute('data-full') || img.src,
+        img.getAttribute('data-caption') || '',
+        img.alt
+      );
+    }
+    img.addEventListener('click', openFromImg);
+    img.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        openFromImg();
+      }
+    });
+  });
+  lbClose.addEventListener('click', function(e){ e.stopPropagation(); closeLightbox(); });
+  lb.addEventListener('click', function(e){
+    if(e.target === lb) closeLightbox();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && lb.classList.contains('is-open')) closeLightbox();
+  });
+
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.card'));  var summaryEl = document.getElementById('summary');
   var errEl = document.getElementById('err');
   var confirmEl = document.getElementById('confirm');
   var confirmMsg = document.getElementById('confirm-msg');
