@@ -177,17 +177,22 @@
     outline:3px solid var(--sunbeam);
     outline-offset:-3px;
   }
-  /* Full-size photo lightbox */
+  /* Full-size photo lightbox — must NOT block page when closed */
   .lightbox{
     position:fixed;inset:0;z-index:1000;
-    display:flex;align-items:center;justify-content:center;
+    display:none;
+    align-items:center;justify-content:center;
     padding:20px;
     background:rgba(42,17,64,.88);
-    opacity:0;visibility:hidden;pointer-events:none;
-    transition:opacity .2s ease, visibility .2s ease;
+    pointer-events:none;
   }
   .lightbox.is-open{
-    opacity:1;visibility:visible;pointer-events:auto;
+    display:flex !important;
+    pointer-events:auto;
+  }
+  .lightbox[hidden]{
+    display:none !important;
+    pointer-events:none !important;
   }
   .lightbox__panel{
     position:relative;
@@ -305,8 +310,10 @@
     opacity:.5;
     pointer-events:none;
   }
+  .order .wrap{position:relative;z-index:1;}
   .panel{
     position:relative;
+    z-index:2;
     background:#fff;
     border:var(--outline);
     border-radius:var(--radius-lg);
@@ -416,12 +423,29 @@
   }
   .confirm .pay-actions{
     display:flex;flex-direction:column;gap:10px;margin-top:14px;
+    position:relative;z-index:3;
+  }
+  .confirm .pay-btn{
+    width:100%;
+    min-height:48px;
+    box-sizing:border-box;
+    line-height:1.25;
+    -webkit-tap-highlight-color:rgba(255,210,63,.35);
+    touch-action:manipulation;
+    pointer-events:auto;
   }
   .confirm .pay-btn.venmo{
     background:#008CFF;color:#fff;
   }
   .confirm .pay-btn.zelle{
     background:#6D1ED4;color:#fff;
+  }
+  .confirm #copy-note,
+  .confirm #copy{
+    min-height:44px;
+    touch-action:manipulation;
+    pointer-events:auto;
+    position:relative;z-index:3;
   }
   .confirm .pay-dest{
     margin-top:12px;font-size:.92rem;line-height:1.45;font-weight:500;
@@ -662,22 +686,48 @@
     lbImg.alt = alt || caption || 'Burrito photo';
     lbCap.textContent = caption || '';
     lb.hidden = false;
-    // force reflow so transition plays
-    void lb.offsetWidth;
+    lb.removeAttribute('hidden');
     lb.classList.add('is-open');
     document.body.style.overflow = 'hidden';
     lbClose.focus();
   }
   function closeLightbox(){
     lb.classList.remove('is-open');
+    lb.hidden = true;
+    lb.setAttribute('hidden', '');
     document.body.style.overflow = '';
-    setTimeout(function(){
-      if(!lb.classList.contains('is-open')){
-        lb.hidden = true;
-        lbImg.removeAttribute('src');
+    lbImg.removeAttribute('src');
+    if(lbLastFocus && lbLastFocus.focus) try { lbLastFocus.focus(); } catch(e) {}
+  }
+
+  function copyText(text, btn, okLabel){
+    var prev = btn ? btn.textContent : '';
+    function ok(){
+      if(!btn) return;
+      btn.textContent = okLabel || 'Copied!';
+      setTimeout(function(){ btn.textContent = prev; }, 1600);
+    }
+    function fallback(){
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        ok();
+      } catch (e) {
+        window.prompt('Copy this:', text);
       }
-    }, 200);
-    if(lbLastFocus && lbLastFocus.focus) lbLastFocus.focus();
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(ok).catch(fallback);
+    } else {
+      fallback();
+    }
   }
   document.querySelectorAll('.card__img').forEach(function(img){
     function openFromImg(){
@@ -732,53 +782,51 @@
     var dest = [];
     if(user){
       dest.push('Venmo: <strong>@' + user + '</strong>');
+    } else {
+      dest.push('Venmo: <em>coming soon — use Zelle for now</em>');
     }
     if(ZELLE_TO){
       dest.push('Zelle to <strong>' + ZELLE_NAME + '</strong>: <strong>' + ZELLE_TO + '</strong>');
     }
-    payDestEl.innerHTML = dest.length
-      ? 'Send <strong>' + money(total) + '</strong><br>' + dest.join('<br>')
-      : 'Payment destination not configured yet — text us after you order.';
+    payDestEl.innerHTML = 'Send <strong>' + money(total) + '</strong><br>' + dest.join('<br>');
 
     var actions = [];
     actions.push('<button type="button" id="copy-note-2" class="pay-btn">1. Copy payment note</button>');
     if(user){
       actions.push(
-        '<a class="pay-btn venmo" id="pay-venmo" target="_blank" rel="noopener" href="' +
+        '<a class="pay-btn venmo" id="pay-venmo" target="_blank" rel="noopener noreferrer" href="' +
         venmoPayUrl(total, note) + '">2. Open Venmo &amp; pay ' + money(total) + '</a>'
       );
     }
     if(ZELLE_TO){
+      var step = user ? '3' : '2';
       actions.push(
-        '<button type="button" class="pay-btn zelle" id="pay-zelle">2. Copy Zelle info (' + ZELLE_TO + ')</button>'
+        '<button type="button" class="pay-btn zelle" id="pay-zelle">' + step + '. Copy Zelle info</button>'
       );
     }
     payActionsEl.innerHTML = actions.join('');
 
     var copy2 = document.getElementById('copy-note-2');
     if(copy2){
-      copy2.addEventListener('click', function(){
-        navigator.clipboard.writeText(note).then(function(){
-          copy2.textContent = 'Note copied!';
-          setTimeout(function(){ copy2.textContent = '1. Copy payment note'; }, 1600);
-        });
+      copy2.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        copyText(note, copy2, 'Note copied!');
       });
     }
     var zBtn = document.getElementById('pay-zelle');
     if(zBtn){
-      zBtn.addEventListener('click', function(){
+      zBtn.addEventListener('click', function(e){
+        e.preventDefault();
+        e.stopPropagation();
         var text = ZELLE_NAME + '\nZelle: ' + ZELLE_TO + '\nAmount: ' + money(total) + '\nNote: ' + note;
-        navigator.clipboard.writeText(text).then(function(){
-          zBtn.textContent = 'Zelle info copied!';
-          setTimeout(function(){ zBtn.textContent = '2. Copy Zelle info (' + ZELLE_TO + ')'; }, 1800);
-        });
+        copyText(text, zBtn, 'Zelle info copied!');
       });
     }
     var vLink = document.getElementById('pay-venmo');
     if(vLink){
       vLink.addEventListener('click', function(){
-        /* Also copy note so they can paste if Venmo drops the memo */
-        try { navigator.clipboard.writeText(note); } catch(e) {}
+        copyText(note, null, null);
       });
     }
   }
@@ -985,21 +1033,18 @@
     if(sq){ sq.style.display = 'none'; document.querySelector('.share-label').style.display = 'none'; }
   }
 
-  document.getElementById('copy-note').addEventListener('click', function(){
-    var btn = this;
-    navigator.clipboard.writeText(payNoteEl.textContent).then(function(){
-      btn.textContent = 'Copied!';
-      setTimeout(function(){ btn.textContent = 'Copy payment note'; }, 1600);
-    });
+  document.getElementById('copy-note').addEventListener('click', function(e){
+    e.preventDefault();
+    copyText(payNoteEl.textContent, this, 'Copied!');
   });
 
-  document.getElementById('copy').addEventListener('click', function(){
-    var btn = this;
-    navigator.clipboard.writeText(orderTextEl.textContent).then(function(){
-      btn.textContent = 'Copied!';
-      setTimeout(function(){ btn.textContent = 'Copy full order'; }, 1600);
-    });
+  document.getElementById('copy').addEventListener('click', function(e){
+    e.preventDefault();
+    copyText(orderTextEl.textContent, this, 'Copied!');
   });
+
+  /* Safety: never leave lightbox blocking the page on load */
+  closeLightbox();
 })();
 </script>
 </body>
