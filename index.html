@@ -400,7 +400,7 @@
     margin:12px 0;
   }
   .confirm #paystep{margin-bottom:18px;padding-bottom:18px;border-bottom:2px dashed rgba(255,244,220,.35);}
-  .confirm button{
+  .confirm button, .confirm .pay-btn{
     font-family:'Fredoka',sans-serif;
     font-weight:700;
     background:var(--sunbeam);
@@ -410,7 +410,25 @@
     padding:10px 22px;
     cursor:pointer;
     font-size:.95rem;
+    display:inline-block;
+    text-decoration:none;
+    text-align:center;
   }
+  .confirm .pay-actions{
+    display:flex;flex-direction:column;gap:10px;margin-top:14px;
+  }
+  .confirm .pay-btn.venmo{
+    background:#008CFF;color:#fff;
+  }
+  .confirm .pay-btn.zelle{
+    background:#6D1ED4;color:#fff;
+  }
+  .confirm .pay-dest{
+    margin-top:12px;font-size:.92rem;line-height:1.45;font-weight:500;
+    background:var(--grape-deep);border-radius:12px;padding:12px 14px;
+  }
+  .confirm .pay-dest strong{color:var(--sunbeam);}
+  .confirm .pay-steps{margin-bottom:10px;line-height:1.45;}
   .err{color:#C0392B;font-weight:600;font-size:.9rem;display:none;margin-top:6px;}
 
   footer{
@@ -577,7 +595,7 @@
         <p class="summary__empty">Your order shows up here once you add burritos.</p>
       </div>
 
-      <div class="paynote">☀️ <span>Pay by <strong>Venmo or Zelle</strong> after you order — copy the payment note below and paste it in the transfer note. Orders close Saturday 3 PM sharp.</span></div>
+      <div class="paynote">☀️ <span>After you order, pay by <strong>Venmo</strong> or <strong>Zelle</strong> using the buttons on the confirmation — include the payment note so we can match your order. Orders close Saturday 3 PM sharp.</span></div>
 
       <button type="button" class="btn" id="submit">Place my order</button>
       <p class="err" id="err">Add at least one burrito and fill in your name and unit.</p>
@@ -585,9 +603,14 @@
       <div class="confirm" id="confirm">
         <h3>Order saved!</h3>
         <div id="paystep" style="display:none">
-          <p><strong>Step 1:</strong> Copy your payment note. <strong>Step 2:</strong> Venmo or Zelle us the total and paste that note in the payment memo.</p>
+          <p class="pay-steps" id="pay-steps">
+            <strong>Step 1:</strong> Copy your payment note.<br>
+            <strong>Step 2:</strong> Tap Venmo or Zelle and send the total — paste that note in the payment memo.
+          </p>
           <pre id="paynote-text"></pre>
           <button type="button" id="copy-note">Copy payment note</button>
+          <div class="pay-dest" id="pay-dest"></div>
+          <div class="pay-actions" id="pay-actions"></div>
         </div>
         <p id="confirm-msg">Your full order, for your records:</p>
         <pre id="order-text"></pre>
@@ -618,6 +641,13 @@
 (function(){
   /* Paste your Apps Script Web app URL between the quotes. Leave empty to use copy-order mode. */
   var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwpvyRwhYQJIiz-lmPypoKC-2GvWzzMOzfD_RL_0-GLO36U2r2voebsNX6lpIyPqcIO/exec';
+
+  /* ===== PAYMENT — where residents send money =====
+     Venmo: username only, no @  (e.g. 'BobsBurritosLA')
+     Zelle: the email or phone registered on Zelle for the business */
+  var VENMO_USERNAME = '';              // TODO: set me, e.g. 'BobsBurritos'
+  var ZELLE_TO = 'bobsburritosco@gmail.com';  // email or mobile on Zelle
+  var ZELLE_NAME = "Bob's Burritos";
 
   /* ---- Image lightbox (tap menu photo to enlarge) ---- */
   var lb = document.getElementById('lightbox');
@@ -680,6 +710,78 @@
   var payStep = document.getElementById('paystep');
   var payNoteEl = document.getElementById('paynote-text');
   var orderTextEl = document.getElementById('order-text');
+  var payDestEl = document.getElementById('pay-dest');
+  var payActionsEl = document.getElementById('pay-actions');
+
+  function venmoUser(){
+    return String(VENMO_USERNAME || '').replace(/^@/, '').trim();
+  }
+
+  /** Opens Venmo (app if installed, else web) with amount + note prefilled when possible. */
+  function venmoPayUrl(amount, note){
+    var user = venmoUser();
+    if(!user) return '';
+    return 'https://venmo.com/' + encodeURIComponent(user) +
+      '?txn=pay&audience=private' +
+      '&amount=' + encodeURIComponent(Number(amount).toFixed(2)) +
+      '&note=' + encodeURIComponent(note);
+  }
+
+  function renderPaymentUI(total, note){
+    var user = venmoUser();
+    var dest = [];
+    if(user){
+      dest.push('Venmo: <strong>@' + user + '</strong>');
+    }
+    if(ZELLE_TO){
+      dest.push('Zelle to <strong>' + ZELLE_NAME + '</strong>: <strong>' + ZELLE_TO + '</strong>');
+    }
+    payDestEl.innerHTML = dest.length
+      ? 'Send <strong>' + money(total) + '</strong><br>' + dest.join('<br>')
+      : 'Payment destination not configured yet — text us after you order.';
+
+    var actions = [];
+    actions.push('<button type="button" id="copy-note-2" class="pay-btn">1. Copy payment note</button>');
+    if(user){
+      actions.push(
+        '<a class="pay-btn venmo" id="pay-venmo" target="_blank" rel="noopener" href="' +
+        venmoPayUrl(total, note) + '">2. Open Venmo &amp; pay ' + money(total) + '</a>'
+      );
+    }
+    if(ZELLE_TO){
+      actions.push(
+        '<button type="button" class="pay-btn zelle" id="pay-zelle">2. Copy Zelle info (' + ZELLE_TO + ')</button>'
+      );
+    }
+    payActionsEl.innerHTML = actions.join('');
+
+    var copy2 = document.getElementById('copy-note-2');
+    if(copy2){
+      copy2.addEventListener('click', function(){
+        navigator.clipboard.writeText(note).then(function(){
+          copy2.textContent = 'Note copied!';
+          setTimeout(function(){ copy2.textContent = '1. Copy payment note'; }, 1600);
+        });
+      });
+    }
+    var zBtn = document.getElementById('pay-zelle');
+    if(zBtn){
+      zBtn.addEventListener('click', function(){
+        var text = ZELLE_NAME + '\nZelle: ' + ZELLE_TO + '\nAmount: ' + money(total) + '\nNote: ' + note;
+        navigator.clipboard.writeText(text).then(function(){
+          zBtn.textContent = 'Zelle info copied!';
+          setTimeout(function(){ zBtn.textContent = '2. Copy Zelle info (' + ZELLE_TO + ')'; }, 1800);
+        });
+      });
+    }
+    var vLink = document.getElementById('pay-venmo');
+    if(vLink){
+      vLink.addEventListener('click', function(){
+        /* Also copy note so they can paste if Venmo drops the memo */
+        try { navigator.clipboard.writeText(note); } catch(e) {}
+      });
+    }
+  }
 
   function state(){
     var items = [];
@@ -807,10 +909,20 @@
     /* Client-generated ID: base36 timestamp + random char. Unique at this volume, works with no backend. */
     var oid = 'BB-' + Date.now().toString(36).slice(-4).toUpperCase() +
               'ABCDEFGHJKMNPQRSTUVWXYZ23456789'.charAt(Math.floor(Math.random() * 31));
-    lines.push('---', 'TOTAL: ' + money(total), 'For delivery: ' + sc.label + ' (9 AM\u201312 PM)', 'Paying by: Venmo / Zelle');
+    var payBits = [];
+    if(venmoUser()) payBits.push('Venmo @' + venmoUser());
+    if(ZELLE_TO) payBits.push('Zelle ' + ZELLE_TO);
+    lines.push(
+      '---',
+      'TOTAL: ' + money(total),
+      'For delivery: ' + sc.label + ' (9 AM\u201312 PM)',
+      'Pay to: ' + (payBits.length ? payBits.join(' or ') : 'Venmo / Zelle')
+    );
     orderTextEl.textContent = 'ORDER ' + oid + '\n' + lines.join('\n');
-    payNoteEl.textContent = oid + ' | ' + name + ' | Unit ' + unit + ' | ' + money(total);
+    var payNote = oid + ' | ' + name + ' | Unit ' + unit + ' | ' + money(total);
+    payNoteEl.textContent = payNote;
     payStep.style.display = 'block';
+    renderPaymentUI(total, payNote);
 
     if(SCRIPT_URL){
       var btn = this;
