@@ -1,0 +1,17 @@
+# OmniCode orchestration (local machine state)
+.omnicode/
+
+# Live secrets and kitchen portal — never publish
+local/
+.portal_key_local_only.txt
+*.READY.gs
+*.secret
+.env
+.env.*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/

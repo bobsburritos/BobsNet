@@ -1,0 +1,779 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bob's Burritos â€” Sunday Breakfast Burritos at 1111 Wilshire</title>
+<!-- Link previews (WhatsApp / iMessage / Slack etc).
+     IMPORTANT: og:url and og:image MUST be absolute URLs.
+     After deploying, replace both YOUR-USERNAME URLs below and commit og-image.png to the repo root. -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Bob's Burritos â€” Sunday breakfast burritos at 1111 Wilshire">
+<meta property="og:description" content="Small-batch breakfast burritos delivered to your door, Sundays 9 AMâ€“12 PM. Order by Saturday 3 PM. From $10.">
+<meta property="og:url" content="https://bobsburritos.github.io/BobsNet/">
+<meta property="og:image" content="https://bobsburritos.github.io/BobsNet/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="Small-batch breakfast burritos delivered to your door at 1111 Wilshire, Sundays 9 AMâ€“12 PM. Order by Saturday 3 PM.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root{
+    --grape:#3D1A5C;
+    --grape-deep:#2A1140;
+    --sunbeam:#FFD23F;
+    --cream:#FFF4DC;
+    --tangerine:#FF8A3D;
+    --lilac:#C9A7F0;
+    --radius-lg:28px;
+    --radius-md:18px;
+    --outline:3px solid var(--grape);
+    --pop:6px 6px 0 var(--grape);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Fredoka',sans-serif;
+    background:var(--cream);
+    color:var(--grape);
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--sunbeam);color:var(--grape);}
+
+  /* ---------- Marquee ribbon ---------- */
+  .ribbon{
+    background:var(--grape);
+    color:var(--sunbeam);
+    overflow:hidden;
+    white-space:nowrap;
+    padding:10px 0;
+    font-weight:600;
+    letter-spacing:.12em;
+    font-size:.85rem;
+    text-transform:uppercase;
+  }
+  .ribbon__track{display:inline-block;animation:scroll 24s linear infinite;}
+  .ribbon__track span{margin:0 1.4em;}
+  @keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;
+    text-align:center;
+    padding:72px 20px 96px;
+    overflow:hidden;
+  }
+  .sun{
+    position:absolute;
+    left:50%;
+    bottom:-40px;
+    transform:translateX(-50%);
+    width:min(920px,160vw);
+    aspect-ratio:2/1;
+    pointer-events:none;
+    z-index:0;
+  }
+  .sun div{
+    position:absolute;
+    left:50%;
+    bottom:0;
+    transform:translateX(-50%);
+    border-radius:50% 50% 0 0/100% 100% 0 0;
+    transform-origin:bottom center;
+    animation:rise 1.1s cubic-bezier(.22,1.2,.36,1) both;
+  }
+  .sun .b1{width:100%;height:100%;background:var(--lilac);animation-delay:.05s;}
+  .sun .b2{width:78%;height:78%;background:var(--tangerine);animation-delay:.15s;}
+  .sun .b3{width:56%;height:56%;background:var(--sunbeam);animation-delay:.25s;}
+  .sun .b4{width:34%;height:34%;background:var(--cream);animation-delay:.35s;}
+  @keyframes rise{from{transform:translateX(-50%) scale(.2);opacity:0;}to{transform:translateX(-50%) scale(1);opacity:1;}}
+
+  .hero__inner{position:relative;z-index:1;max-width:760px;margin:0 auto;}
+  .hero__eyebrow{
+    display:inline-block;
+    background:var(--grape);
+    color:var(--cream);
+    border-radius:999px;
+    padding:8px 22px;
+    font-weight:600;
+    font-size:.9rem;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    margin-bottom:22px;
+  }
+  h1{
+    font-family:'Shrikhand',cursive;
+    font-size:clamp(3rem,10vw,5.6rem);
+    line-height:.95;
+    color:var(--grape);
+    text-shadow:4px 4px 0 var(--sunbeam);
+    margin-bottom:14px;
+  }
+  .hero__tag{
+    font-size:clamp(1.1rem,3vw,1.4rem);
+    font-weight:500;
+    margin-bottom:34px;
+  }
+  .hero__tag em{font-style:normal;border-bottom:4px solid var(--tangerine);}
+  .chips{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;}
+  .chip{
+    background:#fff;
+    border:var(--outline);
+    border-radius:999px;
+    box-shadow:4px 4px 0 var(--grape);
+    padding:10px 20px;
+    font-weight:600;
+    font-size:.95rem;
+  }
+  .chip strong{color:var(--tangerine);}
+
+  /* ---------- Sections ---------- */
+  section{padding:64px 20px;}
+  .wrap{max-width:1020px;margin:0 auto;}
+  .sec-title{
+    font-family:'Shrikhand',cursive;
+    font-size:clamp(2rem,5vw,2.8rem);
+    text-align:center;
+    margin-bottom:8px;
+  }
+  .sec-sub{text-align:center;font-weight:500;margin-bottom:44px;font-size:1.05rem;}
+
+  /* ---------- Menu cards ---------- */
+  .menu{background:var(--grape);}
+  .menu .sec-title{color:var(--sunbeam);text-shadow:3px 3px 0 var(--tangerine);}
+  .menu .sec-sub{color:var(--lilac);}
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:28px;
+  }
+  .card{
+    background:var(--cream);
+    border:var(--outline);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--pop);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    transition:transform .18s ease;
+  }
+  .card:hover{transform:translateY(-6px) rotate(-.4deg);}
+  .card__img{
+    aspect-ratio:4/3;
+    background:repeating-linear-gradient(-45deg,var(--lilac),var(--lilac) 14px,#DCC4F7 14px,#DCC4F7 28px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-bottom:var(--outline);
+    color:var(--grape);
+    font-weight:600;
+    font-size:.9rem;
+    text-align:center;
+    padding:12px;
+  }
+  .card:nth-child(2) .card__img{background:repeating-linear-gradient(-45deg,var(--sunbeam),var(--sunbeam) 14px,#FFE28A 14px,#FFE28A 28px);}
+  .card:nth-child(3) .card__img{background:repeating-linear-gradient(-45deg,var(--tangerine),var(--tangerine) 14px,#FFAE73 14px,#FFAE73 28px);}
+  .card__body{padding:22px 22px 26px;display:flex;flex-direction:column;gap:14px;flex:1;}
+  .card__head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
+  .card__name{font-family:'Shrikhand',cursive;font-size:1.45rem;line-height:1.1;}
+  .card__price{font-weight:700;font-size:1.25rem;color:var(--tangerine);white-space:nowrap;}
+  .card__desc{font-size:.95rem;line-height:1.5;}
+  .badge{
+    align-self:flex-start;
+    background:var(--sunbeam);
+    border:2px solid var(--grape);
+    border-radius:999px;
+    padding:4px 12px;
+    font-size:.78rem;
+    font-weight:700;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+  .avo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:#fff;
+    border:2px dashed var(--grape);
+    border-radius:var(--radius-md);
+    padding:10px 14px;
+    font-weight:600;
+    font-size:.92rem;
+    cursor:pointer;
+    user-select:none;
+  }
+  .avo input{width:20px;height:20px;accent-color:var(--tangerine);cursor:pointer;}
+  .variants{margin-top:auto;display:flex;flex-direction:column;gap:10px;}
+  .variant{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    background:#fff;
+    border:var(--outline);
+    border-radius:999px;
+    padding:6px 6px 6px 18px;
+  }
+  .variant__label{font-weight:600;font-size:.92rem;line-height:1.2;}
+  .variant__label small{display:block;font-weight:500;opacity:.75;}
+  .stepper{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .stepper button{
+    width:40px;height:40px;
+    border-radius:50%;
+    border:none;
+    background:var(--grape);
+    color:var(--sunbeam);
+    font-size:1.5rem;
+    font-family:'Fredoka',sans-serif;
+    font-weight:700;
+    cursor:pointer;
+    transition:transform .12s ease,background .12s ease;
+  }
+  .stepper button:hover{background:var(--tangerine);color:var(--grape);}
+  .stepper button:active{transform:scale(.9);}
+  .stepper .qty{font-size:1.15rem;font-weight:700;min-width:2ch;text-align:center;}
+
+  /* ---------- Order form ---------- */
+  .order{position:relative;}
+  .order::before{
+    content:"";
+    position:absolute;inset:0;
+    background:
+      radial-gradient(circle at 12% 18%, var(--lilac) 0 34px, transparent 35px),
+      radial-gradient(circle at 88% 30%, var(--sunbeam) 0 26px, transparent 27px),
+      radial-gradient(circle at 8% 78%, var(--tangerine) 0 20px, transparent 21px),
+      radial-gradient(circle at 92% 82%, var(--lilac) 0 30px, transparent 31px);
+    opacity:.5;
+    pointer-events:none;
+  }
+  .panel{
+    position:relative;
+    background:#fff;
+    border:var(--outline);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--pop);
+    padding:36px clamp(20px,4vw,44px);
+    max-width:640px;
+    margin:0 auto;
+  }
+  .notice{
+    border:var(--outline);
+    border-radius:var(--radius-md);
+    padding:14px 18px;
+    font-weight:600;
+    margin-bottom:26px;
+    background:var(--sunbeam);
+    font-size:.98rem;
+    line-height:1.45;
+  }
+  .notice.closed{background:var(--lilac);}
+  .notice .notice__big{display:block;font-weight:700;font-size:1.05rem;margin-bottom:2px;}
+  .field{margin-bottom:20px;}
+  .field label{display:block;font-weight:600;margin-bottom:8px;}
+  .field input{
+    width:100%;
+    font-family:'Fredoka',sans-serif;
+    font-size:1rem;
+    padding:14px 16px;
+    border:var(--outline);
+    border-radius:var(--radius-md);
+    background:var(--cream);
+    color:var(--grape);
+  }
+  .field input:focus{outline:3px solid var(--tangerine);outline-offset:2px;}
+  .summary{
+    background:var(--cream);
+    border:2px dashed var(--grape);
+    border-radius:var(--radius-md);
+    padding:18px 20px;
+    margin:26px 0;
+  }
+  .summary__row{display:flex;justify-content:space-between;font-weight:500;padding:4px 0;font-size:.95rem;}
+  .summary__row.total{
+    border-top:2px solid var(--grape);
+    margin-top:10px;padding-top:10px;
+    font-weight:700;font-size:1.3rem;
+  }
+  .summary__empty{font-weight:500;opacity:.7;text-align:center;padding:6px 0;}
+  .paynote{
+    display:flex;gap:10px;align-items:flex-start;
+    font-size:.92rem;font-weight:500;
+    background:var(--sunbeam);
+    border:2px solid var(--grape);
+    border-radius:var(--radius-md);
+    padding:12px 16px;
+    margin-bottom:26px;
+  }
+  .btn{
+    width:100%;
+    font-family:'Shrikhand',cursive;
+    font-size:1.4rem;
+    background:var(--tangerine);
+    color:var(--grape);
+    border:var(--outline);
+    border-radius:999px;
+    box-shadow:var(--pop);
+    padding:16px 20px;
+    cursor:pointer;
+    transition:transform .12s ease,box-shadow .12s ease;
+  }
+  .btn:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--grape);}
+  .btn:active{transform:translate(4px,4px);box-shadow:2px 2px 0 var(--grape);}
+  .btn:focus-visible,.stepper button:focus-visible,.avo input:focus-visible{outline:3px solid var(--tangerine);outline-offset:3px;}
+  .confirm{
+    display:none;
+    margin-top:26px;
+    background:var(--grape);
+    color:var(--cream);
+    border-radius:var(--radius-md);
+    padding:22px;
+  }
+  .confirm.show{display:block;animation:pop .3s cubic-bezier(.22,1.4,.36,1);}
+  @keyframes pop{from{transform:scale(.94);opacity:0;}to{transform:scale(1);opacity:1;}}
+  .confirm h3{font-family:'Shrikhand',cursive;color:var(--sunbeam);margin-bottom:10px;}
+  .confirm pre{
+    font-family:'Fredoka',sans-serif;
+    white-space:pre-wrap;
+    background:var(--grape-deep);
+    border-radius:12px;
+    padding:14px;
+    font-size:.9rem;
+    margin:12px 0;
+  }
+  .confirm #paystep{margin-bottom:18px;padding-bottom:18px;border-bottom:2px dashed rgba(255,244,220,.35);}
+  .confirm button{
+    font-family:'Fredoka',sans-serif;
+    font-weight:700;
+    background:var(--sunbeam);
+    color:var(--grape);
+    border:none;
+    border-radius:999px;
+    padding:10px 22px;
+    cursor:pointer;
+    font-size:.95rem;
+  }
+  .err{color:#C0392B;font-weight:600;font-size:.9rem;display:none;margin-top:6px;}
+
+  footer{
+    background:var(--grape);
+    color:var(--lilac);
+    text-align:center;
+    padding:34px 20px 40px;
+    font-weight:500;
+    font-size:.95rem;
+  }
+  .share-qr{
+    margin:22px auto 0;
+    background:#fff;
+    border-radius:16px;
+    padding:12px;
+    width:fit-content;
+  }
+  .share-qr img,.share-qr canvas{display:block;width:120px !important;height:120px !important;}
+  .share-label{margin-top:10px;font-size:.85rem;font-weight:600;color:var(--sunbeam);}
+  footer .foot-name{font-family:'Shrikhand',cursive;color:var(--sunbeam);font-size:1.2rem;display:block;margin-bottom:6px;}
+
+  @media (prefers-reduced-motion:reduce){
+    .ribbon__track,.sun div,.confirm.show{animation:none;}
+    .card:hover,.btn:hover{transform:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="ribbon" aria-hidden="true">
+  <div class="ribbon__track">
+    <span>â˜… Sundays only</span><span>â˜… Order by Saturday 3 PM</span><span>â˜… Delivered Sundays 9 AM â€“ 12 PM</span><span>â˜… 1111 Wilshire</span><span>â˜… Small-batch, hand-rolled</span><span>â˜… That sauce tho</span>
+    <span>â˜… That sauce tho</span>
+    <span>â˜… Sundays only</span><span>â˜… Order by Saturday 3 PM</span><span>â˜… Delivered Sundays 9 AM â€“ 12 PM</span><span>â˜… 1111 Wilshire</span><span>â˜… Small-batch, hand-rolled</span>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="sun" aria-hidden="true"><div class="b1"></div><div class="b2"></div><div class="b3"></div><div class="b4"></div></div>
+  <div class="hero__inner">
+    <span class="hero__eyebrow">Sunday breakfast burritos Â· 1111 Wilshire</span>
+    <h1>Bob's Burritos</h1>
+    <p class="hero__tag">Small-batch breakfast burritos, <em>hand-rolled every Sunday</em> and delivered to your door.</p>
+    <div class="chips">
+      <div class="chip">Order by <strong>Sat 3 PM</strong></div>
+      <div class="chip">Delivered Sunday <strong>9 AM â€“ 12 PM</strong></div>
+      <div class="chip">Burritos from <strong>$10</strong></div>
+    </div>
+  </div>
+</header>
+
+<section class="menu" id="menu">
+  <div class="wrap">
+    <h2 class="sec-title">This Sunday's Menu</h2>
+    <p class="sec-sub">Made in small batches â€” and every one ships with our legendary house chipotle mayo. People come back for the sauce.</p>
+    <div class="cards">
+
+      <article class="card" data-id="soyrizo" data-name="Soyrizo Sunrise" data-price="10" data-avo="2">
+        <div class="card__img">[ Your Soyrizo Sunrise photo goes here ]</div>
+        <div class="card__body">
+          <div class="card__head">
+            <h3 class="card__name">Soyrizo Sunrise</h3>
+            <span class="card__price">$10</span>
+          </div>
+          <span class="badge">Vegetarian</span>
+          <p class="card__desc">Soy chorizo, fluffy eggs, melted cheese, crispy hash browns, onions &amp; cilantro. Chipotle mayo on the side.</p>
+          <div class="variants">
+            <div class="variant" data-variant="plain">
+              <span class="variant__label">Classic</span>
+              <div class="stepper">
+                <button type="button" class="minus" aria-label="Remove one Soyrizo Sunrise">âˆ’</button>
+                <span class="qty" aria-live="polite">0</span>
+                <button type="button" class="plus" aria-label="Add one Soyrizo Sunrise">+</button>
+              </div>
+            </div>
+            <div class="variant" data-variant="avo">
+              <span class="variant__label">+ Avocado <small>+$2</small></span>
+              <div class="stepper">
+                <button type="button" class="minus" aria-label="Remove one Soyrizo Sunrise with avocado">âˆ’</button>
+                <span class="qty" aria-live="polite">0</span>
+                <button type="button" class="plus" aria-label="Add one Soyrizo Sunrise with avocado">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" data-id="cali" data-name="The Cali" data-price="12">
+        <div class="card__img">[ Your Cali photo goes here ]</div>
+        <div class="card__body">
+          <div class="card__head">
+            <h3 class="card__name">The Cali</h3>
+            <span class="card__price">$12</span>
+          </div>
+          <span class="badge">Taco-seasoned beef Â· avocado included</span>
+          <p class="card__desc">Seasoned beef, eggs, cheese, hash browns, avocado, onions &amp; cilantro. Chipotle mayo on the side.</p>
+          <div class="variants">
+            <div class="variant" data-variant="plain">
+              <span class="variant__label">Classic</span>
+              <div class="stepper">
+                <button type="button" class="minus" aria-label="Remove one Cali">âˆ’</button>
+                <span class="qty" aria-live="polite">0</span>
+                <button type="button" class="plus" aria-label="Add one Cali">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" data-id="heavy" data-name="The Heavyweight" data-price="10" data-avo="2">
+        <div class="card__img">[ Your Heavyweight photo goes here ]</div>
+        <div class="card__body">
+          <div class="card__head">
+            <h3 class="card__name">The Heavyweight</h3>
+            <span class="card__price">$10</span>
+          </div>
+          <span class="badge">Sausage + bacon</span>
+          <p class="card__desc">Eggs, sausage, bacon, cheese, hash browns, onions &amp; cilantro. Chipotle mayo on the side.</p>
+          <div class="variants">
+            <div class="variant" data-variant="plain">
+              <span class="variant__label">Classic</span>
+              <div class="stepper">
+                <button type="button" class="minus" aria-label="Remove one Heavyweight">âˆ’</button>
+                <span class="qty" aria-live="polite">0</span>
+                <button type="button" class="plus" aria-label="Add one Heavyweight">+</button>
+              </div>
+            </div>
+            <div class="variant" data-variant="avo">
+              <span class="variant__label">+ Avocado <small>+$2</small></span>
+              <div class="stepper">
+                <button type="button" class="minus" aria-label="Remove one Heavyweight with avocado">âˆ’</button>
+                <span class="qty" aria-live="polite">0</span>
+                <button type="button" class="plus" aria-label="Add one Heavyweight with avocado">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section class="order" id="order">
+  <div class="wrap">
+    <h2 class="sec-title">Lock In Your Sunday</h2>
+    <p class="sec-sub">Pick your burritos above, drop your details here.</p>
+    <div class="panel">
+      <div class="notice" id="notice" aria-live="polite"></div>
+      <div class="field">
+        <label for="f-name">Your name</label>
+        <input id="f-name" type="text" autocomplete="name" placeholder="Miguel R.">
+      </div>
+      <div class="field">
+        <label for="f-unit">Unit number</label>
+        <input id="f-unit" type="text" placeholder="e.g. 704">
+      </div>
+      <div class="field">
+        <label for="f-phone">Phone (for delivery ping)</label>
+        <input id="f-phone" type="tel" autocomplete="tel" placeholder="(310) 555-0134">
+      </div>
+
+      <div class="summary" id="summary" aria-live="polite">
+        <p class="summary__empty">Your order shows up here once you add burritos.</p>
+      </div>
+
+      <div class="paynote">â˜€ï¸ <span>Payment via <strong>Venmo or Zelle</strong> when you place your order â€” details sent after you submit. Orders close Saturday 3 PM sharp.</span></div>
+
+      <button type="button" class="btn" id="submit">Place my order</button>
+      <p class="err" id="err">Add at least one burrito and fill in your name + unit.</p>
+
+      <div class="confirm" id="confirm">
+        <h3>Order saved! ðŸŽ‰</h3>
+        <div id="paystep" style="display:none">
+          <p><strong>Step 1:</strong> Copy your payment note. <strong>Step 2:</strong> Venmo or Zelle us the total and paste it in the note.</p>
+          <pre id="paynote-text"></pre>
+          <button type="button" id="copy-note">Copy payment note</button>
+        </div>
+        <p id="confirm-msg">Tap copy and send this to us while we finish wiring up the form:</p>
+        <pre id="order-text"></pre>
+        <button type="button" id="copy">Copy full order</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="foot-name">Bob's Burritos</span>
+  Small-batch breakfast burritos Â· 1111 Wilshire, Los Angeles Â· Sundays only
+  <div class="share-qr"><div id="share-qr"></div></div>
+  <p class="share-label">Show a neighbor â€” scan to order</p>
+</footer>
+
+<script>
+(function(){
+  /* Paste your Apps Script Web app URL between the quotes. Leave empty to use copy-order mode. */
+  var SCRIPT_URL = '';
+
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.card'));
+  var summaryEl = document.getElementById('summary');
+  var errEl = document.getElementById('err');
+  var confirmEl = document.getElementById('confirm');
+  var confirmMsg = document.getElementById('confirm-msg');
+  var payStep = document.getElementById('paystep');
+  var payNoteEl = document.getElementById('paynote-text');
+  var orderTextEl = document.getElementById('order-text');
+
+  function state(){
+    var items = [];
+    cards.forEach(function(c){
+      var base = parseFloat(c.dataset.price);
+      var avoUp = c.dataset.avo ? parseFloat(c.dataset.avo) : 0;
+      c.querySelectorAll('.variant').forEach(function(v){
+        var isAvo = v.dataset.variant === 'avo';
+        items.push({
+          id: c.dataset.id,
+          name: c.dataset.name,
+          avo: isAvo,
+          unitPrice: base + (isAvo ? avoUp : 0),
+          qty: parseInt(v.querySelector('.qty').textContent, 10)
+        });
+      });
+    });
+    return items;
+  }
+
+  function money(n){ return '$' + n.toFixed(2); }
+
+  function render(){
+    var items = state().filter(function(i){ return i.qty > 0; });
+    if(!items.length){
+      summaryEl.innerHTML = '<p class="summary__empty">Your order shows up here once you add burritos.</p>';
+      return;
+    }
+    var total = 0;
+    var html = '';
+    items.forEach(function(i){
+      var line = i.unitPrice * i.qty;
+      total += line;
+      html += '<div class="summary__row"><span>' + i.qty + ' Ã— ' + i.name + (i.avo ? ' + avocado' : '') + '</span><span>' + money(line) + '</span></div>';
+    });
+    html += '<div class="summary__row total"><span>Total</span><span>' + money(total) + '</span></div>';
+    summaryEl.innerHTML = html;
+  }
+
+  document.querySelectorAll('.variant').forEach(function(v){
+    var qtyEl = v.querySelector('.qty');
+    v.querySelector('.plus').addEventListener('click', function(){
+      qtyEl.textContent = Math.min(10, parseInt(qtyEl.textContent,10) + 1);
+      render();
+    });
+    v.querySelector('.minus').addEventListener('click', function(){
+      qtyEl.textContent = Math.max(0, parseInt(qtyEl.textContent,10) - 1);
+      render();
+    });
+  });
+
+  /* ---- Sunday scheduling (America/Los_Angeles) ---- */
+  function laNow(){
+    var parts = new Intl.DateTimeFormat('en-US', {
+      timeZone:'America/Los_Angeles',
+      year:'numeric', month:'numeric', day:'numeric',
+      hour:'numeric', minute:'numeric', hour12:false
+    }).formatToParts(new Date());
+    var v = {};
+    parts.forEach(function(pt){ v[pt.type] = pt.value; });
+    return new Date(+v.year, +v.month - 1, +v.day, +v.hour % 24, +v.minute);
+  }
+
+  function schedule(){
+    var now = laNow();
+    var dow = now.getDay(); /* 0 = Sunday ... 6 = Saturday */
+    var daysToSun = (7 - dow) % 7;
+    if(daysToSun === 0){ daysToSun = 7; }
+    var target = new Date(now.getFullYear(), now.getMonth(), now.getDate() + daysToSun);
+    var cutoff = new Date(target.getFullYear(), target.getMonth(), target.getDate() - 1, 15, 0, 0);
+    var justMissed = false;
+    if(now >= cutoff){
+      target = new Date(target.getFullYear(), target.getMonth(), target.getDate() + 7);
+      justMissed = true;
+    }
+    if(dow === 0){ justMissed = true; } /* it's delivery day; today's batch is spoken for */
+    var label = target.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric'});
+    var iso = target.getFullYear() + '-' +
+              ('0' + (target.getMonth() + 1)).slice(-2) + '-' +
+              ('0' + target.getDate()).slice(-2);
+    return {label: label, iso: iso, justMissed: justMissed};
+  }
+
+  function renderNotice(){
+    var sc = schedule();
+    var el = document.getElementById('notice');
+    if(sc.justMissed){
+      el.classList.add('closed');
+      el.innerHTML = '<span class="notice__big">This Sunday\u2019s orders are closed \uD83D\uDC9C</span>' +
+        'Thanks for your interest! You\u2019re now ordering for <strong>Sunday, ' + sc.label +
+        '</strong> \u2014 delivered 9 AM\u201312 PM. Order anytime before Saturday 3 PM.';
+    } else {
+      el.classList.remove('closed');
+      el.innerHTML = '<span class="notice__big">\u2600\uFE0F Ordering for Sunday, ' + sc.label + '</span>' +
+        'Window closes <strong>Saturday 3 PM</strong>. Delivered Sunday 9 AM\u201312 PM.';
+    }
+    return sc;
+  }
+  renderNotice();
+  setInterval(renderNotice, 60000);
+
+  document.getElementById('submit').addEventListener('click', function(){
+    var items = state().filter(function(i){ return i.qty > 0; });
+    var name = document.getElementById('f-name').value.trim();
+    var unit = document.getElementById('f-unit').value.trim();
+    var phone = document.getElementById('f-phone').value.trim();
+
+    if(!items.length || !name || !unit){
+      errEl.style.display = 'block';
+      confirmEl.classList.remove('show');
+      return;
+    }
+    errEl.style.display = 'none';
+
+    var total = 0;
+    var lines = ["BOB'S BURRITOS â€” Sunday order", 'Name: ' + name, 'Unit: ' + unit];
+    if(phone){ lines.push('Phone: ' + phone); }
+    lines.push('---');
+    items.forEach(function(i){
+      var line = i.unitPrice * i.qty;
+      total += line;
+      lines.push(i.qty + ' Ã— ' + i.name + (i.avo ? ' (+ avocado)' : '') + ' â€” ' + money(line));
+    });
+    var sc = renderNotice();
+    /* Client-generated ID: base36 timestamp + random char. Unique at this volume, works with no backend. */
+    var oid = 'BB-' + Date.now().toString(36).slice(-4).toUpperCase() +
+              'ABCDEFGHJKMNPQRSTUVWXYZ23456789'.charAt(Math.floor(Math.random() * 31));
+    lines.push('---', 'TOTAL: ' + money(total), 'For delivery: Sunday, ' + sc.label + ' (9 AM\u201312 PM)', 'Paying by: Venmo / Zelle');
+    orderTextEl.textContent = 'ORDER ' + oid + '\n' + lines.join('\n');
+    payNoteEl.textContent = oid + ' | ' + name + ' | Unit ' + unit + ' | ' + money(total);
+    payStep.style.display = 'block';
+
+    if(SCRIPT_URL){
+      var btn = this;
+      btn.disabled = true;
+      btn.textContent = 'Sending\u2026';
+      var payload = {
+        orderId: oid,
+        name: name, unit: unit, phone: phone,
+        deliverySunday: sc.label,
+        deliveryDate: sc.iso,
+        total: total,
+        items: items.map(function(i){
+          return {id: i.id, qty: i.qty, avo: i.avo};
+        })
+      };
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'text/plain;charset=utf-8'},
+        body: JSON.stringify(payload)
+      }).then(function(r){ return r.json(); }).then(function(res){
+        btn.disabled = false;
+        btn.textContent = 'Place my order';
+        if(res && res.ok){
+          confirmEl.querySelector('h3').textContent = 'Order received! ' + oid + ' \uD83C\uDF89';
+          confirmMsg.textContent = 'Your full order, for your records:';
+          confirmEl.classList.add('show');
+          confirmEl.scrollIntoView({behavior:'smooth', block:'nearest'});
+        } else {
+          fallbackConfirm();
+        }
+      }).catch(function(){
+        btn.disabled = false;
+        btn.textContent = 'Place my order';
+        fallbackConfirm();
+      });
+    } else {
+      confirmEl.querySelector('h3').textContent = 'Order saved! ' + oid;
+      confirmMsg.textContent = 'Tap copy and text your full order to us, then pay with the note above:';
+      confirmEl.classList.add('show');
+      confirmEl.scrollIntoView({behavior:'smooth', block:'nearest'});
+    }
+
+    function fallbackConfirm(){
+      confirmEl.querySelector('h3').textContent = 'Almost there! ' + oid;
+      confirmMsg.textContent = 'We couldn\u2019t reach the order system \u2014 tap copy and text your full order to us, then pay with the note above:';
+      confirmEl.classList.add('show');
+      confirmEl.scrollIntoView({behavior:'smooth', block:'nearest'});
+    }
+  });
+
+  if(typeof QRCode !== 'undefined' && location.protocol !== 'file:'){
+    new QRCode(document.getElementById('share-qr'), {
+      text: location.href.split('#')[0],
+      width: 240, height: 240,
+      colorDark: '#3D1A5C', colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  } else {
+    var sq = document.querySelector('.share-qr');
+    if(sq){ sq.style.display = 'none'; document.querySelector('.share-label').style.display = 'none'; }
+  }
+
+  document.getElementById('copy-note').addEventListener('click', function(){
+    var btn = this;
+    navigator.clipboard.writeText(payNoteEl.textContent).then(function(){
+      btn.textContent = 'Copied!';
+      setTimeout(function(){ btn.textContent = 'Copy payment note'; }, 1600);
+    });
+  });
+
+  document.getElementById('copy').addEventListener('click', function(){
+    var btn = this;
+    navigator.clipboard.writeText(orderTextEl.textContent).then(function(){
+      btn.textContent = 'Copied!';
+      setTimeout(function(){ btn.textContent = 'Copy full order'; }, 1600);
+    });
+  });
+})();
+</script>
+</body>
+</html>

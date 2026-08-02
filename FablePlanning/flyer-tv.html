@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Bob's Burritos — Lobby TV (1920×1080)</title>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root{
+    --grape:#3D1A5C; --grape-deep:#2A1140; --sunbeam:#FFD23F;
+    --cream:#FFF4DC; --tangerine:#FF8A3D; --lilac:#C9A7F0;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{background:#000;}
+  body{display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:'Fredoka',sans-serif;}
+  .screen{
+    width:1920px;height:1080px;flex:none;background:var(--grape);color:var(--cream);
+    position:relative;overflow:hidden;display:grid;
+    grid-template-columns:1fr 620px;
+  }
+  .sun{position:absolute;left:-260px;bottom:-320px;width:1000px;height:1000px;opacity:.9;}
+  .sun div{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;}
+  .sun .b1{width:100%;height:100%;background:var(--grape-deep);}
+  .sun .b2{width:74%;height:74%;background:var(--lilac);}
+  .sun .b3{width:50%;height:50%;background:var(--tangerine);}
+  .sun .b4{width:28%;height:28%;background:var(--sunbeam);}
+
+  .left{position:relative;padding:90px 60px 90px 110px;display:flex;flex-direction:column;}
+  .eyebrow{
+    align-self:flex-start;background:var(--sunbeam);color:var(--grape);
+    border-radius:999px;padding:12px 34px;font-weight:700;font-size:28px;
+    letter-spacing:.08em;text-transform:uppercase;margin-bottom:30px;
+  }
+  h1{font-family:'Shrikhand',cursive;font-size:150px;line-height:.92;color:var(--sunbeam);text-shadow:8px 8px 0 var(--tangerine);}
+  .tag{font-size:38px;font-weight:600;margin:28px 0 44px;}
+
+  .menu{display:flex;flex-direction:column;gap:20px;max-width:1050px;}
+  .row{
+    background:var(--cream);color:var(--grape);
+    border-radius:26px;padding:22px 36px;
+    display:flex;justify-content:space-between;align-items:center;gap:30px;
+  }
+  .row .name{font-family:'Shrikhand',cursive;font-size:40px;}
+  .row .desc{font-size:23px;font-weight:500;margin-top:2px;}
+  .row .price{font-family:'Shrikhand',cursive;font-size:48px;color:var(--tangerine);white-space:nowrap;}
+  .addon{margin-top:26px;font-weight:700;font-size:28px;color:var(--lilac);}
+
+  .right{
+    background:var(--cream);color:var(--grape);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:34px;padding:60px;text-align:center;border-left:10px solid var(--sunbeam);
+  }
+  .right h2{font-family:'Shrikhand',cursive;font-size:56px;}
+  .qrbox{background:#fff;border:6px solid var(--grape);border-radius:26px;padding:26px;}
+  #qr img, #qr canvas{display:block;width:380px !important;height:380px !important;}
+  .right p{font-weight:600;font-size:30px;line-height:1.5;}
+  .right strong{color:var(--tangerine);}
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="left">
+    <div class="sun"><div class="b1"></div><div class="b2"></div><div class="b3"></div><div class="b4"></div></div>
+    <span class="eyebrow">Sundays only · for 1111 Wilshire residents</span>
+    <h1>Bob's Burritos</h1>
+    <p class="tag">Small-batch breakfast burritos, delivered to your door.</p>
+    <div class="menu">
+      <div class="row">
+        <div><div class="name">Soyrizo Sunrise</div><div class="desc">Soy chorizo · eggs · cheese · hash browns · onions &amp; cilantro (veg)</div></div>
+        <div class="price">$10</div>
+      </div>
+      <div class="row">
+        <div><div class="name">The Cali</div><div class="desc">Taco-seasoned beef · eggs · cheese · hash browns · avocado</div></div>
+        <div class="price">$12</div>
+      </div>
+      <div class="row">
+        <div><div class="name">The Heavyweight</div><div class="desc">Eggs · sausage · bacon · cheese · hash browns</div></div>
+        <div class="price">$10</div>
+      </div>
+    </div>
+    <p class="addon">Add avocado +$2 · House chipotle mayo with every burrito ☀️</p>
+  </div>
+  <div class="right">
+    <h2>Scan to order</h2>
+    <div class="qrbox"><div id="qr"></div></div>
+    <p>Order by <strong>Saturday 3 PM</strong><br>
+    Delivered <strong>Sunday<br>9 AM – 12 PM</strong><br>
+    Venmo / Zelle</p>
+  </div>
+</div>
+<script>
+  /* Set this to the live GitHub Pages order URL. */
+  var ORDER_URL = 'https://YOUR-USERNAME.github.io/bobs-burritos/';
+  new QRCode(document.getElementById('qr'), {
+    text: ORDER_URL, width: 380, height: 380,
+    colorDark: '#3D1A5C', colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.M
+  });
+</script>
+</body>
+</html>
