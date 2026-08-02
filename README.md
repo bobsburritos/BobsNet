@@ -32,11 +32,16 @@ local/                             READY backend, kitchen copies, screenshots
 .portal_key_local_only.txt
 ```
 
-## Kitchen login
+## Kitchen (any computer)
 
-1. Open `kitchen/index.html` **from disk** (or keep a local copy).
-2. Email: **bobsburritosco@gmail.com**
-3. Password: from `kitchen/kitchen-config.js` only.
+**https://bobsburritos.github.io/BobsNet/kitchen/**
+
+1. Open that URL on any phone/laptop.  
+2. Sign in with a staff email + kitchen password.  
+3. The portal key is **encrypted** in public `kitchen/vault.js` (unlocked only by password in the browser).
+
+Private source of truth for passwords: `kitchen/kitchen-config.js` (gitignored).  
+After changing passwords: `node scripts/build-kitchen-vault.js` then commit `kitchen/vault.js`.
 
 See [docs/OPERATIONS.md](docs/OPERATIONS.md) and [docs/SECURITY.md](docs/SECURITY.md).
 
