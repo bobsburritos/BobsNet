@@ -9,8 +9,11 @@
  * Open kitchen/index.html in a browser (same folder as kitchen-config.js).
  */
 window.BB_KITCHEN = {
-  email: 'bobsburritosco@gmail.com',
-  password: 'CHANGE_ME_TO_A_STRONG_PASSWORD',
+  /* One or more staff logins — passwords ONLY in kitchen-config.js (gitignored) */
+  users: [
+    { email: 'bobsburritosco@gmail.com', password: 'CHANGE_ME' },
+    { email: 'you@example.com', password: 'CHANGE_ME_TOO' }
+  ],
   scriptUrl: 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec',
   portalKey: 'change-me-to-match-PORTAL_KEY-in-apps-script'
 };

@@ -149,7 +149,7 @@
 <div id="login-gate">
   <div class="login-card">
     <h1>Bob's Kitchen</h1>
-    <p class="sub">Staff only. Sign in with the business email and kitchen password.</p>
+    <p class="sub">Staff only. Sign in with an approved kitchen email and password.</p>
     <p class="login-err" id="login-err" aria-live="polite"></p>
     <label for="login-email">Email</label>
     <input id="login-email" type="email" autocomplete="username" value="bobsburritosco@gmail.com" autofocus>
@@ -216,39 +216,63 @@
 <script src="kitchen-config.js"></script>
 <script>
 (function(){
-  /* ===== Auth + API from gitignored kitchen-config.js ===== */
+  /* ===== Auth + API from gitignored kitchen-config.js (never put pw in .gitignore) ===== */
   var cfg = window.BB_KITCHEN || null;
   var SCRIPT_URL = cfg && cfg.scriptUrl ? cfg.scriptUrl : '';
   var KEY = cfg && cfg.portalKey ? cfg.portalKey : '';
-  var KITCHEN_EMAIL = (cfg && cfg.email ? cfg.email : 'bobsburritosco@gmail.com').toLowerCase();
-  var KITCHEN_PASSWORD = cfg && cfg.password ? String(cfg.password) : '';
 
-  var AUTH_KEY = 'bb_kitchen_session_v2';
+  function allowedUsers(){
+    var list = [];
+    if (cfg && cfg.users && cfg.users.length) {
+      for (var i = 0; i < cfg.users.length; i++) {
+        var u = cfg.users[i];
+        if (u && u.email && u.password) {
+          list.push({ email: String(u.email).toLowerCase(), password: String(u.password) });
+        }
+      }
+    }
+    if (!list.length && cfg && cfg.email && cfg.password) {
+      list.push({ email: String(cfg.email).toLowerCase(), password: String(cfg.password) });
+    }
+    return list;
+  }
+
+  var AUTH_KEY = 'bb_kitchen_session_v3';
   var loginGate = document.getElementById('login-gate');
   var appEl = document.getElementById('app');
   var loginErr = document.getElementById('login-err');
   var emailInput = document.getElementById('login-email');
   var passInput = document.getElementById('login-pass');
+  var sessionUser = null;
 
-  function sessionToken(){
-    /* Light session token — not bank-grade crypto. */
-    var s = KITCHEN_EMAIL + '|' + KITCHEN_PASSWORD + '|bobs-kitchen|' + SCRIPT_URL;
+  function sessionToken(email, password){
+    var s = email + '|' + password + '|bobs-kitchen|' + SCRIPT_URL;
     var h = 2166136261;
     for (var i = 0; i < s.length; i++) {
       h ^= s.charCodeAt(i);
       h = Math.imul(h, 16777619);
     }
-    return 'ok:' + (h >>> 0).toString(16);
+    return 'ok:' + (h >>> 0).toString(16) + ':' + email;
   }
 
   function isAuthed(){
-    try { return sessionStorage.getItem(AUTH_KEY) === sessionToken(); }
-    catch (e) { return false; }
+    try {
+      var raw = sessionStorage.getItem(AUTH_KEY);
+      if (!raw) return false;
+      var users = allowedUsers();
+      for (var i = 0; i < users.length; i++) {
+        if (raw === sessionToken(users[i].email, users[i].password)) {
+          sessionUser = users[i].email;
+          return true;
+        }
+      }
+      return false;
+    } catch (e) { return false; }
   }
 
-  function setAuthed(on){
+  function setAuthed(user){
     try {
-      if (on) sessionStorage.setItem(AUTH_KEY, sessionToken());
+      if (user) sessionStorage.setItem(AUTH_KEY, sessionToken(user.email, user.password));
       else sessionStorage.removeItem(AUTH_KEY);
     } catch (e) {}
   }
@@ -264,30 +288,34 @@
     loginGate.hidden = false;
     loginErr.textContent = msg || '';
     passInput.value = '';
-    if (!emailInput.value) emailInput.value = KITCHEN_EMAIL;
+    if (!emailInput.value) emailInput.value = 'bobsburritosco@gmail.com';
     setTimeout(function(){ (passInput.value ? passInput : emailInput).focus(); }, 50);
   }
 
   function tryLogin(){
-    if (!cfg || !KITCHEN_PASSWORD) {
-      loginErr.textContent = 'Missing kitchen-config.js. Copy kitchen-config.example.js and set your password.';
+    var users = allowedUsers();
+    if (!cfg || !users.length) {
+      loginErr.textContent = 'Missing kitchen-config.js. Copy kitchen-config.example.js and set users/passwords.';
       return;
     }
     var email = (emailInput.value || '').trim().toLowerCase();
     var entered = passInput.value;
-    if (email !== KITCHEN_EMAIL) {
-      loginErr.textContent = 'Unknown email. Use the business kitchen account.';
-      emailInput.select();
+    var match = null;
+    for (var i = 0; i < users.length; i++) {
+      if (users[i].email === email && users[i].password === entered) {
+        match = users[i];
+        break;
+      }
+    }
+    if (!match) {
+      loginErr.textContent = 'Wrong email or password.';
+      passInput.select();
       return;
     }
-    if (entered === KITCHEN_PASSWORD) {
-      setAuthed(true);
-      loginErr.textContent = '';
-      showApp();
-    } else {
-      loginErr.textContent = 'Wrong password. Try again.';
-      passInput.select();
-    }
+    sessionUser = match.email;
+    setAuthed(match);
+    loginErr.textContent = '';
+    showApp();
   }
 
   document.getElementById('login-btn').addEventListener('click', tryLogin);
