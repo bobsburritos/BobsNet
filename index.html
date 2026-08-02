@@ -4,18 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bob's Burritos — Sunday Breakfast Burritos at 1111 Wilshire</title>
-<!-- Link previews (WhatsApp / iMessage / Slack etc).
-     IMPORTANT: og:url and og:image MUST be absolute URLs.
-     After deploying, replace both YOUR-USERNAME URLs below and commit og-image.png to the repo root. -->
+<!-- Link previews (WhatsApp / iMessage / Slack etc). og:url and og:image must be absolute. -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Bob's Burritos — Sunday breakfast burritos at 1111 Wilshire">
-<meta property="og:description" content="Small-batch breakfast burritos delivered to your door, Sundays 9 AM–12 PM. Order by Saturday 3 PM. From $10.">
+<meta property="og:description" content="Small-batch breakfast burritos delivered to your door at 1111 Wilshire. Sundays 9 AM–12 PM. Order by Saturday 3 PM. From $10.">
 <meta property="og:url" content="https://bobsburritos.github.io/BobsNet/">
 <meta property="og:image" content="https://bobsburritos.github.io/BobsNet/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="description" content="Small-batch breakfast burritos delivered to your door at 1111 Wilshire, Sundays 9 AM–12 PM. Order by Saturday 3 PM.">
+<meta name="description" content="Small-batch breakfast burritos delivered to your door at 1111 Wilshire. Sundays 9 AM–12 PM. Order by Saturday 3 PM.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -388,8 +386,8 @@
 
 <div class="ribbon" aria-hidden="true">
   <div class="ribbon__track">
-    <span>★ Sundays only</span><span>★ Order by Saturday 3 PM</span><span>★ Delivered Sundays 9 AM – 12 PM</span><span>★ 1111 Wilshire</span><span>★ Small-batch, hand-rolled</span><span>★ That sauce tho</span>
-    <span>★ That sauce tho</span>
+    <span>★ Sundays only</span><span>★ Order by Saturday 3 PM</span><span>★ Delivered Sundays 9 AM – 12 PM</span><span>★ 1111 Wilshire</span><span>★ Small-batch, hand-rolled</span><span>★ House chipotle mayo</span>
+    <span>★ House chipotle mayo</span>
     <span>★ Sundays only</span><span>★ Order by Saturday 3 PM</span><span>★ Delivered Sundays 9 AM – 12 PM</span><span>★ 1111 Wilshire</span><span>★ Small-batch, hand-rolled</span>
   </div>
 </div>
@@ -397,7 +395,7 @@
 <header class="hero">
   <div class="sun" aria-hidden="true"><div class="b1"></div><div class="b2"></div><div class="b3"></div><div class="b4"></div></div>
   <div class="hero__inner">
-    <span class="hero__eyebrow">Sunday breakfast burritos Â· 1111 Wilshire</span>
+    <span class="hero__eyebrow">Sunday breakfast burritos · 1111 Wilshire</span>
     <h1>Bob's Burritos</h1>
     <p class="hero__tag">Small-batch breakfast burritos, <em>hand-rolled every Sunday</em> and delivered to your door.</p>
     <div class="chips">
@@ -411,7 +409,7 @@
 <section class="menu" id="menu">
   <div class="wrap">
     <h2 class="sec-title">This Sunday's Menu</h2>
-    <p class="sec-sub">Made in small batches — and every one ships with our legendary house chipotle mayo. People come back for the sauce.</p>
+    <p class="sec-sub">Made in small batches — and every burrito ships with our house chipotle mayo. People come back for the sauce.</p>
     <div class="cards">
 
       <article class="card" data-id="soyrizo" data-name="Soyrizo Sunrise" data-price="10" data-avo="2">
@@ -451,7 +449,7 @@
             <h3 class="card__name">The Cali</h3>
             <span class="card__price">$12</span>
           </div>
-          <span class="badge">Taco-seasoned beef Â· avocado included</span>
+          <span class="badge">Taco-seasoned beef · avocado included</span>
           <p class="card__desc">Seasoned beef, eggs, cheese, hash browns, avocado, onions &amp; cilantro. Chipotle mayo on the side.</p>
           <div class="variants">
             <div class="variant" data-variant="plain">
@@ -523,19 +521,19 @@
         <p class="summary__empty">Your order shows up here once you add burritos.</p>
       </div>
 
-      <div class="paynote">☀️ <span>Payment via <strong>Venmo or Zelle</strong> when you place your order — details sent after you submit. Orders close Saturday 3 PM sharp.</span></div>
+      <div class="paynote">☀️ <span>Pay by <strong>Venmo or Zelle</strong> after you order — copy the payment note below and paste it in the transfer note. Orders close Saturday 3 PM sharp.</span></div>
 
       <button type="button" class="btn" id="submit">Place my order</button>
-      <p class="err" id="err">Add at least one burrito and fill in your name + unit.</p>
+      <p class="err" id="err">Add at least one burrito and fill in your name and unit.</p>
 
       <div class="confirm" id="confirm">
         <h3>Order saved!</h3>
         <div id="paystep" style="display:none">
-          <p><strong>Step 1:</strong> Copy your payment note. <strong>Step 2:</strong> Venmo or Zelle us the total and paste it in the note.</p>
+          <p><strong>Step 1:</strong> Copy your payment note. <strong>Step 2:</strong> Venmo or Zelle us the total and paste that note in the payment memo.</p>
           <pre id="paynote-text"></pre>
           <button type="button" id="copy-note">Copy payment note</button>
         </div>
-        <p id="confirm-msg">Tap copy and send this to us while we finish wiring up the form:</p>
+        <p id="confirm-msg">Your full order, for your records:</p>
         <pre id="order-text"></pre>
         <button type="button" id="copy">Copy full order</button>
       </div>
@@ -545,7 +543,7 @@
 
 <footer>
   <span class="foot-name">Bob's Burritos</span>
-  Small-batch breakfast burritos Â· 1111 Wilshire, Los Angeles Â· Sundays only
+  Small-batch breakfast burritos · 1111 Wilshire, Los Angeles · Sundays only
   <div class="share-qr"><div id="share-qr"></div></div>
   <p class="share-label">Show a neighbor — scan to order</p>
 </footer>
@@ -651,12 +649,12 @@
     var el = document.getElementById('notice');
     if(sc.justMissed){
       el.classList.add('closed');
-      el.innerHTML = '<span class="notice__big">This Sunday\u2019s orders are closed \uD83D\uDC9C</span>' +
-        'Thanks for your interest! You\u2019re now ordering for <strong>Sunday, ' + sc.label +
+      el.innerHTML = '<span class="notice__big">This Sunday\u2019s orders are closed</span>' +
+        'Thanks for your interest! You\u2019re now ordering for <strong>' + sc.label +
         '</strong> \u2014 delivered 9 AM\u201312 PM. Order anytime before Saturday 3 PM.';
     } else {
       el.classList.remove('closed');
-      el.innerHTML = '<span class="notice__big">\u2600\uFE0F Ordering for Sunday, ' + sc.label + '</span>' +
+      el.innerHTML = '<span class="notice__big">\u2600\uFE0F Ordering for ' + sc.label + '</span>' +
         'Window closes <strong>Saturday 3 PM</strong>. Delivered Sunday 9 AM\u201312 PM.';
     }
     return sc;
@@ -690,7 +688,7 @@
     /* Client-generated ID: base36 timestamp + random char. Unique at this volume, works with no backend. */
     var oid = 'BB-' + Date.now().toString(36).slice(-4).toUpperCase() +
               'ABCDEFGHJKMNPQRSTUVWXYZ23456789'.charAt(Math.floor(Math.random() * 31));
-    lines.push('---', 'TOTAL: ' + money(total), 'For delivery: Sunday, ' + sc.label + ' (9 AM\u201312 PM)', 'Paying by: Venmo / Zelle');
+    lines.push('---', 'TOTAL: ' + money(total), 'For delivery: ' + sc.label + ' (9 AM\u201312 PM)', 'Paying by: Venmo / Zelle');
     orderTextEl.textContent = 'ORDER ' + oid + '\n' + lines.join('\n');
     payNoteEl.textContent = oid + ' | ' + name + ' | Unit ' + unit + ' | ' + money(total);
     payStep.style.display = 'block';
@@ -717,7 +715,7 @@
         btn.disabled = false;
         btn.textContent = 'Place my order';
         if(res && res.ok){
-          confirmEl.querySelector('h3').textContent = 'Order received! ' + oid + ' \uD83C\uDF89';
+          confirmEl.querySelector('h3').textContent = 'Order received! ' + oid;
           confirmMsg.textContent = 'Your full order, for your records:';
           confirmEl.classList.add('show');
           confirmEl.scrollIntoView({behavior:'smooth', block:'nearest'});
@@ -731,14 +729,14 @@
       });
     } else {
       confirmEl.querySelector('h3').textContent = 'Order saved! ' + oid;
-      confirmMsg.textContent = 'Tap copy and text your full order to us, then pay with the note above:';
+      confirmMsg.textContent = 'Copy your full order and text it to us, then pay using the payment note above.';
       confirmEl.classList.add('show');
       confirmEl.scrollIntoView({behavior:'smooth', block:'nearest'});
     }
 
     function fallbackConfirm(){
       confirmEl.querySelector('h3').textContent = 'Almost there! ' + oid;
-      confirmMsg.textContent = 'We couldn\u2019t reach the order system \u2014 tap copy and text your full order to us, then pay with the note above:';
+      confirmMsg.textContent = 'We couldn\u2019t reach the order system \u2014 copy your full order and text it to us, then pay using the payment note above.';
       confirmEl.classList.add('show');
       confirmEl.scrollIntoView({behavior:'smooth', block:'nearest'});
     }
