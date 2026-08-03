@@ -1,79 +1,79 @@
 # Costco / warehouse COGS reference
 
-**Purpose:** Ballpark pack prices for kitchen grocery estimates.  
-**Last research pass:** 2026-08-03  
-**Live prices vary** by warehouse, week, and membership; replace with **your receipt** when you shop.
+**Purpose:** Pack prices for kitchen grocery estimates.  
+**Last update:** 2026-08-03 (user Costco shelf + TJ product link)  
+**Kitchen code:** `kitchen/index.html` → `GROCERY` array.
 
-Kitchen code: `kitchen/index.html` → `GROCERY` array.
+## Locked (your Costco / TJ)
 
-## Portions (still estimates until you measure)
+| Ingredient | Item | Pack | Price | Status |
+|------------|------|------|-------|--------|
+| **Eggs** | Kirkland Large 24-ct | **#637598** | **$3.28** | Confirmed |
+| **Tortillas** | Mission 10" flour **40-ct** | **#208429** | **$8.99** | Confirmed |
+| **Cheese** | Kirkland Mexican blend **2.5 lb × 2** | **#1165284** | **$15.31** | Confirmed (80 oz total) |
+| **Ground beef** | Kirkland **88/12** | **#33724** | **$6.80 / lb** | Confirmed (sold by weight) |
+| **Bacon** | Kirkland sliced **1 lb × 4** | **#7000070** | **$17.01** | Confirmed (~64 slices est.) |
+| **Avocados** | Hass **6-ct** | **#647465** | **$6.23** | Confirmed (12 halves) |
+| **Soy chorizo** | Trader Joe’s | **#092463** | **~$2.99** est. | Product locked; **confirm TJ shelf $** |
 
-| Use in burrito | Amount |
-|----------------|--------|
-| Tortilla | 1 large flour |
-| Eggs | 2 large |
-| Cheese | ~2 oz shredded |
-| Hash browns | ~3 oz |
-| Soy chorizo | ~4 oz (Soyrizo only) |
-| Ground beef | ~4 oz (Cali only) |
-| Sausage | ~2 oz (Heavy only) |
-| Bacon | ~2 slices (Heavy only) |
-| Avocado | ½ fruit (Cali included + avo add-ons) |
-| Onion | ~1 oz |
-| Chipotle mayo | ~1.5 oz mayo base + chipotle |
+TJ link: https://www.traderjoes.com/home/products/pdp/soy-chorizo-092463
 
-## Pack price table (ballpark)
+## Still ballpark (confirm next trip)
 
-| Ingredient | Pack we model | Pack $ | Source / note |
-|------------|---------------|--------|----------------|
-| **Eggs** | Kirkland Signature Large **24-ct** item **#637598** | **$3.28** | **Your Costco shelf** (confirmed) |
-| Flour tortillas | Mission-style multi-pack ~**40-ct** | **$9.49** | Costco Mission multi-pack typically ~$8–11 |
-| Shredded cheese | Kirkland shredded ~**2.5 lb (40 oz)** | **$12.89** | Kirkland cheddar/Mexican blend often ~$11–14 |
-| Hash browns | Ore-Ida shredded **6 lb** (item ~42125 business) | **$9.49** | Costco frozen hash brown ballpark ~$8–11 |
-| Soy chorizo | Trader Joe’s **12 oz** | **$3.49** | Usually **not** Costco; TJ ~$3–4 |
-| Ground beef | Kirkland 80/20 **1 lb** | **$5.79** | Moves with beef market; often ~$5–7/lb |
-| Breakfast sausage | Bulk roll/links ~**3 lb** | **$15.99** | Jimmy Dean / similar bulk ~$14–18 |
-| Bacon | Kirkland bacon multi-pack (~**48 slices** est.) | **$17.99** | Kirkland bacon packs often ~$16–22 |
-| Avocados | Hass bag **6-ct** | **$7.99** | Costco bags often **$6.99–$9.99** seasonal |
-| Yellow onions | Bag ~**5 lb** | **$5.49** | Produce bag ~$4–7 |
-| Cilantro | **1 bunch** | **$1.29** | Usually supermarket $0.99–1.99 |
-| Mayo | Kirkland mayo ~**64 oz** | **$7.69** | Kirkland mayo often ~$7–9 |
-| Chipotles in adobo | **7 oz can** | **$1.89** | Grocery/Costco multi; ~$1.50–2.50/can |
-| Taco seasoning | **1 packet** | **$1.29** | Or Costco bulk jar (then re-model pack size) |
-| Sauce cups + lids | **100-ct** 2 oz | **$11.99** | Restaurant supply ~$10–15 |
-| Takeout boxes | **50-ct** kraft/#3 | **$18.99** | Supply ~$15–25 |
-| Foil | Kirkland/Reynolds HD roll (~**130** wraps est.) | **$16.99** | Costco foil ~$15–22; Reynolds HD 2-pk often ~$21 |
+| Ingredient | Pack we model | Pack $ | Note |
+|------------|---------------|--------|------|
+| Hash browns | Ore-Ida 6 lb / similar | $9.49 | Frozen hash brown |
+| Breakfast sausage | Bulk ~3 lb | $15.99 | Jimmy Dean / similar |
+| Yellow onions | ~5 lb bag | $5.49 | Produce |
+| Cilantro | 1 bunch | $1.29 | Grocery |
+| Mayo | Kirkland ~64 oz | $7.69 | Chipotle mayo base |
+| Chipotles in adobo | 7 oz can | $1.89 | Grocery/multi |
+| Taco seasoning | 1 packet | $1.29 | Cali beef |
+| Sauce cups + lids | 100-ct | $11.99 | Supply |
+| Takeout boxes | 50-ct | $18.99 | Supply |
+| Foil | Kirkland/Reynolds roll | $16.99 | Wrap sheets |
 
-## Example: eggs math (why $55 looked wrong)
-
-| Burritos | Eggs needed (×2) | Packs of 24 | @ $5.50 old | @ **$3.28** now |
-|----------|------------------|-------------|-----------------|-----------------|
-| 120 | 240 | 10 | **$55.00** | **$32.80** |
-
-## How kitchen estimates work
+## How kitchen math works
 
 ```
-packs_to_buy = ceil(need / packSize)
-est_cost     = packs_to_buy × packPrice
+packs = ceil(need / packSize)
+cost  = packs × packPrice
 ```
 
-UI shows: `N × pack description @ $packPrice`.
+### Cheese (#1165284)
+- One Costco unit = **two** 2.5 lb bags = **5 lb = 80 oz** @ **$15.31**
+- Need 2 oz cheese × N burritos → packs of 80 oz
 
-## Update after your next Costco run
+### Bacon (#7000070)
+- One Costco unit = **4 × 1 lb** @ **$17.01**
+- Modeled as **~64 slices** (≈16 slices/lb × 4) — adjust if your pack slice count differs
 
-Send or paste:
+### Beef (#33724)
+- Priced **per pound** $6.80; pack size modeled as **1 lb (16 oz)** so multi-lb chubs count as multiple packs in the estimate
 
-```
-Item | Brand | Item# | Pack size | Price paid | Date | Warehouse
-```
+### Eggs example (~120 burritos)
+| | |
+|--|--|
+| Need | 240 eggs |
+| Packs | 10 × 24-ct |
+| @ $3.28 | **$32.80** (was $55 @ old $5.50) |
 
-We’ll lock those lines as `note: 'receipt YYYY-MM-DD'`.
+## Portions (still recipe estimates)
 
-## Not Costco (call out)
+| | |
+|--|--|
+| Tortilla | 1 |
+| Eggs | 2 |
+| Cheese | 2 oz |
+| Hash browns | 3 oz |
+| Soy chorizo | 4 oz (Soyrizo) |
+| Beef | 4 oz (Cali) |
+| Sausage | 2 oz (Heavy) |
+| Bacon | 2 slices (Heavy) |
+| Avocado | ½ fruit (Cali + add-ons) |
 
-| Item | Typical source |
-|------|----------------|
-| Soy chorizo | Trader Joe’s |
-| Cilantro | Any grocery |
-| Sauce cups / boxes | Restaurant Depot / Amazon |
-| Chipotle cans | Grocery if not in multi-pack at Costco |
+## After next shop
+
+Paste any remaining lines as:  
+`Item | # | Pack | Price`  
+We’ll lock them the same way.

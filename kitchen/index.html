@@ -582,37 +582,37 @@
       .replace(/'/g, '&#39;');
   }
 
-  /* Grocery COGS — ballpark Costco/warehouse pack prices (SoCal).
-     Updated 2026-08 from shelf research + user eggs confirm.
-     Prices vary by warehouse/week; override with receipt in docs/COGS_COSTCO.md */
+  /* Grocery COGS — Costco/TJ pack prices (SoCal).
+     Locked lines: USER Costco shelf 2026-08. Rest still ballpark until receipt.
+     Full table: docs/COGS_COSTCO.md */
   var GROCERY = [
     {item:'Flour tortillas (1 per burrito)', unit:'tortillas', need:function(t){return t.totalB;},
-     pack:'Mission flour ~40-ct (or 2\u00d720)', packSize:40, packPrice:9.49,
-     note:'Costco Mission-style multi-pack ballpark $8\u201311'},
+     pack:'Mission 10" flour 40-ct (#208429)', packSize:40, packPrice:8.99,
+     note:'USER Costco $8.99 item 208429'},
     {item:'Eggs (2 per burrito)', unit:'eggs', need:function(t){return t.totalB*2;},
      pack:'Kirkland Large 24-ct (#637598)', packSize:24, packPrice:3.28,
-     note:'USER Costco shelf $3.28 Grade AA cage-free'},
+     note:'USER Costco $3.28 item 637598'},
     {item:'Shredded cheese (2 oz ea)', unit:'oz', need:function(t){return t.totalB*2;},
-     pack:'Kirkland shredded cheddar/Mexican 2.5 lb (40 oz)', packSize:40, packPrice:12.89,
-     note:'Costco Kirkland shredded ~$11\u201314 / 2.5 lb'},
+     pack:'Kirkland Mexican blend 2.5 lb \u00d7 2 (#1165284) = 80 oz', packSize:80, packPrice:15.31,
+     note:'USER Costco $15.31 for 2\u00d72.5 lb item 1165284'},
     {item:'Hash browns (3 oz ea)', unit:'oz', need:function(t){return t.totalB*3;},
      pack:'Ore-Ida shredded 6 lb (96 oz) #42125', packSize:96, packPrice:9.49,
-     note:'Costco Business/warehouse frozen hash brown ballpark $8\u201311'},
+     note:'Costco frozen hash brown ballpark \u2014 confirm next trip'},
     {item:'Soy chorizo (4 oz ea)', unit:'oz', need:function(t){return t.soy*4;},
-     pack:'Trader Joe\u2019s soy chorizo 12 oz', packSize:12, packPrice:3.49,
-     note:'Usually TJ not Costco; $3\u20134 / 12 oz'},
+     pack:'Trader Joe\u2019s soy chorizo 12 oz (#092463)', packSize:12, packPrice:2.99,
+     note:'TJ product 092463 \u2014 confirm shelf price; not Costco'},
     {item:'Ground beef (4 oz ea, Cali)', unit:'oz', need:function(t){return t.cali*4;},
-     pack:'Kirkland 80/20 ground beef 1 lb (16 oz)', packSize:16, packPrice:5.79,
-     note:'Costco beef ~$5\u20137/lb (moves with market)'},
+     pack:'Kirkland 88/12 ground beef 1 lb (#33724)', packSize:16, packPrice:6.80,
+     note:'USER Costco $6.80/lb item 33724 (pkg sold by weight)'},
     {item:'Breakfast sausage (2 oz ea, Heavy)', unit:'oz', need:function(t){return t.heavy*2;},
      pack:'Bulk breakfast sausage ~3 lb (48 oz)', packSize:48, packPrice:15.99,
-     note:'Costco Jimmy Dean / similar ballpark $14\u201318'},
+     note:'Costco ballpark \u2014 confirm next trip'},
     {item:'Bacon (2 slices ea, Heavy)', unit:'slices', need:function(t){return t.heavy*2;},
-     pack:'Kirkland bacon ~3\u20134 lb (~48 slices est.)', packSize:48, packPrice:17.99,
-     note:'Costco Kirkland bacon multi-pack ballpark $16\u201322'},
+     pack:'Kirkland sliced bacon 1 lb \u00d7 4 (#7000070) ~64 slices est.', packSize:64, packPrice:17.01,
+     note:'USER Costco $17.01 for 4\u00d71 lb item 7000070'},
     {item:'Avocados (\u00bd per add-on / Cali)', unit:'halves', need:function(t){return t.avoHalves;},
-     pack:'Hass bag 6-ct (12 halves)', packSize:12, packPrice:7.99,
-     note:'Costco avocado bag often $6.99\u20139.99 seasonal'},
+     pack:'Hass 6-ct bag (#647465) = 12 halves', packSize:12, packPrice:6.23,
+     note:'USER Costco $6.23 item 647465'},
     {item:'Yellow onions (1 oz ea)', unit:'oz', need:function(t){return t.totalB;},
      pack:'Yellow onion bag ~5 lb (80 oz)', packSize:80, packPrice:5.49,
      note:'Costco produce bag ballpark $4\u20137'},
