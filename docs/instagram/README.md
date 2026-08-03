@@ -28,7 +28,7 @@ Link: `https://bobsburritos.github.io/BobsNet/`
 
 ## First 9 — how to publish
 
-1. Convert brand tiles to PNG 1080×1350 (4:5) — open SVG in browser/Figma/Canva → export.
+1. Brand tiles are already **PNG** in `assets/` — upload those (no conversion).
 2. Pair food posts with real photos from `Artwork/Food/` or a shoot (playbook art direction).
 3. **Publish reverse order** so the grid ends with Post 1 top-left:  
    **9 → 8 → 7 → 6 → 5 → 4 → 3 → 2 → 1** over 9–12 days.

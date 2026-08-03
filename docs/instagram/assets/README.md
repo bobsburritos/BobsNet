@@ -1,30 +1,27 @@
 # Brand tiles (Posts 2, 6, 8)
 
-| File | Post | Size |
-|------|------|------|
-| `tile-02-who-we-are.svg` | 2 Who we are | 1080×1350 (4:5) |
-| `tile-06-how-sunday-works.svg` | 6 How Sunday works | 1080×1350 |
-| `tile-08-woman-owned.svg` | 8 Woman-owned story | 1080×1350 |
+## Ready for Instagram (use these)
 
-Colors: purple `#3D1A5C` · gold `#FFD23F` · orange `#FF8A3D` · lilac `#C9A7F0` · cream `#FFF4DC`
+Open this folder in Explorer and upload the **PNG** files directly:
 
-## Export to Instagram PNG
+| PNG (upload this) | Post |
+|-------------------|------|
+| `tile-02-who-we-are.png` | 2 Who we are |
+| `tile-06-how-sunday-works.png` | 6 How Sunday works |
+| `tile-08-woman-owned.png` | 8 Woman-owned story |
 
-### Browser (fast)
+All **1080×1350** (4:5). No conversion needed.
 
-1. Open the SVG in Chrome/Edge (double-click or drag into a tab).
-2. Zoom so the tile fills the view, or use an online SVG→PNG at **1080×1350**.
-3. Or open `export-tiles.html` in this folder — it draws each tile and offers download buttons (if present).
+Folder path:
 
-### Canva / Figma
-
-1. Import SVG or recreate using same hexes and copy.
-2. Export **PNG**, 1080×1350, sRGB.
-
-### ImageMagick (if installed)
-
-```powershell
-magick -background none tile-02-who-we-are.svg -resize 1080x1350 PNG32:tile-02-who-we-are.png
+```
+D:\MiguelAznar\007_PersonalProjects\200_BobsBurritos\docs\instagram\assets
 ```
 
-Prefer a **real founder photo** for Post 8 when ready; keep this tile as backup.
+Prefer a **real founder photo** for Post 8 when ready; keep `tile-08-woman-owned.png` as backup.
+
+## Source / regen
+
+- SVG sources kept for editing: `tile-*.svg`
+- To regenerate PNGs: run `python scripts\render_ig_tiles.py` from the project root (if present), or ask the agent.
+- Colors: purple `#3D1A5C` · gold `#FFD23F` · orange `#FF8A3D` · lilac `#C9A7F0` · cream `#FFF4DC`
