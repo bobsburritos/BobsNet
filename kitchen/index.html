@@ -290,7 +290,7 @@
 
     <div class="cols">
       <div>
-        <h2>Grocery List <small>(Costco ballpark — eggs Kirkland 24-ct #637598 @ $3.28; other packs estimated; update from receipts)</small></h2>
+        <h2>Grocery List <small>(Full Costco/warehouse ballpark table — see docs/COGS_COSTCO.md; eggs #637598 @ $3.28 confirmed)</small></h2>
         <div class="table-scroll grocery-scroll">
         <table class="grocery">
           <thead><tr><th></th><th>Item</th><th>Need</th><th>Buy</th><th>Est</th></tr></thead>
@@ -582,44 +582,61 @@
       .replace(/'/g, '&#39;');
   }
 
-  /* Costco / warehouse ballpark pack prices (LA). Update when receipts land.
-     Eggs: Kirkland Signature Large 24-ct item 637598 ~$3.28 (user-confirmed).
-     Others: typical Costco ranges — not live API prices. */
+  /* Grocery COGS — ballpark Costco/warehouse pack prices (SoCal).
+     Updated 2026-08 from shelf research + user eggs confirm.
+     Prices vary by warehouse/week; override with receipt in docs/COGS_COSTCO.md */
   var GROCERY = [
-    {item:'Large flour tortillas', unit:'tortillas', need:function(t){return t.totalB;},
-     pack:'Mission/similar 20-ct', packSize:20, packPrice:6.49, note:'Costco ballpark'},
+    {item:'Flour tortillas (1 per burrito)', unit:'tortillas', need:function(t){return t.totalB;},
+     pack:'Mission flour ~40-ct (or 2\u00d720)', packSize:40, packPrice:9.49,
+     note:'Costco Mission-style multi-pack ballpark $8\u201311'},
     {item:'Eggs (2 per burrito)', unit:'eggs', need:function(t){return t.totalB*2;},
-     pack:'Kirkland Large 24-ct (#637598)', packSize:24, packPrice:3.28, note:'Costco shelf'},
+     pack:'Kirkland Large 24-ct (#637598)', packSize:24, packPrice:3.28,
+     note:'USER Costco shelf $3.28 Grade AA cage-free'},
     {item:'Shredded cheese (2 oz ea)', unit:'oz', need:function(t){return t.totalB*2;},
-     pack:'Kirkland shredded ~2.5 lb (40 oz)', packSize:40, packPrice:11.99, note:'Costco ballpark'},
+     pack:'Kirkland shredded cheddar/Mexican 2.5 lb (40 oz)', packSize:40, packPrice:12.89,
+     note:'Costco Kirkland shredded ~$11\u201314 / 2.5 lb'},
     {item:'Hash browns (3 oz ea)', unit:'oz', need:function(t){return t.totalB*3;},
-     pack:'Frozen bag ~5\u20136 lb (~80\u201396 oz)', packSize:90, packPrice:8.99, note:'Costco ballpark'},
+     pack:'Ore-Ida shredded 6 lb (96 oz) #42125', packSize:96, packPrice:9.49,
+     note:'Costco Business/warehouse frozen hash brown ballpark $8\u201311'},
     {item:'Soy chorizo (4 oz ea)', unit:'oz', need:function(t){return t.soy*4;},
-     pack:'12 oz pack (TJ / warehouse)', packSize:12, packPrice:3.49, note:'often TJ'},
-    {item:'Ground beef (4 oz ea)', unit:'oz', need:function(t){return t.cali*4;},
-     pack:'Kirkland 80/20 ~1 lb (16 oz)', packSize:16, packPrice:5.99, note:'$/lb ballpark'},
-    {item:'Breakfast sausage (2 oz ea)', unit:'oz', need:function(t){return t.heavy*2;},
-     pack:'Bulk links/roll ~3 lb (48 oz)', packSize:48, packPrice:14.99, note:'Costco ballpark'},
-    {item:'Bacon (2 slices ea)', unit:'slices', need:function(t){return t.heavy*2;},
-     pack:'Kirkland bacon ~2\u20134 lb (~36\u2013slices use 36)', packSize:36, packPrice:14.99, note:'Costco ballpark'},
-    {item:'Avocados (\u00bd ea)', unit:'halves', need:function(t){return t.avoHalves;},
-     pack:'Bag 6-ct (12 halves)', packSize:12, packPrice:6.99, note:'seasonal'},
-    {item:'Onions (1 oz ea)', unit:'oz', need:function(t){return t.totalB;},
-     pack:'3\u20135 lb bag (~48\u201380 oz use 64)', packSize:64, packPrice:4.99, note:'Costco ballpark'},
+     pack:'Trader Joe\u2019s soy chorizo 12 oz', packSize:12, packPrice:3.49,
+     note:'Usually TJ not Costco; $3\u20134 / 12 oz'},
+    {item:'Ground beef (4 oz ea, Cali)', unit:'oz', need:function(t){return t.cali*4;},
+     pack:'Kirkland 80/20 ground beef 1 lb (16 oz)', packSize:16, packPrice:5.79,
+     note:'Costco beef ~$5\u20137/lb (moves with market)'},
+    {item:'Breakfast sausage (2 oz ea, Heavy)', unit:'oz', need:function(t){return t.heavy*2;},
+     pack:'Bulk breakfast sausage ~3 lb (48 oz)', packSize:48, packPrice:15.99,
+     note:'Costco Jimmy Dean / similar ballpark $14\u201318'},
+    {item:'Bacon (2 slices ea, Heavy)', unit:'slices', need:function(t){return t.heavy*2;},
+     pack:'Kirkland bacon ~3\u20134 lb (~48 slices est.)', packSize:48, packPrice:17.99,
+     note:'Costco Kirkland bacon multi-pack ballpark $16\u201322'},
+    {item:'Avocados (\u00bd per add-on / Cali)', unit:'halves', need:function(t){return t.avoHalves;},
+     pack:'Hass bag 6-ct (12 halves)', packSize:12, packPrice:7.99,
+     note:'Costco avocado bag often $6.99\u20139.99 seasonal'},
+    {item:'Yellow onions (1 oz ea)', unit:'oz', need:function(t){return t.totalB;},
+     pack:'Yellow onion bag ~5 lb (80 oz)', packSize:80, packPrice:5.49,
+     note:'Costco produce bag ballpark $4\u20137'},
     {item:'Cilantro', unit:'bunches', need:function(t){return Math.max(1, Math.ceil(t.totalB/20));},
-     pack:'bunch / clamshell', packSize:1, packPrice:1.49, note:'store ballpark'},
-    {item:'Mayo (1.5 oz per cup)', unit:'oz', need:function(t){return t.totalB*1.5;},
-     pack:'Kirkland mayo ~64 oz (or 30 oz jar)', packSize:64, packPrice:7.99, note:'Costco ballpark'},
+     pack:'Fresh bunch', packSize:1, packPrice:1.29,
+     note:'Usually grocery not Costco; $0.99\u20131.99'},
+    {item:'Mayo base for chipotle sauce (1.5 oz/burrito)', unit:'oz', need:function(t){return t.totalB*1.5;},
+     pack:'Kirkland mayo ~64 oz jar', packSize:64, packPrice:7.69,
+     note:'Costco Kirkland mayo ballpark $7\u20139'},
     {item:'Chipotles in adobo', unit:'cans', need:function(t){return Math.max(1, Math.ceil(t.totalB/15));},
-     pack:'7 oz can', packSize:1, packPrice:1.79, note:'store ballpark'},
-    {item:'Taco seasoning', unit:'packets', need:function(t){return Math.max(1, Math.ceil(t.cali/8));},
-     pack:'packet / bulk scoop', packSize:1, packPrice:1.49, note:'store ballpark'},
+     pack:'7 oz can (La Coste\u00f1a / similar)', packSize:1, packPrice:1.89,
+     note:'Grocery/Costco multi-pack; ~$1.50\u20132.50/can'},
+    {item:'Taco seasoning (Cali beef)', unit:'packets', need:function(t){return t.cali>0?Math.max(1, Math.ceil(t.cali/8)):0;},
+     pack:'1 oz packet (or bulk scoop)', packSize:1, packPrice:1.29,
+     note:'Grocery packet; Costco bulk seasoning optional'},
     {item:'2 oz sauce cups + lids', unit:'cups', need:function(t){return t.totalB;},
-     pack:'100-ct', packSize:100, packPrice:9.99, note:'restaurant supply'},
-    {item:'Kraft / takeout boxes', unit:'boxes', need:function(t){return t.totalB;},
-     pack:'50-ct', packSize:50, packPrice:14.99, note:'supply ballpark'},
-    {item:'Heavy-duty foil (wrap sheets)', unit:'sheets', need:function(t){return t.totalB;},
-     pack:'Kirkland foil roll (~120\u2013150 sheets use 130)', packSize:130, packPrice:12.99, note:'Costco ballpark'}
+     pack:'100-ct portion cups', packSize:100, packPrice:11.99,
+     note:'Restaurant Depot / Amazon ballpark $10\u201315'},
+    {item:'Takeout / kraft food boxes', unit:'boxes', need:function(t){return t.totalB;},
+     pack:'50-ct #3 or similar', packSize:50, packPrice:18.99,
+     note:'Supply house ballpark $15\u201325 / 50'},
+    {item:'Foil wrap sheets', unit:'sheets', need:function(t){return t.totalB;},
+     pack:'Kirkland/Reynolds HD roll (~130 burrito sheets est.)', packSize:130, packPrice:16.99,
+     note:'Costco foil ~$15\u201322; Reynolds HD 2-pk often ~$21'}
   ];
 
   function renderGrocery(t){
