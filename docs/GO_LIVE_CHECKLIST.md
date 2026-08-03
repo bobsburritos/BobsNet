@@ -62,9 +62,14 @@ So you can test **everything** without sending $1.
 ### A4. Cleanup
 - [ ] Delete test rows (`TEST DELETE`, `BB-DRYRUN1`, old `BB-SMOKE*`) as **whole rows** only  
 
-### A5. Apps Script deploy (if you changed backend recently)
-- [ ] Apps Script editor → **Deploy → Manage deployments → New version**  
-  (Save alone does not update the live Web app.)
+### A5. Apps Script deploy (**required before launch** — matrix found live API is outdated)
+Live API currently accepts bad orders and does not return server `total` / `deduped`.  
+Hardened code is in `local/bobs-burritos-backend.READY.gs`.
+
+- [ ] Paste READY into Apps Script editor (keep your real PORTAL_KEY)  
+- [ ] **Deploy → Manage deployments → New version → Deploy**  
+- [ ] Re-run: `python scripts/release_matrix_test.py` → aim for all PASS  
+- [ ] Delete all `BB-REL*` test rows in the sheet
 
 ---
 
