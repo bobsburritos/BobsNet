@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350" role="img" aria-labelledby="t2">
+  <title id="t2">Bob's Burritos — Sunday breakfast burritos, delivered</title>
+  <rect width="1080" height="1350" fill="#3D1A5C"/>
+  <!-- subtle grain via dots -->
+  <g opacity="0.06" fill="#FFD23F">
+    <circle cx="120" cy="200" r="2"/><circle cx="340" cy="480" r="1.5"/><circle cx="900" cy="300" r="2"/>
+    <circle cx="700" cy="900" r="1.5"/><circle cx="200" cy="1100" r="2"/><circle cx="950" cy="1200" r="1.5"/>
+  </g>
+  <!-- sunrise arcs bottom-left -->
+  <g transform="translate(0,1350)">
+    <path d="M-40,0 A580,580 0 0,1 540,-520" fill="none" stroke="#C9A7F0" stroke-width="72"/>
+    <path d="M-40,0 A420,420 0 0,1 380,-380" fill="none" stroke="#FF8A3D" stroke-width="64"/>
+    <path d="M-40,0 A260,260 0 0,1 220,-220" fill="none" stroke="#FFD23F" stroke-width="56"/>
+  </g>
+  <text x="96" y="220" fill="#C9A7F0" font-family="Arial Black, Helvetica, sans-serif" font-size="28" letter-spacing="6" font-weight="700">BOB'S BURRITOS</text>
+  <text x="96" y="420" fill="#FFD23F" font-family="Arial Black, Helvetica, sans-serif" font-size="72" font-weight="900">SUNDAY</text>
+  <text x="96" y="510" fill="#FFD23F" font-family="Arial Black, Helvetica, sans-serif" font-size="72" font-weight="900">BREAKFAST</text>
+  <text x="96" y="600" fill="#FFD23F" font-family="Arial Black, Helvetica, sans-serif" font-size="72" font-weight="900">BURRITOS,</text>
+  <text x="96" y="690" fill="#FFD23F" font-family="Arial Black, Helvetica, sans-serif" font-size="72" font-weight="900">DELIVERED.</text>
+  <text x="96" y="800" fill="#FFF4DC" font-family="Helvetica, Arial, sans-serif" font-size="32" font-weight="500">Woman-owned · small-batch</text>
+  <text x="96" y="850" fill="#FFF4DC" font-family="Helvetica, Arial, sans-serif" font-size="32" font-weight="500">hand-rolled · famous chipotle mayo</text>
+  <text x="96" y="1240" fill="#C9A7F0" font-family="Helvetica, Arial, sans-serif" font-size="26" font-weight="600">@bobsburritosco</text>
+</svg>

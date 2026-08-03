@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350" role="img" aria-labelledby="t6">
+  <title id="t6">How Sunday works — order, roll, deliver</title>
+  <rect width="1080" height="1350" fill="#3D1A5C"/>
+  <g transform="translate(1080,1350)">
+    <path d="M40,0 A520,520 0 0,0 -480,-480" fill="none" stroke="#C9A7F0" stroke-width="64"/>
+    <path d="M40,0 A360,360 0 0,0 -320,-320" fill="none" stroke="#FF8A3D" stroke-width="56"/>
+    <path d="M40,0 A200,200 0 0,0 -160,-160" fill="none" stroke="#FFD23F" stroke-width="48"/>
+  </g>
+  <text x="96" y="180" fill="#C9A7F0" font-family="Arial Black, Helvetica, sans-serif" font-size="26" letter-spacing="5" font-weight="700">BOB'S BURRITOS</text>
+  <text x="96" y="300" fill="#FFD23F" font-family="Arial Black, Helvetica, sans-serif" font-size="68" font-weight="900">HOW SUNDAY</text>
+  <text x="96" y="380" fill="#FFD23F" font-family="Arial Black, Helvetica, sans-serif" font-size="68" font-weight="900">WORKS</text>
+
+  <!-- Step 1 -->
+  <circle cx="140" cy="560" r="40" fill="#FFD23F"/>
+  <text x="140" y="572" text-anchor="middle" fill="#3D1A5C" font-family="Arial Black, Helvetica, sans-serif" font-size="36" font-weight="900">1</text>
+  <text x="210" y="548" fill="#FFF4DC" font-family="Helvetica, Arial, sans-serif" font-size="34" font-weight="700">Order by Saturday 3PM</text>
+  <text x="210" y="592" fill="#C9A7F0" font-family="Helvetica, Arial, sans-serif" font-size="26">Lock in before the batch closes</text>
+
+  <!-- Step 2 -->
+  <circle cx="140" cy="740" r="40" fill="#FFD23F"/>
+  <text x="140" y="752" text-anchor="middle" fill="#3D1A5C" font-family="Arial Black, Helvetica, sans-serif" font-size="36" font-weight="900">2</text>
+  <text x="210" y="728" fill="#FFF4DC" font-family="Helvetica, Arial, sans-serif" font-size="34" font-weight="700">We roll fresh Sunday morning</text>
+  <text x="210" y="772" fill="#C9A7F0" font-family="Helvetica, Arial, sans-serif" font-size="26">Hand-rolled, small-batch, woman-owned</text>
+
+  <!-- Step 3 -->
+  <circle cx="140" cy="920" r="40" fill="#FFD23F"/>
+  <text x="140" y="932" text-anchor="middle" fill="#3D1A5C" font-family="Arial Black, Helvetica, sans-serif" font-size="36" font-weight="900">3</text>
+  <text x="210" y="908" fill="#FFF4DC" font-family="Helvetica, Arial, sans-serif" font-size="34" font-weight="700">Delivered warm 9AM–12PM</text>
+  <text x="210" y="952" fill="#C9A7F0" font-family="Helvetica, Arial, sans-serif" font-size="26">Straight to your door at 1111 Wilshire</text>
+
+  <text x="96" y="1140" fill="#FFD23F" font-family="Helvetica, Arial, sans-serif" font-size="28" font-weight="700">Pay Venmo or Zelle · link in bio</text>
+  <text x="96" y="1240" fill="#C9A7F0" font-family="Helvetica, Arial, sans-serif" font-size="26" font-weight="600">@bobsburritosco</text>
+</svg>

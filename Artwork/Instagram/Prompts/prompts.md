@@ -1,4 +1,4 @@
-﻿# Bob's Burritos â€” AI prompts (on-brand)
+# Bob's Burritos â€” AI prompts (on-brand)
 
 Use these in Midjourney / Flux / Ideogram / ChatGPT Images / Canva AI.  
 **Always** lock the brand kit below. For graphic tiles, **Ideogram** or **Canva** usually nail the text better than pure photo models.
@@ -171,4 +171,4 @@ dark moody lighting, steakhouse food porn, cool blue color grade, neon, thin ele
 
 **Logo attach:** always reference `Artwork/Brand/Logos/bobs-burritos-instagram-logo.jpeg` so arcs and purple/gold match.
 
-Captions live in `Artwork/Instagram/Posts/`. Full creative system: `Artwork/Instagram/Playbook/launch-playbook.md`.
+Captions + artwork live in `Artwork/Instagram/Posts/0N-slug/` (see each post.md). Full creative system: `Artwork/Instagram/Playbook/launch-playbook.md`.
