@@ -1,6 +1,6 @@
 # Bob's Burritos (BobsNet)
 
-Sunday breakfast burritos at **1111 Wilshire**.  
+**Proudly woman-owned.** Sunday breakfast burritos at **1111 Wilshire**.  
 Orders close **Saturday 3:00 PM (America/Los_Angeles)** · Delivery **Sunday 9 AM–12 PM**.
 
 ## Live

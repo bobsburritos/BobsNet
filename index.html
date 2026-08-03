@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bob's Burritos — Sunday Breakfast Burritos at 1111 Wilshire</title>
+<title>Bob's Burritos — Woman-Owned Sunday Breakfast Burritos at 1111 Wilshire</title>
 <!-- Link previews (WhatsApp / iMessage / Slack etc). og:url and og:image must be absolute. -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="Bob's Burritos — Sunday breakfast burritos at 1111 Wilshire">
-<meta property="og:description" content="Small-batch breakfast burritos delivered to your door at 1111 Wilshire. Sundays 9 AM–12 PM. Order by Saturday 3 PM. From $10.">
+<meta property="og:title" content="Bob's Burritos — Woman-owned Sunday breakfast burritos at 1111 Wilshire">
+<meta property="og:description" content="Proudly woman-owned. Small-batch breakfast burritos delivered to your door at 1111 Wilshire. Sundays 9 AM–12 PM. Order by Saturday 3 PM. From $10.">
 <meta property="og:url" content="https://bobsburritos.github.io/BobsNet/">
 <meta property="og:image" content="https://bobsburritos.github.io/BobsNet/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="description" content="Small-batch breakfast burritos delivered to your door at 1111 Wilshire. Sundays 9 AM–12 PM. Order by Saturday 3 PM.">
+<meta name="description" content="Proudly woman-owned. Small-batch breakfast burritos delivered to your door at 1111 Wilshire. Sundays 9 AM–12 PM. Order by Saturday 3 PM.">
 <meta name="theme-color" content="#3D1A5C">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/favicon.svg">
@@ -116,9 +116,23 @@
   .hero__tag{
     font-size:clamp(1.1rem,3vw,1.4rem);
     font-weight:500;
-    margin-bottom:34px;
+    margin-bottom:22px;
   }
   .hero__tag em{font-style:normal;border-bottom:4px solid var(--tangerine);}
+  .owned-badge{
+    display:inline-block;
+    background:var(--sunbeam);
+    color:var(--grape);
+    border:3px solid var(--grape);
+    border-radius:999px;
+    box-shadow:5px 5px 0 var(--grape);
+    padding:10px 22px;
+    font-weight:700;
+    font-size:clamp(.95rem,2.5vw,1.1rem);
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    margin-bottom:22px;
+  }
   .chips{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;}
   .chip{
     background:#fff;
@@ -129,7 +143,23 @@
     font-weight:600;
     font-size:.95rem;
   }
+  .chip.chip--owned{
+    background:var(--sunbeam);
+  }
   .chip strong{color:var(--tangerine);}
+  .owned-banner{
+    background:var(--sunbeam);
+    color:var(--grape);
+    border-top:3px solid var(--grape);
+    border-bottom:3px solid var(--grape);
+    text-align:center;
+    padding:16px 20px;
+    font-weight:700;
+    font-size:clamp(1rem,2.8vw,1.2rem);
+    letter-spacing:.02em;
+  }
+  .owned-banner span{display:inline-block;}
+  .owned-banner .star{color:var(--tangerine);margin:0 .35em;}
 
   /* ---------- Sections ---------- */
   section{padding:64px 20px;}
@@ -492,9 +522,8 @@
 
 <div class="ribbon" aria-hidden="true">
   <div class="ribbon__track">
-    <span>★ Sundays only</span><span>★ Order by Saturday 3 PM</span><span>★ Delivered Sundays 9 AM – 12 PM</span><span>★ 1111 Wilshire</span><span>★ Small-batch, hand-rolled</span><span>★ House chipotle mayo</span>
-    <span>★ House chipotle mayo</span>
-    <span>★ Sundays only</span><span>★ Order by Saturday 3 PM</span><span>★ Delivered Sundays 9 AM – 12 PM</span><span>★ 1111 Wilshire</span><span>★ Small-batch, hand-rolled</span>
+    <span>★ Proudly woman-owned</span><span>★ Support a woman-owned business</span><span>★ Sundays only</span><span>★ Order by Saturday 3 PM</span><span>★ Delivered Sundays 9 AM – 12 PM</span><span>★ 1111 Wilshire</span><span>★ Small-batch, hand-rolled</span><span>★ House chipotle mayo</span>
+    <span>★ Proudly woman-owned</span><span>★ Support a woman-owned business</span><span>★ Sundays only</span><span>★ Order by Saturday 3 PM</span><span>★ Delivered Sundays 9 AM – 12 PM</span><span>★ 1111 Wilshire</span><span>★ Small-batch, hand-rolled</span><span>★ House chipotle mayo</span>
   </div>
 </div>
 
@@ -503,8 +532,10 @@
   <div class="hero__inner">
     <span class="hero__eyebrow">Sunday breakfast burritos · 1111 Wilshire</span>
     <h1>Bob's Burritos</h1>
-    <p class="hero__tag">Small-batch breakfast burritos, <em>hand-rolled every Sunday</em> and delivered to your door.</p>
+    <div class="owned-badge" role="status">★ Proudly woman-owned ★</div>
+    <p class="hero__tag">A <em>woman-owned</em> kitchen rolling small-batch breakfast burritos every Sunday — delivered to your door at 1111 Wilshire.</p>
     <div class="chips">
+      <div class="chip chip--owned">Woman-owned · <strong>local</strong></div>
       <div class="chip">Order by <strong>Sat 3 PM</strong></div>
       <div class="chip">Delivered Sunday <strong>9 AM – 12 PM</strong></div>
       <div class="chip">Burritos from <strong>$10</strong></div>
@@ -512,10 +543,14 @@
   </div>
 </header>
 
+<div class="owned-banner" role="note">
+  <span><span class="star" aria-hidden="true">★</span>Every order supports a <strong>woman-owned</strong> small business at 1111 Wilshire<span class="star" aria-hidden="true">★</span></span>
+</div>
+
 <section class="menu" id="menu">
   <div class="wrap">
     <h2 class="sec-title">This Sunday's Menu</h2>
-    <p class="sec-sub">Made in small batches — and every burrito ships with our house chipotle mayo. People come back for the sauce.</p>
+    <p class="sec-sub">Woman-owned, made in small batches — and every burrito ships with our house chipotle mayo. People come back for the sauce.</p>
     <div class="cards">
 
       <article class="card" data-id="soyrizo" data-name="Soyrizo Sunrise" data-price="10" data-avo="2">
@@ -659,9 +694,9 @@
 
 <footer>
   <span class="foot-name">Bob's Burritos</span>
-  Small-batch breakfast burritos · 1111 Wilshire, Los Angeles · Sundays only
+  Proudly woman-owned · Small-batch breakfast burritos · 1111 Wilshire, Los Angeles · Sundays only
   <div class="share-qr"><div id="share-qr"></div></div>
-  <p class="share-label">Show a neighbor — scan to order</p>
+  <p class="share-label">Show a neighbor — support a woman-owned business</p>
 </footer>
 
 <!-- Full-size burrito photo viewer -->
