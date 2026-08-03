@@ -14,7 +14,7 @@
 | **Ground beef** | Kirkland **88/12** | **#33724** | **$6.80 / lb** | Confirmed (sold by weight) |
 | **Bacon** | Kirkland sliced **1 lb × 4** | **#7000070** | **$17.01** | Confirmed (~64 slices est.) |
 | **Avocados** | Hass **6-ct** | **#647465** | **$6.23** | Confirmed (12 halves) |
-| **Soy chorizo** | Trader Joe’s | **#092463** | **~$2.99** est. | Product locked; **confirm TJ shelf $** |
+| **Soy chorizo** | Trader Joe’s | **#092463** | **$2.99 / 12 oz** | Confirmed |
 | **Mayo** | Kirkland Real Mayonnaise **64 oz** | **#503961** | **$5.19** | Confirmed ($0.08/oz) |
 | **Chipotle sauce** | La Costeña Medium Chipotle **220 ml** | — | **$1.59** | Confirmed (for house mayo) |
 | **Foil** | Kirkland Reynolds Foodservice HD **18" × 500 ft** | **#31684** | **$45.99** | Confirmed; ~400 wraps est. |
