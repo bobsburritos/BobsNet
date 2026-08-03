@@ -92,6 +92,11 @@ python scripts/build_claude_pack.py
 ## Positioning (internal)
 *The Sunday breakfast burrito LA plans its weekend around — woman-owned, small-batch, and famous for the sauce.*
 
+## Origin of the name "Bob"
+**There is no Bob.** The founder is **Khushbu**. Her name is constantly misspelled (Cushbob, Kushbu, Cash-bab, Koshbob, and more) on coffee cups and tickets. She embraced the most common mangling and named the business Bob's Burritos — an affectionate nod to a decade of butchered name tags. Quietly reinforces woman-owned + real person who loves breakfast.
+
+**Reveal (payoff, not footnote):** *There is no Bob — it's Khushbu.*
+
 ## Model
 - **Product:** Three breakfast burritos + house chipotle mayo on the side every order
 - **Cadence:** Sundays only for delivery
@@ -131,8 +136,17 @@ Primary: 1111 Wilshire residents. Secondary: LA foodies / woman-owned supporters
         """
 # 02 — Brand kit
 
+**Canonical full kit:** `Artwork/Brand/BRAND-KIT.md` (includes Origin Story, Meet Bob, Who's Bob? thread).
+
 ## Positioning
-Woman-owned · Sunday-only · small-batch · hand-rolled · famous house chipotle mayo.
+Woman-owned · Sunday-only · small-batch · hand-rolled · famous house chipotle mayo.  
+**Founder:** Khushbu · **Brand name:** Bob's Burritos (no literal Bob).
+
+## Origin Story / The Name
+There is no Bob. Founder Khushbu's name is mangled constantly (Cushbob, Kushbu, Cash-bab, Koshbob…). She named the business after the most common mangling. Emotional payoff: *There is no Bob — it's Khushbu.* Tone: self-aware, warm, funny, human — never corporate.
+
+## Content thread: Who's Bob?
+Story highlight collecting real misspellings; gag coffee-cup close-ups; Reel of Khushbu reading the worst names aloud. See `Artwork/Instagram/Profile/whos-bob-thread.md`.
 
 ## Colors (only these for brand graphics)
 
@@ -157,8 +171,9 @@ Concentric **sunrise arcs/rings** — lavender outer → orange mid → gold inn
 - **Never:** thin fashion serifs, random script, default Canva clichés.
 
 ## Voice
-Friendly · funny · bold · fresh · premium-but-approachable · never corporate.
+Friendly · funny · bold · fresh · premium-but-approachable · self-aware · human · never corporate.
 Talk like a cool friend who makes an incredible burrito — warm, a little cheeky, not salesy.
+The name story unlocks humor and vulnerability without apology.
 
 ## Logo
 - Primary: `Artwork/Brand/Logos/bobs-burritos-instagram-logo.jpeg`
@@ -363,6 +378,10 @@ Cadence targets: feed 4–5/week, Stories daily, Reels ~3/week.
 
 ## UGC
 Tag @bobsburritosco · #BobsSundayClub · delivery card in bags.
+
+## Who's Bob? (recurring)
+Highlight + Stories of name misspellings; Reel of Khushbu reading worst ones. Reveal: no Bob — it's Khushbu.  
+Docs: `Artwork/Brand/BRAND-KIT.md`, `Artwork/Instagram/Profile/whos-bob-thread.md`, Post 8 folder.
 
 ## Full playbook
 See `12_instagram_playbook_full.md` or `Artwork/Instagram/Playbook/launch-playbook.md`

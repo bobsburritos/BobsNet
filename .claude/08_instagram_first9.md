@@ -522,16 +522,25 @@ Tag Sunday person
 
 ## Folder: `08-woman-owned/`
 
-# Post 8 — Woman-owned / Meet the maker
+# Post 8 — Woman-owned / Meet Bob (the reveal)
 
 | | |
 |--|--|
 | **Grid position** | bottom-center |
-| **Content bucket** | Brand Story |
-| **Goal** | trust + community |
+| **Content bucket** | Brand Story · Meet Bob |
+| **Goal** | trust + community + name origin payoff |
 | **Publish order** | Day 2 of reverse seed (9→1) |
 | **Media type** | real founder photo preferred / graphic backup |
 | **Status** | draft |
+
+## Story spine (emotional payoff)
+
+1. **Hook:** Meet Bob. / Who's Bob?  
+2. **Reveal:** There is no Bob — it's **Khushbu**.  
+3. **Why the name:** A decade of butchered name tags (Cushbob, Kushbu, Cash-bab, Koshbob…) → she named the kitchen after the mess.  
+4. **Land:** Woman-owned, hand-rolled Sundays, famous chipotle mayo. Real person. Real kitchen.
+
+Do not bury the reveal as a footnote. The name story *is* the post.
 
 ## Artwork
 
@@ -544,15 +553,14 @@ Drop final assets in **`artwork/`** (this folder).
 | `artwork/reel.*` | Optional Reel cover or clip |
 | Starter ref | `artwork/draft-tile.svg` |
 
-**Art notes:** Prefer real kitchen/founder photo. Graphic backup: draft-tile.svg → final PNG via Prompts.  
+**Art notes:** Prefer warm real kitchen/founder photo (Khushbu). Optional prop: coffee cup with a wrong name. Graphic backup: draft tile → final via Prompts.  
 **Prompt:** `Post 8 in ../../Prompts/prompts.md`  
-**Logo ref:** `../../../Brand/Logos/bobs-burritos-instagram-logo.jpeg`  
-**Brand kit:** `../../../Brand/BRAND-KIT.md`
+**Brand kit:** `../../../Brand/BRAND-KIT.md` (Origin Story / The Name)
 
 ### Checklist
 
 - [ ] Final feed artwork in `artwork/`
-- [ ] Caption reviewed
+- [ ] Caption reviewed (reveal is the heart)
 - [ ] Hashtags ready (first comment)
 - [ ] Alt text set
 - [ ] Story / Reel assets (if using)
@@ -564,30 +572,38 @@ Drop final assets in **`artwork/`** (this folder).
 ## Caption (copy)
 
 ```
-Every burrito you order was rolled by hand in a small woman-owned kitchen — no factory, no line cooks, just someone who got a little obsessed with making the perfect breakfast burrito and refused to cut corners (or skimp on the sauce). When you order, you're supporting a real person's small business. Thank you for that — genuinely. 🌅
+You've been wondering who Bob is.
 
-Follow along and support a woman-owned kitchen 💛
+Plot twist: there isn't one. I'm Khushbu — and after years of coffee cups and tickets that said Cushbob, Koshbob, Cash-bab, and things we can't print, I named the kitchen after the mess. 🌅
+
+Every burrito is still rolled by hand in a small woman-owned kitchen. No factory. No shortcuts. Just someone who loves breakfast and refused to skimp on the sauce.
+
+Welcome to Bob's. Follow along and support a woman-owned kitchen 💛
 @bobsburritosco · order by Sat 3PM · link in bio
 ```
 
 ## First comment (hashtags)
 
 ```
-#bobsburritos #womanownedbusiness #womenownedbusiness #femalefounder #supportsmallbusiness #shoplocalla #madebyawoman #smallbatch #behindthebusiness #meetthemaker #lafoodie #laeats #womeninbusiness #entrepreneur #localbusiness #foodstartup #sundaybreakfast #handmade #realfood #communityfirst
+#bobsburritos #womanownedbusiness #womenownedbusiness #femalefounder #supportsmallbusiness #shoplocalla #madebyawoman #smallbatch #behindthebusiness #meetthemaker #whosbob #lafoodie #laeats #womeninbusiness #entrepreneur #localbusiness #foodstartup #sundaybreakfast #handmade #realfood #communityfirst
 ```
 
 ## Alt text
 
-Deep purple brand graphic with golden text about a woman-owned kitchen — or a real founder photo in a bright kitchen with burritos.
+Khushbu in a bright kitchen with breakfast burritos — or a brand graphic — story of the name Bob coming from misspellings of her name.
 
 ## Story / Reel
 
-- **Story:** Why I started Bob's Burritos + AMA question box
-- **Reel:** 15-20s kitchen b-roll + lines to camera — highest-trust content
+- **Story:** "Who's Bob?" → name-tag / coffee-cup misspellings → "There is no Bob. I'm Khushbu." + AMA  
+- **Reel (15–20s):** Highest-trust — say the reveal to camera, read a few worst misspellings, cut to rolling burritos. Text on screen: "There is no Bob."
 
 ## CTA
 
-Follow + support woman-owned
+Follow + support woman-owned · save for the Sunday club
+
+## Ongoing thread
+
+Continue in Stories highlight **Who's Bob?** — see brand kit content thread.
 
 
 ---

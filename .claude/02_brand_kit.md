@@ -1,7 +1,16 @@
 # 02 — Brand kit
 
+**Canonical full kit:** `Artwork/Brand/BRAND-KIT.md` (includes Origin Story, Meet Bob, Who's Bob? thread).
+
 ## Positioning
-Woman-owned · Sunday-only · small-batch · hand-rolled · famous house chipotle mayo.
+Woman-owned · Sunday-only · small-batch · hand-rolled · famous house chipotle mayo.  
+**Founder:** Khushbu · **Brand name:** Bob's Burritos (no literal Bob).
+
+## Origin Story / The Name
+There is no Bob. Founder Khushbu's name is mangled constantly (Cushbob, Kushbu, Cash-bab, Koshbob…). She named the business after the most common mangling. Emotional payoff: *There is no Bob — it's Khushbu.* Tone: self-aware, warm, funny, human — never corporate.
+
+## Content thread: Who's Bob?
+Story highlight collecting real misspellings; gag coffee-cup close-ups; Reel of Khushbu reading the worst names aloud. See `Artwork/Instagram/Profile/whos-bob-thread.md`.
 
 ## Colors (only these for brand graphics)
 
@@ -26,8 +35,9 @@ Concentric **sunrise arcs/rings** — lavender outer → orange mid → gold inn
 - **Never:** thin fashion serifs, random script, default Canva clichés.
 
 ## Voice
-Friendly · funny · bold · fresh · premium-but-approachable · never corporate.
+Friendly · funny · bold · fresh · premium-but-approachable · self-aware · human · never corporate.
 Talk like a cool friend who makes an incredible burrito — warm, a little cheeky, not salesy.
+The name story unlocks humor and vulnerability without apology.
 
 ## Logo
 - Primary: `Artwork/Brand/Logos/bobs-burritos-instagram-logo.jpeg`

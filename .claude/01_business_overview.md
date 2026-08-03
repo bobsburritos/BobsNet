@@ -6,6 +6,11 @@
 ## Positioning (internal)
 *The Sunday breakfast burrito LA plans its weekend around — woman-owned, small-batch, and famous for the sauce.*
 
+## Origin of the name "Bob"
+**There is no Bob.** The founder is **Khushbu**. Her name is constantly misspelled (Cushbob, Kushbu, Cash-bab, Koshbob, and more) on coffee cups and tickets. She embraced the most common mangling and named the business Bob's Burritos — an affectionate nod to a decade of butchered name tags. Quietly reinforces woman-owned + real person who loves breakfast.
+
+**Reveal (payoff, not footnote):** *There is no Bob — it's Khushbu.*
+
 ## Model
 - **Product:** Three breakfast burritos + house chipotle mayo on the side every order
 - **Cadence:** Sundays only for delivery

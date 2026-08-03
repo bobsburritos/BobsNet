@@ -46,5 +46,9 @@ Cadence targets: feed 4–5/week, Stories daily, Reels ~3/week.
 ## UGC
 Tag @bobsburritosco · #BobsSundayClub · delivery card in bags.
 
+## Who's Bob? (recurring)
+Highlight + Stories of name misspellings; Reel of Khushbu reading worst ones. Reveal: no Bob — it's Khushbu.  
+Docs: `Artwork/Brand/BRAND-KIT.md`, `Artwork/Instagram/Profile/whos-bob-thread.md`, Post 8 folder.
+
 ## Full playbook
 See `12_instagram_playbook_full.md` or `Artwork/Instagram/Playbook/launch-playbook.md`
