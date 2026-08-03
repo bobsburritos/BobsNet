@@ -4,14 +4,17 @@
 **Last update:** 2026-08-03 (user Costco shelf + TJ product link)  
 **Kitchen code:** `kitchen/index.html`
 
-### Two systems in kitchen
+### Two systems in kitchen (v2 flow)
 
-| List | What | How it works |
+| Zone | What | How it works |
 |------|------|----------------|
-| **Food order (this Sunday)** | Tortillas, eggs, cheese, meat, produce… | Scales with **this Sunday’s orders** → Costco food shop |
-| **Kitchen inventory** | **Condiments** (mayo, chipotle, seasoning) + **supplies** (cups, boxes, foil) | You set **on hand**; we estimate Sunday usage; warn when low; optional “Apply Sunday usage” |
+| **Top: Kitchen inventory** | Condiments + cups/boxes/foil | On-hand stock on this device. Past Sundays **auto-deplete**. Shows this Sunday’s use + after |
+| **Shopping list** | Food for Sunday **+** inventory shortfalls | Check **Got it** when purchased. Inventory packs **restock** stock; food lines are checklist only |
+| **Bottom: This Sunday** | Cook board / money / delivery | Header ‹ › browses delivery Sundays |
 
-Inventory stock is stored in the **browser** (`localStorage`) on the device you use for kitchen.
+**Seed once:** “Seed / adjust starting stock” (e.g. 200 cups). After that, don’t hand-edit weekly — check shopping boxes and let orders reduce tallies.
+
+Inventory stock is **browser `localStorage`** on the kitchen device.
 
 ### Product catalog structure (bones)
 
