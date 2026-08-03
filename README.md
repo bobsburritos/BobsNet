@@ -8,8 +8,13 @@ Orders close **Saturday 3:00 PM (America/Los_Angeles)** · Delivery **Sunday 9 A
 | | |
 |--|--|
 | **Order site** | https://bobsburritos.github.io/BobsNet/ |
+| **Instagram** | https://www.instagram.com/bobsburritosco/ |
 | **GitHub** | https://github.com/bobsburritos/BobsNet |
 | **Business email** | bobsburritosco@gmail.com |
+
+## Instagram launch pack
+
+See [`docs/instagram/`](docs/instagram/) — playbook, first 9 posts, brand tiles, 30-day calendar.
 
 ## What's in the public repo
 

@@ -511,6 +511,16 @@
   .share-qr img,.share-qr canvas{display:block;width:120px !important;height:120px !important;}
   .share-label{margin-top:10px;font-size:.85rem;font-weight:600;color:var(--sunbeam);}
   footer .foot-name{font-family:'Shrikhand',cursive;color:var(--sunbeam);font-size:1.2rem;display:block;margin-bottom:6px;}
+  footer .ig-link{
+    display:inline-flex;align-items:center;gap:8px;
+    margin:14px 0 4px;
+    color:var(--sunbeam);font-weight:700;font-size:1rem;
+    text-decoration:none;border-bottom:2px solid var(--tangerine);
+    padding-bottom:2px;
+  }
+  footer .ig-link:hover{color:#fff;border-bottom-color:var(--sunbeam);}
+  .chip a{color:inherit;text-decoration:none;}
+  .chip a:hover{color:var(--tangerine);}
 
   @media (prefers-reduced-motion:reduce){
     .ribbon__track,.sun div,.confirm.show{animation:none;}
@@ -536,6 +546,7 @@
     <p class="hero__tag">A <em>woman-owned</em> kitchen rolling small-batch breakfast burritos every Sunday — delivered to your door at 1111 Wilshire.</p>
     <div class="chips">
       <div class="chip chip--owned">Woman-owned · <strong>local</strong></div>
+      <div class="chip"><a href="https://www.instagram.com/bobsburritosco/" target="_blank" rel="noopener noreferrer">Instagram <strong>@bobsburritosco</strong></a></div>
       <div class="chip">Order by <strong>Sat 3 PM</strong></div>
       <div class="chip">Delivered Sunday <strong>9 AM – 12 PM</strong></div>
       <div class="chip">Burritos from <strong>$10</strong></div>
@@ -695,6 +706,7 @@
 <footer>
   <span class="foot-name">Bob's Burritos</span>
   Proudly woman-owned · Small-batch breakfast burritos · 1111 Wilshire, Los Angeles · Sundays only
+  <a class="ig-link" href="https://www.instagram.com/bobsburritosco/" target="_blank" rel="noopener noreferrer" aria-label="Bob's Burritos on Instagram">Instagram @bobsburritosco</a>
   <div class="share-qr"><div id="share-qr"></div></div>
   <p class="share-label">Show a neighbor — support a woman-owned business</p>
 </footer>

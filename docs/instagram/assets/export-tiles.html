@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Export Bob's Burritos IG tiles</title>
+<style>
+  body{font-family:system-ui,sans-serif;background:#2A1140;color:#FFF4DC;padding:24px;max-width:720px;margin:0 auto;}
+  h1{color:#FFD23F;font-size:1.4rem;}
+  p{line-height:1.5;color:#C9A7F0;}
+  .row{display:flex;gap:16px;flex-wrap:wrap;margin:20px 0;}
+  button{
+    background:#FFD23F;color:#3D1A5C;border:none;border-radius:999px;
+    padding:12px 20px;font-weight:700;cursor:pointer;font-size:1rem;
+  }
+  button:hover{filter:brightness(1.05);}
+  canvas{display:none;}
+  .hint{font-size:.9rem;margin-top:24px;color:#C9A7F0;}
+  a{color:#FFD23F;}
+</style>
+</head>
+<body>
+  <h1>Bob's Burritos — export brand tiles</h1>
+  <p>Click a button to download a <strong>1080×1350 PNG</strong> ready for Instagram. Keep this file open from disk (file://) so the SVGs load.</p>
+  <div class="row">
+    <button type="button" data-src="tile-02-who-we-are.svg" data-name="tile-02-who-we-are.png">Download Post 2 PNG</button>
+    <button type="button" data-src="tile-06-how-sunday-works.svg" data-name="tile-06-how-sunday-works.png">Download Post 6 PNG</button>
+    <button type="button" data-src="tile-08-woman-owned.svg" data-name="tile-08-woman-owned.png">Download Post 8 PNG</button>
+  </div>
+  <p class="hint">If a download fails (browser blocking local SVG), open each <code>.svg</code> in a new tab and use a free “SVG to PNG” tool at 1080×1350, or import into Canva.</p>
+  <canvas id="c" width="1080" height="1350"></canvas>
+<script>
+(function(){
+  var canvas = document.getElementById('c');
+  var ctx = canvas.getContext('2d');
+
+  function exportTile(src, name){
+    var img = new Image();
+    img.onload = function(){
+      ctx.clearRect(0,0,1080,1350);
+      ctx.drawImage(img, 0, 0, 1080, 1350);
+      canvas.toBlob(function(blob){
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = name;
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }, 'image/png');
+    };
+    img.onerror = function(){
+      alert('Could not load ' + src + '. Open the SVG file directly or use Canva.');
+    };
+    img.src = src + '?t=' + Date.now();
+  }
+
+  document.querySelectorAll('button[data-src]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      exportTile(btn.getAttribute('data-src'), btn.getAttribute('data-name'));
+    });
+  });
+})();
+</script>
+</body>
+</html>

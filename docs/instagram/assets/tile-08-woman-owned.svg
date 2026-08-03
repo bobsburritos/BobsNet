@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350" role="img" aria-labelledby="t8">
+  <title id="t8">Made by a woman who really likes breakfast</title>
+  <rect width="1080" height="1350" fill="#3D1A5C"/>
+  <g transform="translate(0,1350)">
+    <path d="M-40,0 A620,620 0 0,1 580,-560" fill="none" stroke="#C9A7F0" stroke-width="70"/>
+    <path d="M-40,0 A450,450 0 0,1 410,-400" fill="none" stroke="#FF8A3D" stroke-width="62"/>
+    <path d="M-40,0 A280,280 0 0,1 240,-240" fill="none" stroke="#FFD23F" stroke-width="54"/>
+  </g>
+  <text x="96" y="200" fill="#C9A7F0" font-family="Arial Black, Helvetica, sans-serif" font-size="26" letter-spacing="5" font-weight="700">WOMAN-OWNED</text>
+  <text x="96" y="400" fill="#FFD23F" font-family="Arial Black, Helvetica, sans-serif" font-size="64" font-weight="900">MADE BY A</text>
+  <text x="96" y="490" fill="#FFD23F" font-family="Arial Black, Helvetica, sans-serif" font-size="64" font-weight="900">WOMAN WHO</text>
+  <text x="96" y="580" fill="#FFD23F" font-family="Arial Black, Helvetica, sans-serif" font-size="64" font-weight="900">REALLY LIKES</text>
+  <text x="96" y="670" fill="#FFD23F" font-family="Arial Black, Helvetica, sans-serif" font-size="64" font-weight="900">BREAKFAST</text>
+  <text x="96" y="800" fill="#FFF4DC" font-family="Helvetica, Arial, sans-serif" font-size="34" font-weight="500">— the kitchen behind Bob's Burritos</text>
+  <text x="96" y="900" fill="#C9A7F0" font-family="Helvetica, Arial, sans-serif" font-size="30">Small-batch · hand-rolled · Sundays only</text>
+  <text x="96" y="960" fill="#C9A7F0" font-family="Helvetica, Arial, sans-serif" font-size="30">Famous for the chipotle mayo</text>
+  <rect x="96" y="1060" width="420" height="64" rx="32" fill="#FFD23F"/>
+  <text x="306" y="1102" text-anchor="middle" fill="#3D1A5C" font-family="Arial Black, Helvetica, sans-serif" font-size="26" font-weight="900">SUPPORT LOCAL</text>
+  <text x="96" y="1240" fill="#C9A7F0" font-family="Helvetica, Arial, sans-serif" font-size="26" font-weight="600">@bobsburritosco</text>
+</svg>

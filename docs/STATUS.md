@@ -15,6 +15,9 @@
 - [x] Kitchen mark paid / cook board / grocery / delivery run
 - [x] Zelle destination shown (`7148120977`)
 - [x] Venmo username set (`@Khushbu-Kotecha`)
+- [x] Woman-owned messaging on public site
+- [x] Instagram linked on site (`@bobsburritosco`)
+- [x] Instagram launch pack in `docs/instagram/` (playbook, first 9, tiles, 30-day calendar)
 - [x] Compressed menu images + cache bust
 - [x] Desktop copy-button fix
 - [x] Hardened backend READY (validation, server totals) — **needs Deploy New version when you return**
@@ -23,9 +26,12 @@
 
 1. **Apps Script:** paste `local/bobs-burritos-backend.READY.gs` → **Deploy → New version** (clipboard often has latest)
 2. **Confirm Zelle** works for phone `7148120977`
-4. **Delete smoke-test rows** on Orders if still present (`BB-SMOKE1`)
-5. **Real product run:** phone order + pay + kitchen mark paid
-6. Optional: Venmo/Zelle handles on flyers
+3. **Delete smoke-test rows** on Orders if still present (`BB-SMOKE1`)
+4. **Real product run:** phone order + pay + kitchen mark paid
+5. **Instagram profile:** paste bio + link from `docs/instagram/PROFILE.md`
+6. **Export brand tiles** SVG → PNG 1080×1350 (`docs/instagram/assets/`)
+7. **Post first 9** reverse order (see `docs/instagram/POSTING-ORDER.md`)
+8. Optional: Meta Business Suite scheduling; founder photo for Post 8
 
 ## Intentionally not built yet (roadmap)
 
@@ -34,6 +40,7 @@
 - Real auth for hosted kitchen (Firebase / Cloudflare Access)
 - Receipt-based grocery COGS lock-in
 - SMS notifications
+- Instagram Graph API auto-publish
 
 ## Paths
 
