@@ -1,4 +1,4 @@
-"""Render Instagram brand tiles as 1080x1350 PNG. Run from anywhere:
+"""Render Instagram brand tiles as 1080x1350 PNG under Artwork/Instagram/Tiles.
 
     python scripts/render_ig_tiles.py
 """
@@ -9,7 +9,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "docs" / "instagram" / "assets"
+OUT = ROOT / "Artwork" / "Instagram" / "Tiles"
 W, H = 1080, 1350
 PURPLE = (61, 26, 92)
 GOLD = (255, 210, 63)
@@ -116,7 +116,7 @@ def main() -> None:
         "tile-08-woman-owned.png",
     ):
         p = OUT / name
-        print(f"OK {p} ({p.stat().st_size} bytes)")
+        print(f"OK {p.relative_to(ROOT)} ({p.stat().st_size} bytes)")
 
 
 if __name__ == "__main__":

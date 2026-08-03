@@ -12,21 +12,30 @@ Orders close **Saturday 3:00 PM (America/Los_Angeles)** · Delivery **Sunday 9 A
 | **GitHub** | https://github.com/bobsburritos/BobsNet |
 | **Business email** | bobsburritosco@gmail.com |
 
-## Instagram launch pack
+## Where things live
 
-See [`docs/instagram/`](docs/instagram/) — playbook, first 9 posts, brand tiles, 30-day calendar.
+| Need | Path |
+|------|------|
+| **Brand, Instagram, flyers, food art** | [`Artwork/`](Artwork/) — single home for creative work |
+| Brand kit + logo | [`Artwork/Brand/`](Artwork/Brand/) |
+| IG playbook, prompts, posts, calendar | [`Artwork/Instagram/`](Artwork/Instagram/) |
+| Engineering ops | [`docs/`](docs/) (deploy, kitchen, security) |
+| Live site code | `index.html`, `assets/`, `kitchen/`, `apps-script/` |
+
+**Rule:** no floating brand/content docs. New creative work goes under `Artwork/`.
 
 ## What's in the public repo
 
 ```
 index.html                 Public order page
-assets/                    Photos + favicon
-og-image.png               Social preview
+assets/                    Web photos + favicon (shipped to Pages)
+og-image.png               Live social preview
+Artwork/                   Brand + content source of truth
 apps-script/               Backend template (no live portal key)
-kitchen/index.html         Kitchen UI only (no password in file)
+kitchen/                   Kitchen UI
 kitchen-config.example.js  Copy → kitchen/kitchen-config.js
-docs/                      Deployment, ops, security, status
-FablePlanning/             Original planning pack
+docs/                      Ops, security, status (+ archive/)
+scripts/                   Vault builder, tile helpers
 ```
 
 ## Private (gitignored — never publish)
@@ -57,6 +66,7 @@ See [docs/OPERATIONS.md](docs/OPERATIONS.md) and [docs/SECURITY.md](docs/SECURIT
 3. No payment by Saturday 3 PM → order is not cooked.
 4. Cutoff always uses **America/Los_Angeles**.
 5. After every Apps Script edit: **Deploy → Manage deployments → New version**.
+6. Creative assets and prompts live under **`Artwork/`** only.
 
 ## Status
 
