@@ -157,8 +157,29 @@
   table.grocery{min-width:320px;}
   table.grocery td, table.grocery th{padding:9px 10px;font-size:.88rem;}
   table.grocery tbody tr.done td{opacity:.4;text-decoration:line-through;}
-  table.grocery input{width:22px;height:22px;accent-color:var(--tangerine);cursor:pointer;}
+  table.grocery input[type="checkbox"]{width:22px;height:22px;accent-color:var(--tangerine);cursor:pointer;}
+  table.grocery input[type="number"]{
+    width:5.5rem;font-family:'Fredoka',sans-serif;font-size:16px;font-weight:600;
+    padding:6px 8px;border:2px solid var(--grape);border-radius:10px;background:var(--cream);color:var(--grape);
+  }
   table.grocery tfoot td{padding:12px 10px;border-top:3px solid var(--grape);}
+  table.grocery tr.low-stock{background:#FFF0C8;}
+  table.grocery tr.critical{background:#FFE9E4;}
+  .inv-banner{
+    background:#fff;border:var(--outline);border-radius:18px;box-shadow:var(--pop);
+    padding:14px 16px;margin:12px 0 18px;font-weight:600;line-height:1.4;
+  }
+  .inv-banner.warn{border-color:var(--tangerine);background:#FFF8E6;}
+  .inv-banner.critical{border-color:var(--bad);background:#FFE9E4;}
+  .inv-actions{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 16px;}
+  .inv-actions button{
+    font-family:'Fredoka',sans-serif;font-weight:700;font-size:.9rem;border:none;border-radius:999px;
+    padding:10px 16px;cursor:pointer;min-height:44px;touch-action:manipulation;
+  }
+  .inv-actions .primary{background:var(--grape);color:var(--sunbeam);}
+  .inv-actions .secondary{background:var(--sunbeam);color:var(--grape);}
+  .inv-actions .ghost{background:#fff;color:var(--grape);border:2px solid var(--grape);}
+  .section-note{font-family:'Fredoka',sans-serif;font-size:.85rem;font-weight:500;opacity:.85;margin:-6px 0 12px;line-height:1.4;}
   .markpaid{
     margin-top:8px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:.85rem;
     background:var(--grape);color:var(--sunbeam);border:none;border-radius:999px;
@@ -290,12 +311,13 @@
 
     <div class="cols">
       <div>
-        <h2>Grocery List <small>(Full Costco/warehouse ballpark table — see docs/COGS_COSTCO.md; eggs #637598 @ $3.28 confirmed)</small></h2>
+        <h2>Food order (this Sunday)</h2>
+        <p class="section-note">Order-based only — eggs, meat, produce, etc. Scales with this Sunday&rsquo;s burritos. Prices: docs/COGS_COSTCO.md</p>
         <div class="table-scroll grocery-scroll">
         <table class="grocery">
           <thead><tr><th></th><th>Item</th><th>Need</th><th>Buy</th><th>Est</th></tr></thead>
           <tbody id="grocery"></tbody>
-          <tfoot><tr><td></td><td colspan="3"><strong>Est. grocery total</strong></td><td id="grocery-total"><strong>—</strong></td></tr></tfoot>
+          <tfoot><tr><td></td><td colspan="3"><strong>Est. food shop total</strong></td><td id="grocery-total"><strong>—</strong></td></tr></tfoot>
         </table>
         </div>
       </div>
@@ -306,6 +328,32 @@
         <ul class="check" id="chase"></ul>
       </div>
     </div>
+
+    <h2>Kitchen inventory <small>(condiments + cups, boxes, foil)</small></h2>
+    <p class="section-note">Stock-based — not 1:1 with a Costco food run. Set on-hand, we estimate usage from this Sunday&rsquo;s orders, warn when low, and track after you apply Sunday usage.</p>
+    <div id="inv-alerts" class="inv-banner" style="display:none" role="status"></div>
+    <div class="inv-actions">
+      <button type="button" class="primary" id="inv-apply">Apply this Sunday&rsquo;s usage to stock</button>
+      <button type="button" class="secondary" id="inv-save">Save stock levels</button>
+      <button type="button" class="ghost" id="inv-restock-hint">Show reorder list</button>
+    </div>
+    <div class="table-scroll grocery-scroll">
+    <table class="grocery" id="inv-table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Item</th>
+          <th>On hand</th>
+          <th>This Sunday uses</th>
+          <th>After</th>
+          <th>Reorder when &le;</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="inventory"></tbody>
+    </table>
+    </div>
+    <div id="inv-reorder" class="inv-banner" style="display:none;margin-top:14px"></div>
 
     <h2>Delivery Run <small>(sorted by unit)</small></h2>
     <div class="table-scroll delivery-scroll">
@@ -582,66 +630,132 @@
       .replace(/'/g, '&#39;');
   }
 
-  /* Grocery COGS — Costco/TJ pack prices (SoCal).
-     Locked lines: USER Costco shelf 2026-08. Rest still ballpark until receipt.
-     Full table: docs/COGS_COSTCO.md */
-  var GROCERY = [
+  /* ===== FOOD (order-based) — this Sunday shop only =====
+     Full price notes: docs/COGS_COSTCO.md */
+  var FOOD_GROCERY = [
     {item:'Flour tortillas (1 per burrito)', unit:'tortillas', need:function(t){return t.totalB;},
-     pack:'Mission 10" flour 40-ct (#208429)', packSize:40, packPrice:8.99,
-     note:'USER Costco $8.99 item 208429'},
+     pack:'Mission 10" flour 40-ct (#208429)', packSize:40, packPrice:8.99, note:'Costco $8.99'},
     {item:'Eggs (2 per burrito)', unit:'eggs', need:function(t){return t.totalB*2;},
-     pack:'Kirkland Large 24-ct (#637598)', packSize:24, packPrice:3.28,
-     note:'USER Costco $3.28 item 637598'},
+     pack:'Kirkland Large 24-ct (#637598)', packSize:24, packPrice:3.28, note:'Costco $3.28'},
     {item:'Shredded cheese (2 oz ea)', unit:'oz', need:function(t){return t.totalB*2;},
-     pack:'Kirkland Mexican blend 2.5 lb \u00d7 2 (#1165284) = 80 oz', packSize:80, packPrice:15.31,
-     note:'USER Costco $15.31 for 2\u00d72.5 lb item 1165284'},
+     pack:'Kirkland Mexican blend 2.5 lb \u00d7 2 (#1165284) = 80 oz', packSize:80, packPrice:15.31, note:'Costco $15.31'},
     {item:'Hash browns (3 oz ea)', unit:'oz', need:function(t){return t.totalB*3;},
-     pack:'Ore-Ida shredded 6 lb (96 oz) #42125', packSize:96, packPrice:6.99,
-     note:'USER Costco $6.99 item 42125 frozen'},
+     pack:'Ore-Ida shredded 6 lb (96 oz) #42125', packSize:96, packPrice:6.99, note:'Costco $6.99'},
     {item:'Soy chorizo (4 oz ea)', unit:'oz', need:function(t){return t.soy*4;},
-     pack:'Trader Joe\u2019s soy chorizo 12 oz (#092463)', packSize:12, packPrice:2.99,
-     note:'USER TJ $2.99 / 12 oz product 092463'},
+     pack:'Trader Joe\u2019s soy chorizo 12 oz (#092463)', packSize:12, packPrice:2.99, note:'TJ $2.99'},
     {item:'Ground beef (4 oz ea, Cali)', unit:'oz', need:function(t){return t.cali*4;},
-     pack:'Kirkland 88/12 ground beef 1 lb (#33724)', packSize:16, packPrice:6.80,
-     note:'USER Costco $6.80/lb item 33724 (pkg sold by weight)'},
+     pack:'Kirkland 88/12 ground beef 1 lb (#33724)', packSize:16, packPrice:6.80, note:'Costco $6.80/lb'},
     {item:'Breakfast sausage (2 oz ea, Heavy)', unit:'oz', need:function(t){return t.heavy*2;},
-     pack:'Bulk breakfast sausage ~3 lb (48 oz)', packSize:48, packPrice:15.99,
-     note:'Costco ballpark \u2014 confirm next trip'},
+     pack:'Bulk breakfast sausage ~3 lb (48 oz)', packSize:48, packPrice:15.99, note:'ballpark'},
     {item:'Bacon (2 slices ea, Heavy)', unit:'slices', need:function(t){return t.heavy*2;},
-     pack:'Kirkland sliced bacon 1 lb \u00d7 4 (#7000070) ~64 slices est.', packSize:64, packPrice:17.01,
-     note:'USER Costco $17.01 for 4\u00d71 lb item 7000070'},
+     pack:'Kirkland sliced bacon 1 lb \u00d7 4 (#7000070) ~64 slices est.', packSize:64, packPrice:17.01, note:'Costco $17.01'},
     {item:'Avocados (\u00bd per add-on / Cali)', unit:'halves', need:function(t){return t.avoHalves;},
-     pack:'Hass 6-ct bag (#647465) = 12 halves', packSize:12, packPrice:6.23,
-     note:'USER Costco $6.23 item 647465'},
+     pack:'Hass 6-ct bag (#647465) = 12 halves', packSize:12, packPrice:6.23, note:'Costco $6.23'},
     {item:'Yellow onions (1 oz ea)', unit:'oz', need:function(t){return t.totalB;},
-     pack:'Yellow onion bag ~5 lb (80 oz)', packSize:80, packPrice:5.49,
-     note:'Costco produce bag ballpark $4\u20137'},
+     pack:'Yellow onion bag ~5 lb (80 oz)', packSize:80, packPrice:5.49, note:'ballpark'},
     {item:'Cilantro', unit:'bunches', need:function(t){return Math.max(1, Math.ceil(t.totalB/20));},
-     pack:'Fresh bunch', packSize:1, packPrice:1.29,
-     note:'Usually grocery not Costco; $0.99\u20131.99'},
-    {item:'Mayo base for chipotle sauce (1.5 oz/burrito)', unit:'oz', need:function(t){return t.totalB*1.5;},
-     pack:'Kirkland Real Mayonnaise 64 oz (#503961)', packSize:64, packPrice:5.19,
-     note:'USER Costco $5.19 item 503961 ($0.08/oz)'},
-    {item:'Chipotle sauce (house mayo)', unit:'bottles', need:function(t){return Math.max(1, Math.ceil(t.totalB/25));},
-     pack:'La Coste\u00f1a Medium Chipotle Sauce 220 ml', packSize:1, packPrice:1.59,
-     note:'USER $1.59 / 220 ml \u2014 portion est. 1 bottle ~25 burritos; tune with recipe'},
-    {item:'Taco seasoning (Cali beef)', unit:'packets', need:function(t){return t.cali>0?Math.max(1, Math.ceil(t.cali/8)):0;},
-     pack:'1 oz packet (or bulk scoop)', packSize:1, packPrice:1.29,
-     note:'Grocery packet; Costco bulk seasoning optional'},
-    {item:'2 oz sauce cups + lids', unit:'cups', need:function(t){return t.totalB;},
-     pack:'100-ct portion cups', packSize:100, packPrice:11.99,
-     note:'Restaurant Depot / Amazon ballpark $10\u201315'},
-    {item:'Takeout / kraft food boxes', unit:'boxes', need:function(t){return t.totalB;},
-     pack:'50-ct #3 or similar', packSize:50, packPrice:18.99,
-     note:'Supply house ballpark $15\u201325 / 50'},
-    {item:'Foil wrap sheets', unit:'sheets', need:function(t){return t.totalB;},
-     pack:'Kirkland Reynolds Foodservice Foil HD 18 in x 500 ft (#31684)', packSize:400, packPrice:45.99,
-     note:'USER Costco $45.99 item 31684; ~400 burrito wraps est. (14 in/sheet from 500 ft)'}
+     pack:'Fresh bunch', packSize:1, packPrice:1.29, note:'grocery ballpark'}
   ];
 
-  function renderGrocery(t){
+  /* ===== INVENTORY (stock-based) — condiments + pack supplies =====
+     usage(t) = amount this Sunday consumes from on-hand stock.
+     reorderAt = warn when on-hand (after Sunday) would be <= this. */
+  var INV_CATALOG = [
+    {id:'mayo_oz', group:'Condiment', item:'Mayo (house chipotle base)', unit:'oz',
+     usage:function(t){return t.totalB*1.5;}, reorderAt:32,
+     pack:'Kirkland mayo 64 oz (#503961)', packSize:64, packPrice:5.19,
+     note:'1.5 oz mayo base per burrito'},
+    {id:'chipotle_ml', group:'Condiment', item:'Chipotle sauce (La Coste\u00f1a)', unit:'ml',
+     usage:function(t){return t.totalB*(220/25);}, reorderAt:110,
+     pack:'La Coste\u00f1a Medium Chipotle 220 ml', packSize:220, packPrice:1.59,
+     note:'~8.8 ml/burrito (1 bottle ~25 burritos)'},
+    {id:'seasoning_pk', group:'Condiment', item:'Taco seasoning (Cali)', unit:'packets',
+     usage:function(t){return t.cali>0?Math.ceil(t.cali/8):0;}, reorderAt:2,
+     pack:'1 oz packet', packSize:1, packPrice:1.29,
+     note:'~1 packet per 8 Cali burritos'},
+    {id:'sauce_cups', group:'Supply', item:'2 oz sauce cups + lids', unit:'cups',
+     usage:function(t){return t.totalB;}, reorderAt:50,
+     pack:'100-ct', packSize:100, packPrice:11.99,
+     note:'1 cup per burrito'},
+    {id:'boxes', group:'Supply', item:'Takeout / kraft boxes', unit:'boxes',
+     usage:function(t){return t.totalB;}, reorderAt:40,
+     pack:'50-ct', packSize:50, packPrice:18.99,
+     note:'1 box per burrito (adjust if multi-pack orders share)'},
+    {id:'foil', group:'Supply', item:'Foil wrap sheets', unit:'sheets',
+     usage:function(t){return t.totalB;}, reorderAt:80,
+     pack:'Reynolds HD 18 in x 500 ft (#31684) ~400 sheets', packSize:400, packPrice:45.99,
+     note:'1 wrap per burrito'}
+  ];
+
+  var INV_KEY = 'bb_kitchen_inventory_v1';
+  var INV_APPLIED_KEY = 'bb_kitchen_inv_applied_sundays_v1';
+  var lastTotals = null;
+
+  function defaultInvState(){
+    var s = { stock:{}, updatedAt: null };
+    INV_CATALOG.forEach(function(c){ s.stock[c.id] = 0; });
+    return s;
+  }
+
+  function loadInvState(){
+    try {
+      var raw = localStorage.getItem(INV_KEY);
+      if(!raw) return defaultInvState();
+      var parsed = JSON.parse(raw);
+      var s = defaultInvState();
+      if(parsed && parsed.stock){
+        INV_CATALOG.forEach(function(c){
+          if(typeof parsed.stock[c.id] === 'number' && !isNaN(parsed.stock[c.id])){
+            s.stock[c.id] = Math.max(0, parsed.stock[c.id]);
+          }
+        });
+      }
+      s.updatedAt = parsed.updatedAt || null;
+      return s;
+    } catch(e){ return defaultInvState(); }
+  }
+
+  function saveInvState(state){
+    state.updatedAt = new Date().toISOString();
+    localStorage.setItem(INV_KEY, JSON.stringify(state));
+  }
+
+  function loadAppliedSundays(){
+    try {
+      return JSON.parse(localStorage.getItem(INV_APPLIED_KEY) || '{}') || {};
+    } catch(e){ return {}; }
+  }
+
+  function markSundayApplied(iso){
+    var m = loadAppliedSundays();
+    m[iso] = new Date().toISOString();
+    localStorage.setItem(INV_APPLIED_KEY, JSON.stringify(m));
+  }
+
+  function isSundayApplied(iso){
+    return !!loadAppliedSundays()[iso];
+  }
+
+  function readStockFromInputs(){
+    var state = loadInvState();
+    INV_CATALOG.forEach(function(c){
+      var el = document.getElementById('inv-stock-' + c.id);
+      if(el){
+        var v = parseFloat(el.value);
+        state.stock[c.id] = isNaN(v) ? 0 : Math.max(0, v);
+      }
+    });
+    return state;
+  }
+
+  function fmtQty(n, unit){
+    var r = Math.round(n * 10) / 10;
+    return r + ' ' + unit;
+  }
+
+  function renderFoodShopping(t){
     var totalCost = 0;
-    var html = GROCERY.map(function(gr){
+    var html = FOOD_GROCERY.map(function(gr){
       var need = gr.need(t);
       if(need <= 0){ return ''; }
       var packs = Math.ceil(need / gr.packSize);
@@ -649,7 +763,7 @@
       totalCost += cost;
       var needLabel = (Math.round(need * 10) / 10) + ' ' + gr.unit;
       var buyLabel = packs + ' \u00d7 ' + gr.pack + ' @ ' + money(gr.packPrice);
-      return '<tr title="' + esc(gr.note || 'estimate') + '">' +
+      return '<tr title="' + esc(gr.note || '') + '">' +
         '<td><input type="checkbox" onchange="this.closest(\'tr\').classList.toggle(\'done\', this.checked)"></td>' +
         '<td>' + esc(gr.item) + '</td>' +
         '<td>' + needLabel + '</td>' +
@@ -657,8 +771,117 @@
         '<td>' + money(cost) + '</td>' +
         '</tr>';
     }).join('');
-    document.getElementById('grocery').innerHTML = html;
+    document.getElementById('grocery').innerHTML = html || '<tr><td colspan="5">No food need for this Sunday yet.</td></tr>';
     document.getElementById('grocery-total').innerHTML = '<strong>' + money(totalCost) + '</strong>';
+  }
+
+  function renderInventory(t){
+    lastTotals = t;
+    var state = loadInvState();
+    var alerts = [];
+    var reorderLines = [];
+    var html = INV_CATALOG.map(function(c){
+      var onHand = state.stock[c.id] || 0;
+      var use = c.usage(t) || 0;
+      var after = Math.max(0, onHand - use);
+      var status = 'OK';
+      var rowClass = '';
+      if(after <= 0 && use > 0){
+        status = 'OUT after Sunday';
+        rowClass = 'critical';
+        alerts.push(c.item + ' will run out this Sunday (need ' + fmtQty(use, c.unit) + ', have ' + fmtQty(onHand, c.unit) + ')');
+      } else if(after <= c.reorderAt){
+        status = 'Reorder soon';
+        rowClass = 'low-stock';
+        alerts.push(c.item + ' low after Sunday: ' + fmtQty(after, c.unit) + ' left (reorder \u2264 ' + c.reorderAt + ')');
+      }
+      if(after <= c.reorderAt){
+        var buyPacks = Math.max(1, Math.ceil((c.reorderAt * 2 + use - onHand) / c.packSize));
+        if(buyPacks < 1) buyPacks = 1;
+        reorderLines.push(
+          '• ' + c.item + ': buy ~' + buyPacks + ' \u00d7 ' + c.pack + ' @ ' + money(c.packPrice) +
+          ' (after Sunday ~' + fmtQty(after, c.unit) + ')'
+        );
+      }
+      return '<tr class="' + rowClass + '" title="' + esc(c.note || '') + '">' +
+        '<td>' + esc(c.group) + '</td>' +
+        '<td>' + esc(c.item) + '<br><small>' + esc(c.pack) + '</small></td>' +
+        '<td><input type="number" min="0" step="any" id="inv-stock-' + c.id + '" value="' + onHand + '" aria-label="On hand ' + esc(c.item) + '"> <small>' + esc(c.unit) + '</small></td>' +
+        '<td>' + fmtQty(use, c.unit) + '</td>' +
+        '<td><strong>' + fmtQty(after, c.unit) + '</strong></td>' +
+        '<td>' + c.reorderAt + ' ' + esc(c.unit) + '</td>' +
+        '<td>' + status + '</td>' +
+        '</tr>';
+    }).join('');
+    document.getElementById('inventory').innerHTML = html;
+
+    var banner = document.getElementById('inv-alerts');
+    if(alerts.length){
+      banner.style.display = 'block';
+      banner.className = 'inv-banner ' + (alerts.some(function(a){ return a.indexOf('run out') >= 0; }) ? 'critical' : 'warn');
+      banner.innerHTML = '<strong>Inventory alerts for this Sunday</strong><br>' + alerts.map(esc).join('<br>');
+    } else {
+      banner.style.display = 'none';
+      banner.innerHTML = '';
+    }
+
+    var re = document.getElementById('inv-reorder');
+    re.dataset.lines = reorderLines.join('\n');
+    if(re.style.display === 'block' && reorderLines.length){
+      re.innerHTML = '<strong>Next supply / condiment order</strong><br>' + reorderLines.map(esc).join('<br>');
+    } else if(re.style.display === 'block'){
+      re.innerHTML = '<strong>Next supply / condiment order</strong><br>Nothing below reorder threshold after this Sunday.';
+    }
+  }
+
+  function wireInventoryUi(){
+    var saveBtn = document.getElementById('inv-save');
+    var applyBtn = document.getElementById('inv-apply');
+    var hintBtn = document.getElementById('inv-restock-hint');
+    if(saveBtn && !saveBtn._wired){
+      saveBtn._wired = true;
+      saveBtn.addEventListener('click', function(){
+        var state = readStockFromInputs();
+        saveInvState(state);
+        if(lastTotals) renderInventory(lastTotals);
+        alert('Stock levels saved on this device (browser storage).');
+      });
+    }
+    if(applyBtn && !applyBtn._wired){
+      applyBtn._wired = true;
+      applyBtn.addEventListener('click', function(){
+        if(!lastTotals){ alert('Load a Sunday with orders first.'); return; }
+        var iso = sundayISO();
+        if(isSundayApplied(iso)){
+          if(!confirm('Usage for ' + iso + ' was already applied. Apply again anyway? (will subtract again)')) return;
+        } else {
+          if(!confirm('Subtract this Sunday\u2019s condiment/supply usage from on-hand stock for ' + sundayLabel() + '?')) return;
+        }
+        var state = readStockFromInputs();
+        INV_CATALOG.forEach(function(c){
+          var use = c.usage(lastTotals) || 0;
+          state.stock[c.id] = Math.max(0, (state.stock[c.id] || 0) - use);
+        });
+        saveInvState(state);
+        markSundayApplied(iso);
+        renderInventory(lastTotals);
+        alert('Stock updated for ' + sundayLabel() + '.');
+      });
+    }
+    if(hintBtn && !hintBtn._wired){
+      hintBtn._wired = true;
+      hintBtn.addEventListener('click', function(){
+        var re = document.getElementById('inv-reorder');
+        re.style.display = re.style.display === 'block' ? 'none' : 'block';
+        if(lastTotals) renderInventory(lastTotals);
+        if(re.style.display === 'block'){
+          var lines = re.dataset.lines || '';
+          re.innerHTML = lines
+            ? '<strong>Next supply / condiment order</strong><br>' + lines.split('\n').map(esc).join('<br>')
+            : '<strong>Next supply / condiment order</strong><br>Nothing below reorder threshold after this Sunday.';
+        }
+      });
+    }
   }
 
   /** Normalize many date shapes to yyyy-mm-dd (Sheets often returns Date strings). */
@@ -734,7 +957,9 @@
 
     t.totalB = totalB;
     t.avoHalves = avoHalves;
-    renderGrocery(t);
+    renderFoodShopping(t);
+    renderInventory(t);
+    wireInventoryUi();
 
     document.getElementById('money').innerHTML =
       '<div class="bignum"><div class="n">' + money(t.revenue) + '</div><div class="l">Expected</div></div>' +

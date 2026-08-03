@@ -1,8 +1,17 @@
 # Costco / warehouse COGS reference
 
-**Purpose:** Pack prices for kitchen grocery estimates.  
+**Purpose:** Pack prices for kitchen estimates.  
 **Last update:** 2026-08-03 (user Costco shelf + TJ product link)  
-**Kitchen code:** `kitchen/index.html` → `GROCERY` array.
+**Kitchen code:** `kitchen/index.html`
+
+### Two systems in kitchen
+
+| List | What | How it works |
+|------|------|----------------|
+| **Food order (this Sunday)** | Tortillas, eggs, cheese, meat, produce… | Scales with **this Sunday’s orders** → Costco food shop |
+| **Kitchen inventory** | **Condiments** (mayo, chipotle, seasoning) + **supplies** (cups, boxes, foil) | You set **on hand**; we estimate Sunday usage; warn when low; optional “Apply Sunday usage” |
+
+Inventory stock is stored in the **browser** (`localStorage`) on the device you use for kitchen.
 
 ## Locked (your Costco / TJ)
 
