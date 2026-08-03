@@ -16,12 +16,18 @@
     --outline:3px solid var(--grape); --pop:5px 5px 0 var(--grape);
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'Fredoka',sans-serif;background:var(--cream);color:var(--grape);padding-bottom:60px;min-height:100vh;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    font-family:'Fredoka',sans-serif;background:var(--cream);color:var(--grape);
+    padding-bottom:max(60px, env(safe-area-inset-bottom));
+    min-height:100vh;overflow-x:hidden;
+  }
 
   /* ---------- Login gate ---------- */
   #login-gate{
-    min-height:100vh;display:flex;align-items:center;justify-content:center;
-    padding:24px;background:
+    min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;
+    padding:max(16px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+    background:
       radial-gradient(ellipse at 20% 0%, var(--lilac) 0%, transparent 50%),
       radial-gradient(ellipse at 80% 100%, var(--sunbeam) 0%, transparent 45%),
       var(--cream);
@@ -29,30 +35,32 @@
   #login-gate[hidden]{display:none !important;}
   .login-card{
     width:min(420px,100%);background:#fff;border:var(--outline);border-radius:28px;
-    box-shadow:var(--pop);padding:36px 28px 28px;text-align:center;
+    box-shadow:var(--pop);padding:28px 20px 24px;text-align:center;
   }
   .login-card h1{
-    font-family:'Shrikhand',cursive;font-size:1.85rem;color:var(--grape);
+    font-family:'Shrikhand',cursive;font-size:clamp(1.5rem,6vw,1.85rem);color:var(--grape);
     margin-bottom:6px;
   }
-  .login-card .sub{font-weight:500;opacity:.8;margin-bottom:22px;line-height:1.4;}
+  .login-card .sub{font-weight:500;opacity:.8;margin-bottom:22px;line-height:1.4;font-size:.95rem;}
   .login-card label{
     display:block;text-align:left;font-weight:700;font-size:.85rem;
     text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;
   }
   .login-card input[type="password"],
-  .login-card input[type="text"]{
-    width:100%;font-family:'Fredoka',sans-serif;font-size:1.05rem;font-weight:500;
+  .login-card input[type="text"],
+  .login-card input[type="email"]{
+    width:100%;font-family:'Fredoka',sans-serif;font-size:16px;font-weight:500;
     padding:14px 16px;border:var(--outline);border-radius:16px;background:var(--cream);
     color:var(--grape);margin-bottom:14px;
   }
   .login-card input:focus{outline:3px solid var(--tangerine);outline-offset:2px;}
   .login-card .row{display:flex;align-items:center;gap:8px;margin:4px 0 18px;font-weight:500;font-size:.9rem;}
-  .login-card .row input{width:18px;height:18px;accent-color:var(--tangerine);}
+  .login-card .row input{width:18px;height:18px;accent-color:var(--tangerine);flex:none;}
   .login-card button#login-btn{
     width:100%;font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.05rem;
     background:var(--grape);color:var(--sunbeam);border:none;border-radius:999px;
     padding:14px 20px;cursor:pointer;box-shadow:4px 4px 0 var(--tangerine);
+    min-height:48px;
   }
   .login-card button#login-btn:hover{transform:translateY(-1px);}
   .login-err{color:var(--bad);font-weight:600;min-height:1.3em;margin-bottom:10px;font-size:.95rem;}
@@ -62,51 +70,74 @@
 
   header{
     background:var(--grape);color:var(--cream);
-    padding:22px 20px;display:flex;flex-wrap:wrap;gap:14px;
+    padding:16px max(16px, env(safe-area-inset-right)) 16px max(16px, env(safe-area-inset-left));
+    display:flex;flex-wrap:wrap;gap:12px;
     align-items:center;justify-content:space-between;
   }
-  header h1{font-family:'Shrikhand',cursive;font-size:1.6rem;color:var(--sunbeam);}
-  .daypick{display:flex;align-items:center;gap:10px;}
+  header h1{font-family:'Shrikhand',cursive;font-size:clamp(1.25rem,5vw,1.6rem);color:var(--sunbeam);line-height:1.1;}
+  .header-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .daypick{display:flex;align-items:center;gap:8px;flex:1 1 auto;min-width:0;justify-content:center;}
   .daypick button{
-    width:38px;height:38px;border-radius:50%;border:none;cursor:pointer;
-    background:var(--sunbeam);color:var(--grape);font-size:1.2rem;font-weight:700;
+    width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;
+    background:var(--sunbeam);color:var(--grape);font-size:1.25rem;font-weight:700;
+    flex:none;touch-action:manipulation;
   }
-  .daypick .day{font-weight:700;font-size:1.05rem;min-width:200px;text-align:center;}
+  .daypick .day{
+    font-weight:700;font-size:clamp(.9rem,3.5vw,1.05rem);
+    min-width:0;flex:1 1 auto;text-align:center;line-height:1.25;
+    word-break:break-word;
+  }
   #refresh, #logout{
     font-family:'Fredoka',sans-serif;font-weight:700;
-    border:none;border-radius:999px;padding:10px 20px;cursor:pointer;font-size:.95rem;
+    border:none;border-radius:999px;padding:10px 16px;cursor:pointer;font-size:.9rem;
+    min-height:44px;touch-action:manipulation;
   }
   #refresh{background:var(--tangerine);color:var(--grape);}
   #logout{background:transparent;color:var(--cream);border:2px solid var(--lilac);}
 
-  .wrap{max-width:1100px;margin:0 auto;padding:26px 20px;}
-  .status{font-weight:600;padding:14px 0;text-align:center;}
+  .wrap{max-width:1100px;margin:0 auto;padding:20px max(14px, env(safe-area-inset-right)) 28px max(14px, env(safe-area-inset-left));}
+  .status{font-weight:600;padding:12px 0;text-align:center;font-size:.95rem;line-height:1.4;}
   .status.error{color:var(--bad);}
 
-  h2{font-family:'Shrikhand',cursive;font-size:1.5rem;margin:34px 0 16px;}
+  h2{
+    font-family:'Shrikhand',cursive;font-size:clamp(1.2rem,5vw,1.5rem);
+    margin:28px 0 14px;line-height:1.15;
+  }
+  h2 small{
+    display:block;font-family:'Fredoka',sans-serif !important;font-size:.75rem !important;
+    font-weight:500 !important;margin-top:6px;line-height:1.35;opacity:.85;
+  }
 
-  .bignums{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;}
+  .bignums{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;}
   .bignum{
     background:#fff;border:var(--outline);border-radius:20px;box-shadow:var(--pop);
-    padding:18px;text-align:center;
+    padding:16px 12px;text-align:center;
   }
-  .bignum .n{font-family:'Shrikhand',cursive;font-size:2.6rem;line-height:1;}
-  .bignum .l{font-weight:600;font-size:.85rem;margin-top:6px;text-transform:uppercase;letter-spacing:.05em;}
+  .bignum .n{font-family:'Shrikhand',cursive;font-size:clamp(1.8rem,8vw,2.6rem);line-height:1;word-break:break-word;}
+  .bignum .l{font-weight:600;font-size:.8rem;margin-top:6px;text-transform:uppercase;letter-spacing:.05em;}
   .bignum.total{background:var(--sunbeam);}
-  .bignum .sub{font-size:.8rem;font-weight:500;opacity:.75;margin-top:2px;}
+  .bignum .sub{font-size:.75rem;font-weight:500;opacity:.75;margin-top:2px;}
 
-  .cols{display:grid;grid-template-columns:1fr 1fr;gap:26px;}
-  @media(max-width:760px){.cols{grid-template-columns:1fr;}}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
 
   ul.check{list-style:none;background:#fff;border:var(--outline);border-radius:20px;box-shadow:var(--pop);padding:10px 0;}
   ul.check li{
-    display:flex;align-items:center;gap:12px;
-    padding:10px 18px;font-weight:500;border-bottom:2px dashed rgba(61,26,92,.15);
+    display:flex;align-items:flex-start;gap:12px;
+    padding:12px 16px;font-weight:500;border-bottom:2px dashed rgba(61,26,92,.15);
+    line-height:1.35;font-size:.95rem;
   }
   ul.check li:last-child{border-bottom:none;}
-  ul.check input{width:22px;height:22px;accent-color:var(--tangerine);flex:none;cursor:pointer;}
+  ul.check input{width:22px;height:22px;accent-color:var(--tangerine);flex:none;cursor:pointer;margin-top:2px;}
   ul.check li.done{opacity:.45;text-decoration:line-through;}
-  ul.check .amt{margin-left:auto;font-weight:700;white-space:nowrap;}
+  ul.check .amt{margin-left:auto;font-weight:700;white-space:nowrap;flex:none;}
+  ul.check .oid{flex:none;}
+
+  /* Tables: horizontal scroll on small screens + card layout for delivery */
+  .table-scroll{
+    width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    border-radius:20px;margin:0 0 8px;box-shadow:var(--pop);
+  }
+  .table-scroll table{box-shadow:none;border-radius:20px;margin:0;}
 
   table{width:100%;border-collapse:collapse;background:#fff;border:var(--outline);border-radius:20px;box-shadow:var(--pop);overflow:hidden;}
   thead th{
@@ -121,25 +152,96 @@
   .pill.no{background:var(--bad);}
   .oid{font-weight:700;}
   .items small{display:block;font-weight:500;opacity:.8;}
+  td small{font-size:.8rem;opacity:.8;}
 
+  table.grocery{min-width:320px;}
   table.grocery td, table.grocery th{padding:9px 10px;font-size:.88rem;}
   table.grocery tbody tr.done td{opacity:.4;text-decoration:line-through;}
-  table.grocery input{width:20px;height:20px;accent-color:var(--tangerine);cursor:pointer;}
+  table.grocery input{width:22px;height:22px;accent-color:var(--tangerine);cursor:pointer;}
   table.grocery tfoot td{padding:12px 10px;border-top:3px solid var(--grape);}
   .markpaid{
-    margin-top:6px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:.78rem;
+    margin-top:8px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:.85rem;
     background:var(--grape);color:var(--sunbeam);border:none;border-radius:999px;
-    padding:5px 12px;cursor:pointer;
+    padding:10px 14px;cursor:pointer;min-height:44px;touch-action:manipulation;
   }
-  .money{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;}
+  .money{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;}
   .money .bignum.paid .n{color:var(--ok);}
   .money .bignum.owed .n{color:var(--bad);}
+  /* Unit text in check cell is for mobile card headers only */
+  table.delivery .cell-check .unit-tag{display:none;}
+
+  /* ----- Mobile ----- */
+  @media (max-width:760px){
+    .cols{grid-template-columns:1fr;gap:8px;}
+    header{
+      flex-direction:column;align-items:stretch;gap:14px;
+      padding-top:max(14px, env(safe-area-inset-top));
+    }
+    header h1{text-align:center;width:100%;}
+    .daypick{width:100%;order:2;}
+    .header-actions{width:100%;order:3;justify-content:stretch;}
+    .header-actions #refresh,
+    .header-actions #logout{flex:1;text-align:center;}
+    .bignums{grid-template-columns:repeat(2,1fr);gap:10px;}
+    .bignum.total{grid-column:1 / -1;}
+    .money{grid-template-columns:1fr;}
+    .wrap{padding:16px 12px 32px;}
+    h2{margin:24px 0 12px;}
+    ul.check li{flex-wrap:wrap;}
+    ul.check .amt{margin-left:0;width:100%;text-align:right;padding-top:4px;}
+
+    /* Delivery run: stack rows as cards */
+    table.delivery{border:none;box-shadow:none;background:transparent;min-width:0;}
+    table.delivery thead{display:none;}
+    table.delivery tbody{display:block;}
+    table.delivery tbody tr{
+      display:block;background:#fff;border:var(--outline);border-radius:18px;
+      box-shadow:var(--pop);padding:14px 14px 12px;margin-bottom:14px;
+    }
+    table.delivery tbody tr.unpaid{background:#FFE9E4;}
+    table.delivery tbody tr:last-child{margin-bottom:0;}
+    table.delivery tbody td{
+      display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
+      border:none;padding:8px 0;font-size:.95rem;
+      border-bottom:1px dashed rgba(61,26,92,.12);
+    }
+    table.delivery tbody td:last-child{border-bottom:none;padding-bottom:0;}
+    table.delivery tbody td::before{
+      content:attr(data-label);
+      font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;
+      color:var(--grape);opacity:.7;flex:none;padding-top:3px;max-width:38%;
+    }
+    table.delivery tbody td > *{text-align:right;}
+    table.delivery tbody td.cell-check{
+      justify-content:flex-start;align-items:center;gap:10px;padding-top:0;padding-bottom:10px;
+      border-bottom:2px solid rgba(61,26,92,.12);
+    }
+    table.delivery tbody td.cell-check::before{content:none;}
+    table.delivery .cell-check .unit-tag{display:inline;font-size:1.1rem;}
+    table.delivery tbody td[data-label="Unit"]{display:none !important;}
+    table.delivery .delcheck{width:28px;height:28px;}
+    table.delivery .markpaid{width:100%;margin-top:10px;}
+    table.delivery td.cell-paid{flex-direction:column;align-items:stretch;}
+    table.delivery td.cell-paid::before{max-width:none;margin-bottom:4px;}
+    table.delivery td.cell-paid .pill{align-self:flex-end;}
+
+    /* Grocery: keep scroll, tighter padding */
+    .table-scroll.grocery-scroll{margin-left:-2px;margin-right:-2px;}
+    table.grocery{font-size:.85rem;}
+    table.grocery th, table.grocery td{padding:10px 8px;}
+  }
+
+  @media (max-width:380px){
+    .bignums{grid-template-columns:1fr 1fr;}
+    #refresh, #logout{font-size:.82rem;padding:10px 12px;}
+  }
 
   @media print{
     #login-gate, #logout, #refresh, .daypick button{display:none !important;}
     header{break-after:avoid;}
     body{background:#fff;padding:0;}
-    .bignum, table, ul.check{box-shadow:none;}
+    .bignum, table, ul.check, .table-scroll{box-shadow:none;}
+    table.delivery tbody tr{box-shadow:none;break-inside:avoid;}
   }
 </style>
 </head>
@@ -173,8 +275,8 @@
     <span class="day" id="day-label">—</span>
     <button id="next" type="button" aria-label="Next Sunday">›</button>
   </div>
-  <div style="display:flex;gap:10px;flex-wrap:wrap;">
-    <button type="button" id="refresh">Refresh orders</button>
+  <div class="header-actions">
+    <button type="button" id="refresh">Refresh</button>
     <button type="button" id="logout">Log out</button>
   </div>
 </header>
@@ -188,12 +290,14 @@
 
     <div class="cols">
       <div>
-        <h2>Grocery List <small style="font-family:'Fredoka';font-size:.8rem;font-weight:500">(Costco run — prices are estimates until receipts are logged)</small></h2>
+        <h2>Grocery List <small>(Costco run — prices are estimates until receipts are logged)</small></h2>
+        <div class="table-scroll grocery-scroll">
         <table class="grocery">
           <thead><tr><th></th><th>Item</th><th>Need</th><th>Buy</th><th>Est</th></tr></thead>
           <tbody id="grocery"></tbody>
-          <tfoot><tr><td></td><td colspan="3"><strong>Estimated grocery total</strong></td><td id="grocery-total"><strong>—</strong></td></tr></tfoot>
+          <tfoot><tr><td></td><td colspan="3"><strong>Est. grocery total</strong></td><td id="grocery-total"><strong>—</strong></td></tr></tfoot>
         </table>
+        </div>
       </div>
       <div>
         <h2>Money</h2>
@@ -203,11 +307,13 @@
       </div>
     </div>
 
-    <h2>Delivery Run <small style="font-family:'Fredoka';font-size:.9rem;font-weight:500">(sorted by unit)</small></h2>
-    <table>
+    <h2>Delivery Run <small>(sorted by unit)</small></h2>
+    <div class="table-scroll delivery-scroll">
+    <table class="delivery">
       <thead><tr><th>✓</th><th>Unit</th><th>Name</th><th>Order</th><th>Items</th><th>Total</th><th>Paid</th></tr></thead>
       <tbody id="orders"></tbody>
     </table>
+    </div>
   </div>
 </div>
 </div><!-- /#app -->
@@ -633,14 +739,14 @@
       if(o.heavyAvo > 0){ items.push(o.heavyAvo + ' Heavyweight +avo'); }
       var safeId = esc(o.orderId).replace(/'/g, '');
       return '<tr class="' + (o.paid ? '' : 'unpaid') + '">' +
-        '<td><input type="checkbox" class="delcheck" onchange="this.closest(\'tr\').style.opacity = this.checked ? .35 : 1"></td>' +
-        '<td><strong>' + esc(o.unit) + '</strong></td>' +
-        '<td>' + esc(o.name) + (o.phone ? '<br><small>' + esc(o.phone) + '</small>' : '') + '</td>' +
-        '<td class="oid">' + esc(o.orderId) + '</td>' +
-        '<td class="items">' + items.map(esc).join('<br>') + '</td>' +
-        '<td>' + money(o.total) + '</td>' +
-        '<td><span class="pill ' + (o.paid ? 'yes">PAID' : 'no">NO') + '</span>' +
-        (o.paid ? '' : '<br><button type="button" class="markpaid" data-oid="' + safeId + '">Mark paid</button>') +
+        '<td class="cell-check" data-label="Done"><input type="checkbox" class="delcheck" aria-label="Delivered unit ' + esc(o.unit) + '" onchange="this.closest(\'tr\').style.opacity = this.checked ? .35 : 1"> <strong class="unit-tag">Unit ' + esc(o.unit) + '</strong></td>' +
+        '<td data-label="Unit"><strong>' + esc(o.unit) + '</strong></td>' +
+        '<td data-label="Name">' + esc(o.name) + (o.phone ? '<br><small>' + esc(o.phone) + '</small>' : '') + '</td>' +
+        '<td class="oid" data-label="Order">' + esc(o.orderId) + '</td>' +
+        '<td class="items" data-label="Items">' + items.map(esc).join('<br>') + '</td>' +
+        '<td data-label="Total">' + money(o.total) + '</td>' +
+        '<td class="cell-paid" data-label="Paid"><span class="pill ' + (o.paid ? 'yes">PAID' : 'no">NO') + '</span>' +
+        (o.paid ? '' : '<button type="button" class="markpaid" data-oid="' + safeId + '">Mark paid</button>') +
         '</td></tr>';
     }).join('');
 
