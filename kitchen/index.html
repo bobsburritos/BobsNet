@@ -306,7 +306,14 @@
   <p class="status" id="status">Loading…</p>
 
   <div id="board" style="display:none">
-    <!-- TOP: live inventory (stock carries week to week) -->
+    <!-- TOP: business metrics (all Sundays) -->
+    <h2>Stats <small>(all time)</small></h2>
+    <p class="section-note">From every order in the sheet (all delivery Sundays). Browse ‹ › below for a single Sunday.</p>
+    <div class="bignums" id="stats-top"></div>
+    <div class="money" id="stats-money" style="margin-top:12px"></div>
+    <p class="section-note" id="stats-detail" style="margin-top:10px"></p>
+
+    <!-- Inventory (stock carries week to week) -->
     <h2>Kitchen inventory</h2>
     <p class="section-note">Condiments + cups, boxes, foil. Stock lives on this device. Past Sundays auto-subtract usage. Check shopping boxes when you buy packs to restock — no manual tally needed after the first seed.</p>
     <div id="inv-alerts" class="inv-banner" style="display:none" role="status"></div>
@@ -1022,6 +1029,43 @@
     return s;
   }
 
+  function renderAllTimeStats(allOrders){
+    var t = totalsFromOrders(allOrders || []);
+    var nOrders = (allOrders || []).length;
+    var paidN = (allOrders || []).filter(function(o){ return o.paid; }).length;
+    var pop = [
+      { name: 'Soyrizo', n: t.soy },
+      { name: 'Cali', n: t.cali },
+      { name: 'Heavyweight', n: t.heavy }
+    ].sort(function(a, b){ return b.n - a.n; });
+    var top = pop[0];
+    var topLabel = top && top.n > 0
+      ? top.name + ' (' + top.n + ')'
+      : '—';
+    var aov = nOrders ? (t.revenue / nOrders) : 0;
+    var el = document.getElementById('stats-top');
+    if(el){
+      el.innerHTML =
+        '<div class="bignum total"><div class="n">' + t.totalB + '</div><div class="l">Burritos sold</div></div>' +
+        '<div class="bignum"><div class="n">' + nOrders + '</div><div class="l">Orders</div></div>' +
+        '<div class="bignum"><div class="n" style="font-size:clamp(1.1rem,4vw,1.6rem);padding-top:8px">' + esc(topLabel) + '</div><div class="l">Most popular</div></div>' +
+        '<div class="bignum paid"><div class="n">' + money(t.revenue) + '</div><div class="l">Gross sales</div></div>';
+    }
+    var mon = document.getElementById('stats-money');
+    if(mon){
+      mon.innerHTML =
+        '<div class="bignum paid"><div class="n">' + money(t.paidRev) + '</div><div class="l">Marked paid</div></div>' +
+        '<div class="bignum owed"><div class="n">' + money(t.revenue - t.paidRev) + '</div><div class="l">Unpaid / open</div></div>' +
+        '<div class="bignum"><div class="n">' + money(aov) + '</div><div class="l">Avg order</div></div>' +
+        '<div class="bignum"><div class="n">' + paidN + '/' + nOrders + '</div><div class="l">Paid orders</div></div>';
+    }
+    var det = document.getElementById('stats-detail');
+    if(det){
+      det.textContent = 'Mix: Soyrizo ' + t.soy + ' · Cali ' + t.cali + ' · Heavyweight ' + t.heavy +
+        ' · Avocado sides/add-ons (halves) ' + t.avoHalves;
+    }
+  }
+
   function load(){
     if (!isAuthed()) { showLogin(); return; }
     var label = sundayLabel();
@@ -1059,6 +1103,8 @@
     boardEl.style.display = 'block';
     var sdl = document.getElementById('sunday-detail-label');
     if(sdl) sdl.textContent = label;
+
+    renderAllTimeStats(allOrdersCache);
 
     if(!orders.length){
       statusEl.textContent = 'No orders yet for ' + label + ' — inventory still shown; shopping may only list stock shortfalls.';
