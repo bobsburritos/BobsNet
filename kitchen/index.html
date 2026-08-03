@@ -290,7 +290,7 @@
 
     <div class="cols">
       <div>
-        <h2>Grocery List <small>(Costco run — prices are estimates until receipts are logged)</small></h2>
+        <h2>Grocery List <small>(Costco ballpark — eggs Kirkland 24-ct #637598 @ $3.28; other packs estimated; update from receipts)</small></h2>
         <div class="table-scroll grocery-scroll">
         <table class="grocery">
           <thead><tr><th></th><th>Item</th><th>Need</th><th>Buy</th><th>Est</th></tr></thead>
@@ -582,41 +582,44 @@
       .replace(/'/g, '&#39;');
   }
 
+  /* Costco / warehouse ballpark pack prices (LA). Update when receipts land.
+     Eggs: Kirkland Signature Large 24-ct item 637598 ~$3.28 (user-confirmed).
+     Others: typical Costco ranges — not live API prices. */
   var GROCERY = [
     {item:'Large flour tortillas', unit:'tortillas', need:function(t){return t.totalB;},
-     pack:'20-ct pack', packSize:20, packPrice:8.00},
+     pack:'Mission/similar 20-ct', packSize:20, packPrice:6.49, note:'Costco ballpark'},
     {item:'Eggs (2 per burrito)', unit:'eggs', need:function(t){return t.totalB*2;},
-     pack:'2-dozen (24)', packSize:24, packPrice:5.50},
+     pack:'Kirkland Large 24-ct (#637598)', packSize:24, packPrice:3.28, note:'Costco shelf'},
     {item:'Shredded cheese (2 oz ea)', unit:'oz', need:function(t){return t.totalB*2;},
-     pack:'2.5 lb bag (40 oz)', packSize:40, packPrice:9.00},
+     pack:'Kirkland shredded ~2.5 lb (40 oz)', packSize:40, packPrice:11.99, note:'Costco ballpark'},
     {item:'Hash browns (3 oz ea)', unit:'oz', need:function(t){return t.totalB*3;},
-     pack:'6 lb bag (96 oz)', packSize:96, packPrice:9.50},
+     pack:'Frozen bag ~5\u20136 lb (~80\u201396 oz)', packSize:90, packPrice:8.99, note:'Costco ballpark'},
     {item:'Soy chorizo (4 oz ea)', unit:'oz', need:function(t){return t.soy*4;},
-     pack:'12 oz pack (Trader Joe\u2019s)', packSize:12, packPrice:3.00},
+     pack:'12 oz pack (TJ / warehouse)', packSize:12, packPrice:3.49, note:'often TJ'},
     {item:'Ground beef (4 oz ea)', unit:'oz', need:function(t){return t.cali*4;},
-     pack:'per lb (16 oz)', packSize:16, packPrice:5.50},
+     pack:'Kirkland 80/20 ~1 lb (16 oz)', packSize:16, packPrice:5.99, note:'$/lb ballpark'},
     {item:'Breakfast sausage (2 oz ea)', unit:'oz', need:function(t){return t.heavy*2;},
-     pack:'3 lb pack (48 oz)', packSize:48, packPrice:12.00},
+     pack:'Bulk links/roll ~3 lb (48 oz)', packSize:48, packPrice:14.99, note:'Costco ballpark'},
     {item:'Bacon (2 slices ea)', unit:'slices', need:function(t){return t.heavy*2;},
-     pack:'1 lb (~18 slices)', packSize:18, packPrice:4.50},
+     pack:'Kirkland bacon ~2\u20134 lb (~36\u2013slices use 36)', packSize:36, packPrice:14.99, note:'Costco ballpark'},
     {item:'Avocados (\u00bd ea)', unit:'halves', need:function(t){return t.avoHalves;},
-     pack:'6-ct bag (12 halves)', packSize:12, packPrice:7.00},
+     pack:'Bag 6-ct (12 halves)', packSize:12, packPrice:6.99, note:'seasonal'},
     {item:'Onions (1 oz ea)', unit:'oz', need:function(t){return t.totalB;},
-     pack:'3 lb bag (48 oz)', packSize:48, packPrice:3.50},
+     pack:'3\u20135 lb bag (~48\u201380 oz use 64)', packSize:64, packPrice:4.99, note:'Costco ballpark'},
     {item:'Cilantro', unit:'bunches', need:function(t){return Math.max(1, Math.ceil(t.totalB/20));},
-     pack:'bunch', packSize:1, packPrice:1.00},
+     pack:'bunch / clamshell', packSize:1, packPrice:1.49, note:'store ballpark'},
     {item:'Mayo (1.5 oz per cup)', unit:'oz', need:function(t){return t.totalB*1.5;},
-     pack:'30 oz jar', packSize:30, packPrice:5.00},
+     pack:'Kirkland mayo ~64 oz (or 30 oz jar)', packSize:64, packPrice:7.99, note:'Costco ballpark'},
     {item:'Chipotles in adobo', unit:'cans', need:function(t){return Math.max(1, Math.ceil(t.totalB/15));},
-     pack:'7 oz can', packSize:1, packPrice:2.00},
+     pack:'7 oz can', packSize:1, packPrice:1.79, note:'store ballpark'},
     {item:'Taco seasoning', unit:'packets', need:function(t){return Math.max(1, Math.ceil(t.cali/8));},
-     pack:'packet', packSize:1, packPrice:1.25},
+     pack:'packet / bulk scoop', packSize:1, packPrice:1.49, note:'store ballpark'},
     {item:'2 oz sauce cups + lids', unit:'cups', need:function(t){return t.totalB;},
-     pack:'100-ct', packSize:100, packPrice:8.50},
-    {item:'Kraft #3 boxes', unit:'boxes', need:function(t){return t.totalB;},
-     pack:'50-ct', packSize:50, packPrice:12.00},
-    {item:'Heavy-duty foil (12x14 in sheets)', unit:'sheets', need:function(t){return t.totalB;},
-     pack:'~130-sheet roll', packSize:130, packPrice:10.00}
+     pack:'100-ct', packSize:100, packPrice:9.99, note:'restaurant supply'},
+    {item:'Kraft / takeout boxes', unit:'boxes', need:function(t){return t.totalB;},
+     pack:'50-ct', packSize:50, packPrice:14.99, note:'supply ballpark'},
+    {item:'Heavy-duty foil (wrap sheets)', unit:'sheets', need:function(t){return t.totalB;},
+     pack:'Kirkland foil roll (~120\u2013150 sheets use 130)', packSize:130, packPrice:12.99, note:'Costco ballpark'}
   ];
 
   function renderGrocery(t){
@@ -627,11 +630,13 @@
       var packs = Math.ceil(need / gr.packSize);
       var cost = packs * gr.packPrice;
       totalCost += cost;
-      return '<tr>' +
+      var needLabel = (Math.round(need * 10) / 10) + ' ' + gr.unit;
+      var buyLabel = packs + ' \u00d7 ' + gr.pack + ' @ ' + money(gr.packPrice);
+      return '<tr title="' + esc(gr.note || 'estimate') + '">' +
         '<td><input type="checkbox" onchange="this.closest(\'tr\').classList.toggle(\'done\', this.checked)"></td>' +
-        '<td>' + gr.item + '</td>' +
-        '<td>' + need + ' ' + gr.unit + '</td>' +
-        '<td>' + packs + ' \u00d7 ' + gr.pack + '</td>' +
+        '<td>' + esc(gr.item) + '</td>' +
+        '<td>' + needLabel + '</td>' +
+        '<td>' + buyLabel + '</td>' +
         '<td>' + money(cost) + '</td>' +
         '</tr>';
     }).join('');
