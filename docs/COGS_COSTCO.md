@@ -15,8 +15,20 @@
 | **Bacon** | Kirkland sliced **1 lb × 4** | **#7000070** | **$17.01** | Confirmed (~64 slices est.) |
 | **Avocados** | Hass **6-ct** | **#647465** | **$6.23** | Confirmed (12 halves) |
 | **Soy chorizo** | Trader Joe’s | **#092463** | **~$2.99** est. | Product locked; **confirm TJ shelf $** |
+| **Mayo** | Kirkland Real Mayonnaise **64 oz** | **#503961** | **$5.19** | Confirmed ($0.08/oz) |
+| **Chipotle sauce** | La Costeña Medium Chipotle **220 ml** | — | **$1.59** | Confirmed (for house mayo) |
+| **Foil** | Kirkland Reynolds Foodservice HD **18" × 500 ft** | **#31684** | **$45.99** | Confirmed; ~400 wraps est. |
 
 TJ link: https://www.traderjoes.com/home/products/pdp/soy-chorizo-092463
+
+### Foil math (#31684)
+- Roll: 18 in × **500 ft** = 6,000 linear inches  
+- Burrito sheet ~14 in along the roll → **~428 sheets** → kitchen uses **400** packs-worth as conservative packSize  
+- One roll @ **$45.99** covers a large batch before reorder  
+
+### Chipotle sauce
+- Switched from “cans of chipotles in adobo” to **La Costeña Medium Chipotle Sauce 220 ml @ $1.59**  
+- Portion model: **1 bottle ≈ 25 burritos** of house mayo (tune when recipe is measured)
 
 ## Still ballpark (confirm next trip)
 
@@ -26,12 +38,9 @@ TJ link: https://www.traderjoes.com/home/products/pdp/soy-chorizo-092463
 | Breakfast sausage | Bulk ~3 lb | $15.99 | Jimmy Dean / similar |
 | Yellow onions | ~5 lb bag | $5.49 | Produce |
 | Cilantro | 1 bunch | $1.29 | Grocery |
-| Mayo | Kirkland ~64 oz | $7.69 | Chipotle mayo base |
-| Chipotles in adobo | 7 oz can | $1.89 | Grocery/multi |
 | Taco seasoning | 1 packet | $1.29 | Cali beef |
 | Sauce cups + lids | 100-ct | $11.99 | Supply |
 | Takeout boxes | 50-ct | $18.99 | Supply |
-| Foil | Kirkland/Reynolds roll | $16.99 | Wrap sheets |
 
 ## How kitchen math works
 

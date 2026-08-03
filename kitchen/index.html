@@ -620,11 +620,11 @@
      pack:'Fresh bunch', packSize:1, packPrice:1.29,
      note:'Usually grocery not Costco; $0.99\u20131.99'},
     {item:'Mayo base for chipotle sauce (1.5 oz/burrito)', unit:'oz', need:function(t){return t.totalB*1.5;},
-     pack:'Kirkland mayo ~64 oz jar', packSize:64, packPrice:7.69,
-     note:'Costco Kirkland mayo ballpark $7\u20139'},
-    {item:'Chipotles in adobo', unit:'cans', need:function(t){return Math.max(1, Math.ceil(t.totalB/15));},
-     pack:'7 oz can (La Coste\u00f1a / similar)', packSize:1, packPrice:1.89,
-     note:'Grocery/Costco multi-pack; ~$1.50\u20132.50/can'},
+     pack:'Kirkland Real Mayonnaise 64 oz (#503961)', packSize:64, packPrice:5.19,
+     note:'USER Costco $5.19 item 503961 ($0.08/oz)'},
+    {item:'Chipotle sauce (house mayo)', unit:'bottles', need:function(t){return Math.max(1, Math.ceil(t.totalB/25));},
+     pack:'La Coste\u00f1a Medium Chipotle Sauce 220 ml', packSize:1, packPrice:1.59,
+     note:'USER $1.59 / 220 ml \u2014 portion est. 1 bottle ~25 burritos; tune with recipe'},
     {item:'Taco seasoning (Cali beef)', unit:'packets', need:function(t){return t.cali>0?Math.max(1, Math.ceil(t.cali/8)):0;},
      pack:'1 oz packet (or bulk scoop)', packSize:1, packPrice:1.29,
      note:'Grocery packet; Costco bulk seasoning optional'},
@@ -635,8 +635,8 @@
      pack:'50-ct #3 or similar', packSize:50, packPrice:18.99,
      note:'Supply house ballpark $15\u201325 / 50'},
     {item:'Foil wrap sheets', unit:'sheets', need:function(t){return t.totalB;},
-     pack:'Kirkland/Reynolds HD roll (~130 burrito sheets est.)', packSize:130, packPrice:16.99,
-     note:'Costco foil ~$15\u201322; Reynolds HD 2-pk often ~$21'}
+     pack:'Kirkland Reynolds Foodservice Foil HD 18 in x 500 ft (#31684)', packSize:400, packPrice:45.99,
+     note:'USER Costco $45.99 item 31684; ~400 burrito wraps est. (14 in/sheet from 500 ft)'}
   ];
 
   function renderGrocery(t){
