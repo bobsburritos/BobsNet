@@ -1,114 +1,43 @@
 # Release matrix results
 
-**Run:** synthetic orders against live Apps Script (no payments).  
-**Score:** **16/25** automated checks — **all happy-path menu cases PASS**; **9 validation/dedupe checks FAIL because live backend is an older deployment**
+**Endpoint:** `https://script.google.com/macros/s/AKfycbwpvyRwhYQJIiz-lmPypoKC-2GvWzzMOzfD_RL_0-GLO36U2r2voebsNX6lpIyPqcIO/exec`  
+**Score:** **25/25 PASS** (0 failed)  
+**Status:** Hardened Apps Script is **live** (validation + server totals + dedupe)
 
-## Critical finding (before launch)
+## What this proves (no real money)
 
-Live Web app accepts almost any POST and returns only:
-
-```json
-{"ok":true,"orderId":"..."}
-```
-
-It does **not** match `local/bobs-burritos-backend.READY.gs` or `apps-script/bobs-burritos-backend.gs`, which:
-
-- Reject missing name/unit, bad orderId, empty cart, bad date, etc.
-- Compute **server-side total**
-- **Dedupe** repeat orderIds
-
-| Layer | Status |
+| Check | Result |
 |--------|--------|
-| **Happy path orders** (all menu combos) | **Working** — land in sheet |
-| **Client-side form** (empty cart / name / unit) | Protects normal users |
-| **Server validation** | **Weak / outdated on live** — redeploy READY |
-| **Payments** | Not in API — UI only (Venmo/Zelle) |
+| All menu variants (Soyrizo ±avo, Cali, Heavy ±avo) | PASS |
+| Qty 1 / 2 / 5 / 10 | PASS |
+| Multi-item carts | PASS |
+| Server-side totals match prices | PASS |
+| Reject missing name/unit | PASS |
+| Reject bad orderId | PASS |
+| Reject empty cart | PASS |
+| Reject bad date | PASS |
+| Reject unknown items / over-limit qty | PASS |
+| Dedupe same orderId | PASS |
 
-### What you must do before neighbors order
+## Cleanup
 
-1. Open Google Apps Script bound to the Orders sheet  
-2. Paste contents of **`local/bobs-burritos-backend.READY.gs`** (or the hardened `apps-script/bobs-burritos-backend.gs` **with your real** `PORTAL_KEY` / sheet id)  
-3. **Deploy → Manage deployments → ✏️ → Version: New version → Deploy**  
-4. Re-run: `python scripts/release_matrix_test.py`  
-5. Expect **25/25** (or 24/25 if one edge differs)  
+In Google Sheet **Orders**, delete **whole rows** whose OrderID starts with:
 
-Until then: real customers are still mostly fine (browser blocks empty form), but junk/API spam is easier.
+- `BB-REL`
+- `BB-DRY`
+- Any other `TEST` / `PROBE` rows
 
----
+(Many `BB-REL*` may already exist from earlier runs; dedupe kept IDs stable.)
 
-## Cleanup (do this now)
+## Your remaining smoke (browser, ~10 min)
 
-In Google Sheet **Orders**, delete **entire rows** where OrderID starts with:
+1. https://bobsburritos.github.io/BobsNet/ — place `TEST DELETE` / unit `000`  
+2. Confirm **Order received!** + Venmo `@Khushbu-Kotecha` + Zelle `7148120977`  
+3. Open Venmo link → **exit without paying**  
+4. Kitchen → see order → Mark paid → delete row  
 
-- `BB-REL`  
-- `BB-DRY`  
-- `BB-SMOKE` / `TEST`  
-
-You will have many `BB-REL*` rows from this matrix + failed-validation rows that still inserted on the old API.
-
----
-
-## Happy path — all PASSED (menu / combos)
-
-| Result | Order ID | Case |
-|--------|----------|------|
-| PASS | BB-REL01S | Soyrizo classic ×1 |
-| PASS | BB-REL01A | Soyrizo +avo ×1 |
-| PASS | BB-REL01C | Cali ×1 |
-| PASS | BB-REL01H | Heavy classic ×1 |
-| PASS | BB-REL01B | Heavy +avo ×1 |
-| PASS | BB-REL02A | Cali ×2 |
-| PASS | BB-REL02B | Cali ×5 |
-| PASS | BB-REL02C | Cali ×10 |
-| PASS | BB-REL03A | Soyrizo + Cali |
-| PASS | BB-REL03B | All three classic |
-| PASS | BB-REL03C | Both avo + Cali |
-| PASS | BB-REL03D | Party tray multi-line |
-| PASS | BB-REL03E | 5+5+5 variety |
-| PASS | BB-REL04A | Name/unit trim + phone format |
-| PASS | BB-REL04B | Max-length name/unit |
-| PASS | BB-REL04C | Unicode name |
-
-**Conclusion:** every real menu option and multi-item cart the site can build **is accepted by the backend**.
-
----
-
-## Validation / safety — FAILED on live (old API)
-
-These **should** return `ok:false` after READY deploy. On live they returned `ok:true` (and may have written junk rows):
-
-| Order ID | Case |
-|----------|------|
-| BB-RELFAIL1 | Missing name |
-| BB-RELFAIL2 | Missing unit |
-| BB-RELFAIL3 | Bad orderId |
-| BB-RELFAIL4 | Qty 0 |
-| BB-RELFAIL5 | Empty items |
-| BB-RELFAIL6 | Bad date format |
-| BB-RELFAIL7 | Unknown item only |
-| BB-RELFAIL8 | Too many burritos |
-| BB-REL01C-DEDUPE | Second post same ID (no `deduped:true`) |
-
----
-
-## Payments (no money sent)
-
-Not exercised by this script (by design). Confirm manually:
-
-1. Browser test order → confirm screen  
-2. Venmo **@Khushbu-Kotecha** · Zelle **7148120977**  
-3. Copy note / Open Venmo / Copy Zelle — **do not pay**  
-4. Kitchen **Mark paid** on a test row  
-
-See `docs/RELEASE_UI_MATRIX.md` and `docs/GO_LIVE_CHECKLIST.md`.
-
----
-
-## Re-run after deploy
+## Re-run anytime
 
 ```powershell
-cd D:\MiguelAznar\007_PersonalProjects\200_BobsBurritos
 python scripts/release_matrix_test.py
 ```
-
-Then open kitchen, confirm a few `BB-REL*` rows display, **Mark paid** one, delete all test rows.

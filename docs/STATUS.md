@@ -20,18 +20,15 @@
 - [x] Instagram + brand pack under `Artwork/` (playbook, prompts, posts, tiles, calendar)
 - [x] Compressed menu images + cache bust
 - [x] Desktop copy-button fix
-- [x] Hardened backend READY (validation, server totals) — **needs Deploy New version when you return**
+- [x] Hardened backend READY **deployed** — release matrix **25/25 PASS**
 
 ## Needs you (cannot automate)
 
-1. **Apps Script:** paste `local/bobs-burritos-backend.READY.gs` → **Deploy → New version** (clipboard often has latest)
-2. **Confirm Zelle** works for phone `7148120977`
-3. **Delete smoke-test rows** on Orders if still present (`BB-SMOKE1`)
-4. **Real product run:** phone order + pay + kitchen mark paid
-5. **Instagram profile:** paste bio + link from `Artwork/Instagram/Profile/profile-setup.md`
-6. **On-brand tiles:** use prompts in `Artwork/Instagram/Prompts/prompts.md` + logo in `Artwork/Brand/Logos/`
-7. **Post first 9** reverse order (`Artwork/Instagram/Profile/posting-order.md`)
-8. Optional: Meta Business Suite scheduling; founder photo for Post 8
+1. **Delete test rows** on Orders (`BB-REL*`, `BB-DRY*`, `TEST`)
+2. **Browser smoke:** one test order + payment UI (no real transfer) + kitchen mark paid
+3. **Confirm Zelle** phone `7148120977` resolves in bank app (cancel before send)
+4. **Instagram:** bio + art in `Posts/*/artwork/` + post 9→1
+5. Optional: founder photo for Post 8 / Who's Bob?
 
 ## Intentionally not built yet (roadmap)
 
