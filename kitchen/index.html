@@ -306,36 +306,20 @@
   <p class="status" id="status">Loading…</p>
 
   <div id="board" style="display:none">
-    <h2>Cook Board</h2>
-    <div class="bignums" id="cook"></div>
-
-    <div class="cols">
-      <div>
-        <h2>Food order (this Sunday)</h2>
-        <p class="section-note">Order-based only — eggs, meat, produce, etc. Scales with this Sunday&rsquo;s burritos. Prices: docs/COGS_COSTCO.md</p>
-        <div class="table-scroll grocery-scroll">
-        <table class="grocery">
-          <thead><tr><th></th><th>Item</th><th>Need</th><th>Buy</th><th>Est</th></tr></thead>
-          <tbody id="grocery"></tbody>
-          <tfoot><tr><td></td><td colspan="3"><strong>Est. food shop total</strong></td><td id="grocery-total"><strong>—</strong></td></tr></tfoot>
-        </table>
-        </div>
-      </div>
-      <div>
-        <h2>Money</h2>
-        <div class="money" id="money"></div>
-        <h2>Unpaid — chase these</h2>
-        <ul class="check" id="chase"></ul>
-      </div>
-    </div>
-
-    <h2>Kitchen inventory <small>(condiments + cups, boxes, foil)</small></h2>
-    <p class="section-note">Stock-based — not 1:1 with a Costco food run. Set on-hand, we estimate usage from this Sunday&rsquo;s orders, warn when low, and track after you apply Sunday usage.</p>
+    <!-- TOP: live inventory (stock carries week to week) -->
+    <h2>Kitchen inventory</h2>
+    <p class="section-note">Condiments + cups, boxes, foil. Stock lives on this device. Past Sundays auto-subtract usage. Check shopping boxes when you buy packs to restock — no manual tally needed after the first seed.</p>
     <div id="inv-alerts" class="inv-banner" style="display:none" role="status"></div>
     <div class="inv-actions">
-      <button type="button" class="primary" id="inv-apply">Apply this Sunday&rsquo;s usage to stock</button>
-      <button type="button" class="secondary" id="inv-save">Save stock levels</button>
-      <button type="button" class="ghost" id="inv-restock-hint">Show reorder list</button>
+      <button type="button" class="secondary" id="inv-seed">Seed / adjust starting stock</button>
+      <button type="button" class="ghost" id="inv-restock-hint">What to reorder</button>
+    </div>
+    <div id="inv-seed-panel" class="inv-banner" style="display:none">
+      <strong>Starting stock</strong> (one-time or corrections). Save, then use shopping checkboxes to restock.
+      <div id="inv-seed-fields" style="margin-top:10px"></div>
+      <div class="inv-actions" style="margin-bottom:0">
+        <button type="button" class="primary" id="inv-seed-save">Save starting stock</button>
+      </div>
     </div>
     <div class="table-scroll grocery-scroll">
     <table class="grocery" id="inv-table">
@@ -343,10 +327,9 @@
         <tr>
           <th>Type</th>
           <th>Item</th>
-          <th>On hand</th>
+          <th>On hand now</th>
           <th>This Sunday uses</th>
-          <th>After</th>
-          <th>Reorder when &le;</th>
+          <th>After this Sunday</th>
           <th>Status</th>
         </tr>
       </thead>
@@ -355,12 +338,37 @@
     </div>
     <div id="inv-reorder" class="inv-banner" style="display:none;margin-top:14px"></div>
 
-    <h2>Delivery Run <small>(sorted by unit)</small></h2>
-    <div class="table-scroll delivery-scroll">
-    <table class="delivery">
-      <thead><tr><th>✓</th><th>Unit</th><th>Name</th><th>Order</th><th>Items</th><th>Total</th><th>Paid</th></tr></thead>
-      <tbody id="orders"></tbody>
+    <!-- Shopping: food for Sunday + inventory shortfalls -->
+    <h2>Shopping list <small>(check when bought)</small></h2>
+    <p class="section-note">Food scales with this Sunday&rsquo;s orders. Condiments/supplies only appear when stock is short. Checking a row marks it bought; inventory packs restock automatically.</p>
+    <div class="table-scroll grocery-scroll">
+    <table class="grocery">
+      <thead><tr><th>Got it</th><th>Kind</th><th>Item</th><th>Need</th><th>Buy</th><th>Est</th></tr></thead>
+      <tbody id="grocery"></tbody>
+      <tfoot><tr><td></td><td colspan="4"><strong>Est. shop total</strong></td><td id="grocery-total"><strong>—</strong></td></tr></tfoot>
     </table>
+    </div>
+
+    <!-- BOTTOM: Sunday calendar detail (header day picker browses Sundays) -->
+    <h2>This Sunday <small id="sunday-detail-label"></small></h2>
+    <p class="section-note">Use ‹ › in the header to browse delivery Sundays. Cook counts, money, and delivery run for the selected date.</p>
+    <div class="bignums" id="cook"></div>
+    <div class="cols" style="margin-top:18px">
+      <div>
+        <h2>Money</h2>
+        <div class="money" id="money"></div>
+        <h2>Unpaid — chase these</h2>
+        <ul class="check" id="chase"></ul>
+      </div>
+      <div>
+        <h2>Delivery Run <small>(by unit)</small></h2>
+        <div class="table-scroll delivery-scroll">
+        <table class="delivery">
+          <thead><tr><th>✓</th><th>Unit</th><th>Name</th><th>Order</th><th>Items</th><th>Total</th><th>Paid</th></tr></thead>
+          <tbody id="orders"></tbody>
+        </table>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -708,9 +716,10 @@
      usage:function(t){return t.totalB;}, reorderAt:80, note:'1 wrap per burrito'}
   ];
 
-  var INV_KEY = 'bb_kitchen_inventory_v1';
-  var INV_APPLIED_KEY = 'bb_kitchen_inv_applied_sundays_v1';
+  var INV_KEY = 'bb_kitchen_inventory_v2';
+  var INV_APPLIED_KEY = 'bb_kitchen_inv_applied_sundays_v2';
   var lastTotals = null;
+  var allOrdersCache = [];
 
   function defaultInvState(){
     var s = { stock:{}, updatedAt: null };
@@ -742,9 +751,8 @@
   }
 
   function loadAppliedSundays(){
-    try {
-      return JSON.parse(localStorage.getItem(INV_APPLIED_KEY) || '{}') || {};
-    } catch(e){ return {}; }
+    try { return JSON.parse(localStorage.getItem(INV_APPLIED_KEY) || '{}') || {}; }
+    catch(e){ return {}; }
   }
 
   function markSundayApplied(iso){
@@ -757,45 +765,138 @@
     return !!loadAppliedSundays()[iso];
   }
 
-  function readStockFromInputs(){
-    var state = loadInvState();
-    INV_CATALOG.forEach(function(c){
-      var el = document.getElementById('inv-stock-' + c.id);
-      if(el){
-        var v = parseFloat(el.value);
-        state.stock[c.id] = isNaN(v) ? 0 : Math.max(0, v);
-      }
+  function totalsFromOrders(orders){
+    var t = {soy:0, soyAvo:0, cali:0, heavy:0, heavyAvo:0, revenue:0, paidRev:0, totalB:0, avoHalves:0};
+    (orders || []).forEach(function(o){
+      t.soy += o.soyrizo || 0; t.soyAvo += o.soyrizoAvo || 0;
+      t.cali += o.cali || 0;
+      t.heavy += o.heavy || 0; t.heavyAvo += o.heavyAvo || 0;
+      t.revenue += Number(o.total) || 0;
+      if(o.paid) t.paidRev += Number(o.total) || 0;
     });
-    return state;
+    t.totalB = t.soy + t.cali + t.heavy;
+    t.avoHalves = t.cali + t.soyAvo + t.heavyAvo;
+    return t;
+  }
+
+  function laTodayISO(){
+    var n = laNow();
+    return n.getFullYear() + '-' + ('0' + (n.getMonth() + 1)).slice(-2) + '-' + ('0' + n.getDate()).slice(-2);
+  }
+
+  /** Auto-subtract inventory for past Sundays (before today LA) not yet applied. */
+  function autoApplyPastSundays(allOrders){
+    var today = laTodayISO();
+    var byDay = {};
+    (allOrders || []).forEach(function(o){
+      var d = toISODate(o.deliveryDate);
+      if(!d) return;
+      if(!byDay[d]) byDay[d] = [];
+      byDay[d].push(o);
+    });
+    var days = Object.keys(byDay).filter(function(d){ return d < today && !isSundayApplied(d); }).sort();
+    if(!days.length) return;
+    var state = loadInvState();
+    days.forEach(function(d){
+      var t = totalsFromOrders(byDay[d]);
+      INV_CATALOG.forEach(function(c){
+        var use = c.usage(t) || 0;
+        state.stock[c.id] = Math.max(0, (state.stock[c.id] || 0) - use);
+      });
+      markSundayApplied(d);
+    });
+    saveInvState(state);
   }
 
   function fmtQty(n, unit){
-    var r = Math.round(n * 10) / 10;
+    var r = Math.round(Number(n) * 10) / 10;
     return r + ' ' + unit;
   }
 
-  function renderFoodShopping(t){
-    var totalCost = 0;
-    var html = FOOD_GROCERY.map(function(gr){
+  /** Shopping lines: food always (if need>0) + inventory shortfalls for this Sunday */
+  function buildShopLines(t){
+    var state = loadInvState();
+    var lines = [];
+    FOOD_GROCERY.forEach(function(gr){
       var need = gr.need(t);
-      if(need <= 0){ return ''; }
+      if(need <= 0) return;
       var packs = Math.ceil(need / gr.packSize);
-      var cost = packs * gr.packPrice;
-      totalCost += cost;
-      var needLabel = (Math.round(need * 10) / 10) + ' ' + gr.unit;
-      var buyLabel = packs + ' \u00d7 ' + packLabel(gr) + ' @ ' + money(gr.packPrice);
-      var where = (gr.store || '') + (gr.brand ? ' \u00b7 ' + gr.brand : '');
-      return '<tr title="' + esc((gr.confirmed ? 'LOCKED product' : 'EST — pick exact product later') + (where ? ' · ' + where : '')) + '">' +
-        '<td><input type="checkbox" onchange="this.closest(\'tr\').classList.toggle(\'done\', this.checked)"></td>' +
-        '<td>' + lockBadge(gr) + ' ' + esc(gr.item) +
+      lines.push({
+        kind: 'Food',
+        restockId: null,
+        item: gr.item,
+        product: gr,
+        needLabel: (Math.round(need * 10) / 10) + ' ' + gr.unit,
+        packs: packs,
+        cost: packs * gr.packPrice
+      });
+    });
+    INV_CATALOG.forEach(function(c){
+      var onHand = state.stock[c.id] || 0;
+      var use = c.usage(t) || 0;
+      if(use <= 0) return;
+      var short = Math.max(0, use - onHand);
+      if(short <= 0) return;
+      /* buy enough packs to cover shortfall + small buffer to reorderAt */
+      var target = Math.max(short, c.reorderAt);
+      var packs = Math.max(1, Math.ceil(target / c.packSize));
+      lines.push({
+        kind: c.group,
+        restockId: c.id,
+        item: c.item + ' (stock short)',
+        product: c,
+        needLabel: 'short ' + fmtQty(short, c.unit) + ' (use ' + fmtQty(use, c.unit) + ', have ' + fmtQty(onHand, c.unit) + ')',
+        packs: packs,
+        cost: packs * c.packPrice
+      });
+    });
+    return lines;
+  }
+
+  function renderShopping(t){
+    var lines = buildShopLines(t);
+    var totalCost = 0;
+    var html = lines.map(function(line, idx){
+      totalCost += line.cost;
+      var p = line.product;
+      var where = (p.store || '') + (p.brand ? ' \u00b7 ' + p.brand : '');
+      var buyLabel = line.packs + ' \u00d7 ' + packLabel(p) + ' @ ' + money(p.packPrice);
+      var restock = line.restockId
+        ? ' data-restock-id="' + esc(line.restockId) + '" data-restock-packs="' + line.packs + '" data-restock-size="' + p.packSize + '"'
+        : '';
+      return '<tr class="shop-row" data-shop-idx="' + idx + '"' + restock + '>' +
+        '<td><input type="checkbox" class="shop-check" aria-label="Bought ' + esc(line.item) + '"></td>' +
+        '<td>' + esc(line.kind) + '</td>' +
+        '<td>' + lockBadge(p) + ' ' + esc(line.item) +
           (where ? '<br><small>' + esc(where) + '</small>' : '') + '</td>' +
-        '<td>' + needLabel + '</td>' +
+        '<td>' + esc(line.needLabel) + '</td>' +
         '<td>' + buyLabel + '</td>' +
-        '<td>' + money(cost) + '</td>' +
+        '<td>' + money(line.cost) + '</td>' +
         '</tr>';
     }).join('');
-    document.getElementById('grocery').innerHTML = html || '<tr><td colspan="5">No food need for this Sunday yet.</td></tr>';
+    document.getElementById('grocery').innerHTML = html ||
+      '<tr><td colspan="6">Nothing to buy — food need is zero and inventory covers this Sunday.</td></tr>';
     document.getElementById('grocery-total').innerHTML = '<strong>' + money(totalCost) + '</strong>';
+
+    document.querySelectorAll('.shop-check').forEach(function(cb){
+      cb.addEventListener('change', function(){
+        var tr = cb.closest('tr');
+        tr.classList.toggle('done', cb.checked);
+        if(!cb.checked) return;
+        var id = tr.getAttribute('data-restock-id');
+        if(!id) return; /* food line — checklist only */
+        var packs = parseInt(tr.getAttribute('data-restock-packs'), 10) || 0;
+        var size = parseFloat(tr.getAttribute('data-restock-size')) || 0;
+        var add = packs * size;
+        var state = loadInvState();
+        state.stock[id] = (state.stock[id] || 0) + add;
+        saveInvState(state);
+        if(lastTotals){
+          renderInventory(lastTotals);
+          renderShopping(lastTotals);
+        }
+      });
+    });
   }
 
   function renderInventory(t){
@@ -809,32 +910,29 @@
       var after = Math.max(0, onHand - use);
       var status = 'OK';
       var rowClass = '';
-      if(after <= 0 && use > 0){
-        status = 'OUT after Sunday';
+      if(use > 0 && onHand < use){
+        status = 'BUY — short for Sunday';
         rowClass = 'critical';
-        alerts.push(c.item + ' will run out this Sunday (need ' + fmtQty(use, c.unit) + ', have ' + fmtQty(onHand, c.unit) + ')');
+        alerts.push(c.item + ': need ' + fmtQty(use, c.unit) + ', have ' + fmtQty(onHand, c.unit) + ' \u2192 added to shopping list');
       } else if(after <= c.reorderAt){
-        status = 'Reorder soon';
+        status = 'Low after Sunday';
         rowClass = 'low-stock';
-        alerts.push(c.item + ' low after Sunday: ' + fmtQty(after, c.unit) + ' left (reorder \u2264 ' + c.reorderAt + ')');
+        alerts.push(c.item + ' low after Sunday: ' + fmtQty(after, c.unit) + ' left');
+      }
+      if(onHand < use || after <= c.reorderAt){
+        var shortfall = Math.max(0, use - onHand);
+        var target = Math.max(shortfall, c.reorderAt);
+        var buyPacks = Math.max(1, Math.ceil((target + (after < c.reorderAt ? c.reorderAt : 0)) / c.packSize));
+        reorderLines.push('• ' + c.item + ': ~' + buyPacks + ' \u00d7 ' + packLabel(c) + ' @ ' + money(c.packPrice));
       }
       var where = (c.store || '') + (c.brand ? ' \u00b7 ' + c.brand : '');
-      if(after <= c.reorderAt){
-        var shortfall = Math.max(0, (c.reorderAt * 2) + use - onHand);
-        var buyPacks = Math.max(1, Math.ceil(shortfall / c.packSize));
-        reorderLines.push(
-          '• ' + c.item + ': buy ~' + buyPacks + ' \u00d7 ' + packLabel(c) + ' @ ' + money(c.packPrice) +
-          ' (after Sunday ~' + fmtQty(after, c.unit) + ')' + (c.confirmed ? '' : ' [EST product]')
-        );
-      }
-      return '<tr class="' + rowClass + '" title="' + esc((c.confirmed ? 'LOCKED' : 'EST') + ' · ' + (c.note || '')) + '">' +
+      return '<tr class="' + rowClass + '">' +
         '<td>' + esc(c.group) + '<br>' + lockBadge(c) + '</td>' +
         '<td>' + esc(c.item) + '<br><small>' + esc(packLabel(c)) +
           (where ? ' · ' + esc(where) : '') + '</small></td>' +
-        '<td><input type="number" min="0" step="any" id="inv-stock-' + c.id + '" value="' + onHand + '" aria-label="On hand ' + esc(c.item) + '"> <small>' + esc(c.unit) + '</small></td>' +
+        '<td><strong>' + fmtQty(onHand, c.unit) + '</strong></td>' +
         '<td>' + fmtQty(use, c.unit) + '</td>' +
         '<td><strong>' + fmtQty(after, c.unit) + '</strong></td>' +
-        '<td>' + c.reorderAt + ' ' + esc(c.unit) + '</td>' +
         '<td>' + status + '</td>' +
         '</tr>';
     }).join('');
@@ -843,54 +941,60 @@
     var banner = document.getElementById('inv-alerts');
     if(alerts.length){
       banner.style.display = 'block';
-      banner.className = 'inv-banner ' + (alerts.some(function(a){ return a.indexOf('run out') >= 0; }) ? 'critical' : 'warn');
-      banner.innerHTML = '<strong>Inventory alerts for this Sunday</strong><br>' + alerts.map(esc).join('<br>');
+      banner.className = 'inv-banner ' + (alerts.some(function(a){ return a.indexOf('shopping') >= 0 || a.indexOf('short') >= 0; }) ? 'critical' : 'warn');
+      banner.innerHTML = '<strong>Inventory vs this Sunday</strong><br>' + alerts.map(esc).join('<br>');
     } else {
       banner.style.display = 'none';
       banner.innerHTML = '';
     }
-
     var re = document.getElementById('inv-reorder');
     re.dataset.lines = reorderLines.join('\n');
-    if(re.style.display === 'block' && reorderLines.length){
-      re.innerHTML = '<strong>Next supply / condiment order</strong><br>' + reorderLines.map(esc).join('<br>');
-    } else if(re.style.display === 'block'){
-      re.innerHTML = '<strong>Next supply / condiment order</strong><br>Nothing below reorder threshold after this Sunday.';
+    if(re.style.display === 'block'){
+      re.innerHTML = reorderLines.length
+        ? '<strong>What to reorder</strong><br>' + reorderLines.map(esc).join('<br>')
+        : '<strong>What to reorder</strong><br>Stock covers this Sunday and stays above reorder floors.';
     }
   }
 
   function wireInventoryUi(){
-    var saveBtn = document.getElementById('inv-save');
-    var applyBtn = document.getElementById('inv-apply');
+    var seedBtn = document.getElementById('inv-seed');
+    var seedSave = document.getElementById('inv-seed-save');
+    var seedPanel = document.getElementById('inv-seed-panel');
     var hintBtn = document.getElementById('inv-restock-hint');
-    if(saveBtn && !saveBtn._wired){
-      saveBtn._wired = true;
-      saveBtn.addEventListener('click', function(){
-        var state = readStockFromInputs();
-        saveInvState(state);
-        if(lastTotals) renderInventory(lastTotals);
-        alert('Stock levels saved on this device (browser storage).');
+    if(seedBtn && !seedBtn._wired){
+      seedBtn._wired = true;
+      seedBtn.addEventListener('click', function(){
+        var open = seedPanel.style.display === 'block';
+        seedPanel.style.display = open ? 'none' : 'block';
+        if(!open){
+          var state = loadInvState();
+          document.getElementById('inv-seed-fields').innerHTML = INV_CATALOG.map(function(c){
+            return '<label style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin:8px 0;font-weight:600">' +
+              '<span>' + esc(c.item) + ' <small>(' + esc(c.unit) + ')</small></span>' +
+              '<input type="number" min="0" step="any" id="seed-' + c.id + '" value="' + (state.stock[c.id] || 0) + '" style="width:7rem">' +
+              '</label>';
+          }).join('');
+        }
       });
     }
-    if(applyBtn && !applyBtn._wired){
-      applyBtn._wired = true;
-      applyBtn.addEventListener('click', function(){
-        if(!lastTotals){ alert('Load a Sunday with orders first.'); return; }
-        var iso = sundayISO();
-        if(isSundayApplied(iso)){
-          if(!confirm('Usage for ' + iso + ' was already applied. Apply again anyway? (will subtract again)')) return;
-        } else {
-          if(!confirm('Subtract this Sunday\u2019s condiment/supply usage from on-hand stock for ' + sundayLabel() + '?')) return;
-        }
-        var state = readStockFromInputs();
+    if(seedSave && !seedSave._wired){
+      seedSave._wired = true;
+      seedSave.addEventListener('click', function(){
+        var state = loadInvState();
         INV_CATALOG.forEach(function(c){
-          var use = c.usage(lastTotals) || 0;
-          state.stock[c.id] = Math.max(0, (state.stock[c.id] || 0) - use);
+          var el = document.getElementById('seed-' + c.id);
+          if(el){
+            var v = parseFloat(el.value);
+            state.stock[c.id] = isNaN(v) ? 0 : Math.max(0, v);
+          }
         });
         saveInvState(state);
-        markSundayApplied(iso);
-        renderInventory(lastTotals);
-        alert('Stock updated for ' + sundayLabel() + '.');
+        seedPanel.style.display = 'none';
+        if(lastTotals){
+          renderInventory(lastTotals);
+          renderShopping(lastTotals);
+        }
+        alert('Starting stock saved. From here, check shopping boxes when you buy packs to restock.');
       });
     }
     if(hintBtn && !hintBtn._wired){
@@ -899,12 +1003,6 @@
         var re = document.getElementById('inv-reorder');
         re.style.display = re.style.display === 'block' ? 'none' : 'block';
         if(lastTotals) renderInventory(lastTotals);
-        if(re.style.display === 'block'){
-          var lines = re.dataset.lines || '';
-          re.innerHTML = lines
-            ? '<strong>Next supply / condiment order</strong><br>' + lines.split('\n').map(esc).join('<br>')
-            : '<strong>Next supply / condiment order</strong><br>Nothing below reorder threshold after this Sunday.';
-        }
       });
     }
   }
@@ -929,6 +1027,8 @@
     var label = sundayLabel();
     var want = sundayISO();
     document.getElementById('day-label').textContent = label;
+    var sdl = document.getElementById('sunday-detail-label');
+    if(sdl) sdl.textContent = label;
     boardEl.style.display = 'none';
     statusEl.className = 'status';
     if(!SCRIPT_URL || !KEY){
@@ -937,13 +1037,13 @@
       return;
     }
     statusEl.textContent = 'Loading orders for ' + label + '\u2026';
-    /* Fetch all, filter client-side — Apps Script/Sheet date formats vary */
     fetch(SCRIPT_URL + '?key=' + encodeURIComponent(KEY))
       .then(function(r){ return r.json(); })
       .then(function(res){
         if(!res.ok){ throw new Error(res.error || 'backend error'); }
-        var all = res.orders || [];
-        var filtered = all.filter(function(o){
+        allOrdersCache = res.orders || [];
+        autoApplyPastSundays(allOrdersCache);
+        var filtered = allOrdersCache.filter(function(o){
           return toISODate(o.deliveryDate) === want;
         });
         current = filtered;
@@ -956,34 +1056,26 @@
   }
 
   function render(orders, label){
-    if(!orders.length){
-      statusEl.textContent = 'No orders yet for ' + label + '.';
-      boardEl.style.display = 'none';
-      return;
-    }
-    statusEl.textContent = orders.length + ' order' + (orders.length === 1 ? '' : 's') + ' for ' + label;
+    boardEl.style.display = 'block';
+    var sdl = document.getElementById('sunday-detail-label');
+    if(sdl) sdl.textContent = label;
 
-    var t = {soy:0, soyAvo:0, cali:0, heavy:0, heavyAvo:0, revenue:0, paidRev:0};
-    orders.forEach(function(o){
-      t.soy += o.soyrizo; t.soyAvo += o.soyrizoAvo;
-      t.cali += o.cali;
-      t.heavy += o.heavy; t.heavyAvo += o.heavyAvo;
-      t.revenue += o.total;
-      if(o.paid){ t.paidRev += o.total; }
-    });
-    var totalB = t.soy + t.cali + t.heavy;
-    var avoHalves = t.cali + t.soyAvo + t.heavyAvo;
+    if(!orders.length){
+      statusEl.textContent = 'No orders yet for ' + label + ' — inventory still shown; shopping may only list stock shortfalls.';
+    } else {
+      statusEl.textContent = orders.length + ' order' + (orders.length === 1 ? '' : 's') + ' for ' + label;
+    }
+
+    var t = totalsFromOrders(orders);
 
     document.getElementById('cook').innerHTML =
-      '<div class="bignum total"><div class="n">' + totalB + '</div><div class="l">Total burritos</div></div>' +
+      '<div class="bignum total"><div class="n">' + t.totalB + '</div><div class="l">Total burritos</div></div>' +
       '<div class="bignum"><div class="n">' + t.soy + '</div><div class="l">Soyrizo</div><div class="sub">' + t.soyAvo + ' with avo</div></div>' +
       '<div class="bignum"><div class="n">' + t.cali + '</div><div class="l">Cali</div><div class="sub">all with avo</div></div>' +
       '<div class="bignum"><div class="n">' + t.heavy + '</div><div class="l">Heavyweight</div><div class="sub">' + t.heavyAvo + ' with avo</div></div>';
 
-    t.totalB = totalB;
-    t.avoHalves = avoHalves;
-    renderFoodShopping(t);
     renderInventory(t);
+    renderShopping(t);
     wireInventoryUi();
 
     document.getElementById('money').innerHTML =
@@ -992,12 +1084,14 @@
       '<div class="bignum owed"><div class="n">' + money(t.revenue - t.paidRev) + '</div><div class="l">Unpaid</div></div>';
 
     var chase = orders.filter(function(o){ return !o.paid; });
-    document.getElementById('chase').innerHTML = chase.length
-      ? chase.map(function(o){
-          return '<li><span class="oid">' + esc(o.orderId) + '</span> ' + esc(o.name) + ' \u00b7 Unit ' + esc(o.unit) +
-                 (o.phone ? ' \u00b7 ' + esc(o.phone) : '') + '<span class="amt">' + money(o.total) + '</span></li>';
-        }).join('')
-      : '<li>Everyone has paid</li>';
+    document.getElementById('chase').innerHTML = !orders.length
+      ? '<li>No orders this Sunday</li>'
+      : (chase.length
+        ? chase.map(function(o){
+            return '<li><span class="oid">' + esc(o.orderId) + '</span> ' + esc(o.name) + ' \u00b7 Unit ' + esc(o.unit) +
+                   (o.phone ? ' \u00b7 ' + esc(o.phone) : '') + '<span class="amt">' + money(o.total) + '</span></li>';
+          }).join('')
+        : '<li>Everyone has paid</li>');
 
     var sorted = orders.slice().sort(function(a, b){
       return String(a.unit).localeCompare(String(b.unit), undefined, {numeric:true});
