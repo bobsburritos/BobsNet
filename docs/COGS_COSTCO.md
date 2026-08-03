@@ -18,6 +18,7 @@
 | **Mayo** | Kirkland Real Mayonnaise **64 oz** | **#503961** | **$5.19** | Confirmed ($0.08/oz) |
 | **Chipotle sauce** | La Costeña Medium Chipotle **220 ml** | — | **$1.59** | Confirmed (for house mayo) |
 | **Foil** | Kirkland Reynolds Foodservice HD **18" × 500 ft** | **#31684** | **$45.99** | Confirmed; ~400 wraps est. |
+| **Hash browns** | Ore-Ida shredded **6 lb** | **#42125** | **$6.99** | Confirmed frozen |
 
 TJ link: https://www.traderjoes.com/home/products/pdp/soy-chorizo-092463
 
@@ -34,7 +35,6 @@ TJ link: https://www.traderjoes.com/home/products/pdp/soy-chorizo-092463
 
 | Ingredient | Pack we model | Pack $ | Note |
 |------------|---------------|--------|------|
-| Hash browns | Ore-Ida 6 lb / similar | $9.49 | Frozen hash brown |
 | Breakfast sausage | Bulk ~3 lb | $15.99 | Jimmy Dean / similar |
 | Yellow onions | ~5 lb bag | $5.49 | Produce |
 | Cilantro | 1 bunch | $1.29 | Grocery |
