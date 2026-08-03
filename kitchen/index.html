@@ -179,7 +179,15 @@
   .inv-actions .primary{background:var(--grape);color:var(--sunbeam);}
   .inv-actions .secondary{background:var(--sunbeam);color:var(--grape);}
   .inv-actions .ghost{background:#fff;color:var(--grape);border:2px solid var(--grape);}
-  .section-note{font-family:'Fredoka',sans-serif;font-size:.85rem;font-weight:500;opacity:.85;margin:-6px 0 12px;line-height:1.4;}
+  .section-note{font-family:'Fredoka',sans-serif;font-size:.85rem;font-weight:500;opacity:.85;margin:0 0 12px;line-height:1.35;}
+  .divider{
+    border:none;border-top:3px dashed rgba(61,26,92,.2);margin:28px 0;
+  }
+  #stats-panel{
+    display:none;background:#fff;border:var(--outline);border-radius:20px;box-shadow:var(--pop);
+    padding:18px 16px;margin:0 0 22px;
+  }
+  #stats-panel.open{display:block;}
   .markpaid{
     margin-top:8px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:.85rem;
     background:var(--grape);color:var(--sunbeam);border:none;border-radius:999px;
@@ -297,6 +305,7 @@
     <button id="next" type="button" aria-label="Next Sunday">›</button>
   </div>
   <div class="header-actions">
+    <button type="button" id="stats-toggle">Stats</button>
     <button type="button" id="refresh">Refresh</button>
     <button type="button" id="logout">Log out</button>
   </div>
@@ -305,77 +314,59 @@
 <div class="wrap">
   <p class="status" id="status">Loading…</p>
 
-  <div id="board" style="display:none">
-    <!-- TOP: business metrics (all Sundays) -->
-    <h2>Stats <small>(all time)</small></h2>
-    <p class="section-note">From every order in the sheet (all delivery Sundays). Browse ‹ › below for a single Sunday.</p>
+  <!-- Stats: toggle only (not everyday clutter) -->
+  <div id="stats-panel" aria-hidden="true">
+    <h2 style="margin-top:0">All-time stats</h2>
     <div class="bignums" id="stats-top"></div>
     <div class="money" id="stats-money" style="margin-top:12px"></div>
-    <p class="section-note" id="stats-detail" style="margin-top:10px"></p>
+    <p class="section-note" id="stats-detail" style="margin-top:10px;margin-bottom:0"></p>
+  </div>
 
-    <!-- Inventory (stock carries week to week) -->
-    <h2>Kitchen inventory</h2>
-    <p class="section-note">Condiments + cups, boxes, foil. Stock lives on this device. Past Sundays auto-subtract usage. Check shopping boxes when you buy packs to restock — no manual tally needed after the first seed.</p>
+  <div id="board" style="display:none">
+    <!-- TOP: inventory -->
+    <h2 style="margin-top:0">Inventory</h2>
+    <p class="section-note">Cups, boxes, foil, condiments — stock on this device. Short items show up on the shopping list.</p>
     <div id="inv-alerts" class="inv-banner" style="display:none" role="status"></div>
     <div class="inv-actions">
-      <button type="button" class="secondary" id="inv-seed">Seed / adjust starting stock</button>
-      <button type="button" class="ghost" id="inv-restock-hint">What to reorder</button>
+      <button type="button" class="secondary" id="inv-seed">Set stock</button>
     </div>
     <div id="inv-seed-panel" class="inv-banner" style="display:none">
-      <strong>Starting stock</strong> (one-time or corrections). Save, then use shopping checkboxes to restock.
-      <div id="inv-seed-fields" style="margin-top:10px"></div>
+      <div id="inv-seed-fields"></div>
       <div class="inv-actions" style="margin-bottom:0">
-        <button type="button" class="primary" id="inv-seed-save">Save starting stock</button>
+        <button type="button" class="primary" id="inv-seed-save">Save stock</button>
       </div>
     </div>
     <div class="table-scroll grocery-scroll">
-    <table class="grocery" id="inv-table">
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Item</th>
-          <th>On hand now</th>
-          <th>This Sunday uses</th>
-          <th>After this Sunday</th>
-          <th>Status</th>
-        </tr>
-      </thead>
+    <table class="grocery">
+      <thead><tr><th>Item</th><th>On hand</th><th>Uses (Sun)</th><th>Left after</th><th></th></tr></thead>
       <tbody id="inventory"></tbody>
     </table>
     </div>
-    <div id="inv-reorder" class="inv-banner" style="display:none;margin-top:14px"></div>
 
-    <!-- Shopping: food for Sunday + inventory shortfalls -->
-    <h2>Shopping list <small>(check when bought)</small></h2>
-    <p class="section-note">Food scales with this Sunday&rsquo;s orders. Condiments/supplies only appear when stock is short. Checking a row marks it bought; inventory packs restock automatically.</p>
+    <h2>Shop <small>(check when bought)</small></h2>
+    <p class="section-note">Food for this Sunday + anything inventory is short on. Check = bought (restocks inventory packs).</p>
     <div class="table-scroll grocery-scroll">
     <table class="grocery">
-      <thead><tr><th>Got it</th><th>Kind</th><th>Item</th><th>Need</th><th>Buy</th><th>Est</th></tr></thead>
+      <thead><tr><th>✓</th><th>Item</th><th>Buy</th><th>Est</th></tr></thead>
       <tbody id="grocery"></tbody>
-      <tfoot><tr><td></td><td colspan="4"><strong>Est. shop total</strong></td><td id="grocery-total"><strong>—</strong></td></tr></tfoot>
+      <tfoot><tr><td></td><td colspan="2"><strong>Total</strong></td><td id="grocery-total"><strong>—</strong></td></tr></tfoot>
     </table>
     </div>
 
-    <!-- BOTTOM: Sunday calendar detail (header day picker browses Sundays) -->
-    <h2>This Sunday <small id="sunday-detail-label"></small></h2>
-    <p class="section-note">Use ‹ › in the header to browse delivery Sundays. Cook counts, money, and delivery run for the selected date.</p>
+    <hr class="divider" />
+
+    <!-- BOTTOM: this Sunday orders only -->
+    <h2>Orders <small id="sunday-detail-label"></small></h2>
     <div class="bignums" id="cook"></div>
-    <div class="cols" style="margin-top:18px">
-      <div>
-        <h2>Money</h2>
-        <div class="money" id="money"></div>
-        <h2>Unpaid — chase these</h2>
-        <ul class="check" id="chase"></ul>
-      </div>
-      <div>
-        <h2>Delivery Run <small>(by unit)</small></h2>
-        <div class="table-scroll delivery-scroll">
-        <table class="delivery">
-          <thead><tr><th>✓</th><th>Unit</th><th>Name</th><th>Order</th><th>Items</th><th>Total</th><th>Paid</th></tr></thead>
-          <tbody id="orders"></tbody>
-        </table>
-        </div>
-      </div>
+    <div class="money" id="money" style="margin-top:14px"></div>
+    <h2>Unpaid</h2>
+    <ul class="check" id="chase"></ul>
+    <h2>Delivery</h2>
+    <div class="table-scroll delivery-scroll">
+    <table class="delivery">
+      <thead><tr><th>✓</th><th>Unit</th><th>Name</th><th>Order</th><th>Items</th><th>Total</th><th>Paid</th></tr></thead>
+      <tbody id="orders"></tbody>
+    </table>
     </div>
   </div>
 </div>
@@ -873,16 +864,15 @@
         : '';
       return '<tr class="shop-row" data-shop-idx="' + idx + '"' + restock + '>' +
         '<td><input type="checkbox" class="shop-check" aria-label="Bought ' + esc(line.item) + '"></td>' +
-        '<td>' + esc(line.kind) + '</td>' +
         '<td>' + lockBadge(p) + ' ' + esc(line.item) +
-          (where ? '<br><small>' + esc(where) + '</small>' : '') + '</td>' +
-        '<td>' + esc(line.needLabel) + '</td>' +
+          '<br><small>' + esc(line.kind) + (where ? ' · ' + esc(where) : '') +
+          ' · ' + esc(line.needLabel) + '</small></td>' +
         '<td>' + buyLabel + '</td>' +
         '<td>' + money(line.cost) + '</td>' +
         '</tr>';
     }).join('');
     document.getElementById('grocery').innerHTML = html ||
-      '<tr><td colspan="6">Nothing to buy — food need is zero and inventory covers this Sunday.</td></tr>';
+      '<tr><td colspan="4">Nothing to buy for this Sunday.</td></tr>';
     document.getElementById('grocery-total').innerHTML = '<strong>' + money(totalCost) + '</strong>';
 
     document.querySelectorAll('.shop-check').forEach(function(cb){
@@ -934,9 +924,7 @@
       }
       var where = (c.store || '') + (c.brand ? ' \u00b7 ' + c.brand : '');
       return '<tr class="' + rowClass + '">' +
-        '<td>' + esc(c.group) + '<br>' + lockBadge(c) + '</td>' +
-        '<td>' + esc(c.item) + '<br><small>' + esc(packLabel(c)) +
-          (where ? ' · ' + esc(where) : '') + '</small></td>' +
+        '<td>' + esc(c.item) + '<br><small>' + esc(c.group) + ' · ' + esc(packLabel(c)) + '</small></td>' +
         '<td><strong>' + fmtQty(onHand, c.unit) + '</strong></td>' +
         '<td>' + fmtQty(use, c.unit) + '</td>' +
         '<td><strong>' + fmtQty(after, c.unit) + '</strong></td>' +
@@ -948,18 +936,11 @@
     var banner = document.getElementById('inv-alerts');
     if(alerts.length){
       banner.style.display = 'block';
-      banner.className = 'inv-banner ' + (alerts.some(function(a){ return a.indexOf('shopping') >= 0 || a.indexOf('short') >= 0; }) ? 'critical' : 'warn');
-      banner.innerHTML = '<strong>Inventory vs this Sunday</strong><br>' + alerts.map(esc).join('<br>');
+      banner.className = 'inv-banner critical';
+      banner.innerHTML = alerts.map(esc).join('<br>');
     } else {
       banner.style.display = 'none';
       banner.innerHTML = '';
-    }
-    var re = document.getElementById('inv-reorder');
-    re.dataset.lines = reorderLines.join('\n');
-    if(re.style.display === 'block'){
-      re.innerHTML = reorderLines.length
-        ? '<strong>What to reorder</strong><br>' + reorderLines.map(esc).join('<br>')
-        : '<strong>What to reorder</strong><br>Stock covers this Sunday and stays above reorder floors.';
     }
   }
 
@@ -967,7 +948,17 @@
     var seedBtn = document.getElementById('inv-seed');
     var seedSave = document.getElementById('inv-seed-save');
     var seedPanel = document.getElementById('inv-seed-panel');
-    var hintBtn = document.getElementById('inv-restock-hint');
+    var statsBtn = document.getElementById('stats-toggle');
+    var statsPanel = document.getElementById('stats-panel');
+    if(statsBtn && statsPanel && !statsBtn._wired){
+      statsBtn._wired = true;
+      statsBtn.addEventListener('click', function(){
+        var open = statsPanel.classList.toggle('open');
+        statsPanel.setAttribute('aria-hidden', open ? 'false' : 'true');
+        statsBtn.textContent = open ? 'Stats ✕' : 'Stats';
+        if(open) renderAllTimeStats(allOrdersCache);
+      });
+    }
     if(seedBtn && !seedBtn._wired){
       seedBtn._wired = true;
       seedBtn.addEventListener('click', function(){
@@ -1001,15 +992,6 @@
           renderInventory(lastTotals);
           renderShopping(lastTotals);
         }
-        alert('Starting stock saved. From here, check shopping boxes when you buy packs to restock.');
-      });
-    }
-    if(hintBtn && !hintBtn._wired){
-      hintBtn._wired = true;
-      hintBtn.addEventListener('click', function(){
-        var re = document.getElementById('inv-reorder');
-        re.style.display = re.style.display === 'block' ? 'none' : 'block';
-        if(lastTotals) renderInventory(lastTotals);
       });
     }
   }
