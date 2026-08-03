@@ -13,6 +13,28 @@
 
 Inventory stock is stored in the **browser** (`localStorage`) on the device you use for kitchen.
 
+### Product catalog structure (bones)
+
+Every line in code has the same shape so we can **lock exact products over time** (lowest cost that still works):
+
+```
+id, list (food|inventory), group, item, unit
+brand, sku, store, pack, packSize, packPrice
+confirmed: true | false   ← LOCKED green badge vs EST purple
+need(t)  or  usage(t)+reorderAt
+```
+
+| Badge | Meaning |
+|-------|---------|
+| **LOCKED** | Exact product + pack $ you’ve confirmed — prefer this every time |
+| **EST** | Placeholder brand/size/price — replace when you find the best SKU |
+
+**How to lock a new product:** send  
+`role (food/condiment/supply) | brand | item# | pack size | price | store`  
+→ we set `confirmed:true` and update pack/sku/price.
+
+Goal: same cart every Costco/TJ run, minimize $/burrito without changing the recipe.
+
 ## Locked (your Costco / TJ)
 
 | Ingredient | Item | Pack | Price | Status |

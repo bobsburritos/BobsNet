@@ -630,61 +630,82 @@
       .replace(/'/g, '&#39;');
   }
 
-  /* ===== FOOD (order-based) — this Sunday shop only =====
-     Full price notes: docs/COGS_COSTCO.md */
+  /* ===== PRODUCT CATALOG (bones of COGS) =====
+     Shape for every line:
+       id, list: 'food'|'inventory', group, item, unit
+       brand, sku, store, pack, packSize, packPrice
+       confirmed: true once exact product+price locked (optimize over time)
+       need(t) OR usage(t), reorderAt (inventory only)
+     Lock exact products as you shop — see docs/COGS_COSTCO.md
+  */
+  function packLabel(p){
+    var s = p.pack || '';
+    if(p.sku) s += (s ? ' ' : '') + '(#' + p.sku + ')';
+    return s;
+  }
+  function lockBadge(p){
+    return p.confirmed
+      ? '<span class="pill yes" style="font-size:.65rem;padding:2px 8px">LOCKED</span>'
+      : '<span class="pill" style="background:var(--lilac);font-size:.65rem;padding:2px 8px">EST</span>';
+  }
+
+  /* Food = order-based Sunday shop (perishables / recipe 1:1) */
   var FOOD_GROCERY = [
-    {item:'Flour tortillas (1 per burrito)', unit:'tortillas', need:function(t){return t.totalB;},
-     pack:'Mission 10" flour 40-ct (#208429)', packSize:40, packPrice:8.99, note:'Costco $8.99'},
-    {item:'Eggs (2 per burrito)', unit:'eggs', need:function(t){return t.totalB*2;},
-     pack:'Kirkland Large 24-ct (#637598)', packSize:24, packPrice:3.28, note:'Costco $3.28'},
-    {item:'Shredded cheese (2 oz ea)', unit:'oz', need:function(t){return t.totalB*2;},
-     pack:'Kirkland Mexican blend 2.5 lb \u00d7 2 (#1165284) = 80 oz', packSize:80, packPrice:15.31, note:'Costco $15.31'},
-    {item:'Hash browns (3 oz ea)', unit:'oz', need:function(t){return t.totalB*3;},
-     pack:'Ore-Ida shredded 6 lb (96 oz) #42125', packSize:96, packPrice:6.99, note:'Costco $6.99'},
-    {item:'Soy chorizo (4 oz ea)', unit:'oz', need:function(t){return t.soy*4;},
-     pack:'Trader Joe\u2019s soy chorizo 12 oz (#092463)', packSize:12, packPrice:2.99, note:'TJ $2.99'},
-    {item:'Ground beef (4 oz ea, Cali)', unit:'oz', need:function(t){return t.cali*4;},
-     pack:'Kirkland 88/12 ground beef 1 lb (#33724)', packSize:16, packPrice:6.80, note:'Costco $6.80/lb'},
-    {item:'Breakfast sausage (2 oz ea, Heavy)', unit:'oz', need:function(t){return t.heavy*2;},
-     pack:'Bulk breakfast sausage ~3 lb (48 oz)', packSize:48, packPrice:15.99, note:'ballpark'},
-    {item:'Bacon (2 slices ea, Heavy)', unit:'slices', need:function(t){return t.heavy*2;},
-     pack:'Kirkland sliced bacon 1 lb \u00d7 4 (#7000070) ~64 slices est.', packSize:64, packPrice:17.01, note:'Costco $17.01'},
-    {item:'Avocados (\u00bd per add-on / Cali)', unit:'halves', need:function(t){return t.avoHalves;},
-     pack:'Hass 6-ct bag (#647465) = 12 halves', packSize:12, packPrice:6.23, note:'Costco $6.23'},
-    {item:'Yellow onions (1 oz ea)', unit:'oz', need:function(t){return t.totalB;},
-     pack:'Yellow onion bag ~5 lb (80 oz)', packSize:80, packPrice:5.49, note:'ballpark'},
-    {item:'Cilantro', unit:'bunches', need:function(t){return Math.max(1, Math.ceil(t.totalB/20));},
-     pack:'Fresh bunch', packSize:1, packPrice:1.29, note:'grocery ballpark'}
+    {id:'tortillas', list:'food', group:'Food', item:'Flour tortillas (1 per burrito)', unit:'tortillas',
+     brand:'Mission', sku:'208429', store:'Costco', pack:'10" flour 40-ct', packSize:40, packPrice:8.99, confirmed:true,
+     need:function(t){return t.totalB;}},
+    {id:'eggs', list:'food', group:'Food', item:'Eggs (2 per burrito)', unit:'eggs',
+     brand:'Kirkland', sku:'637598', store:'Costco', pack:'Large 24-ct', packSize:24, packPrice:3.28, confirmed:true,
+     need:function(t){return t.totalB*2;}},
+    {id:'cheese', list:'food', group:'Food', item:'Shredded cheese (2 oz ea)', unit:'oz',
+     brand:'Kirkland', sku:'1165284', store:'Costco', pack:'Mexican blend 2.5 lb \u00d7 2 (80 oz)', packSize:80, packPrice:15.31, confirmed:true,
+     need:function(t){return t.totalB*2;}},
+    {id:'hashbrowns', list:'food', group:'Food', item:'Hash browns (3 oz ea)', unit:'oz',
+     brand:'Ore-Ida', sku:'42125', store:'Costco', pack:'Shredded 6 lb (96 oz)', packSize:96, packPrice:6.99, confirmed:true,
+     need:function(t){return t.totalB*3;}},
+    {id:'soychorizo', list:'food', group:'Food', item:'Soy chorizo (4 oz ea)', unit:'oz',
+     brand:'Trader Joe\u2019s', sku:'092463', store:'Trader Joe\u2019s', pack:'Soy chorizo 12 oz', packSize:12, packPrice:2.99, confirmed:true,
+     need:function(t){return t.soy*4;}},
+    {id:'beef', list:'food', group:'Food', item:'Ground beef (4 oz ea, Cali)', unit:'oz',
+     brand:'Kirkland', sku:'33724', store:'Costco', pack:'88/12 ground beef per lb', packSize:16, packPrice:6.80, confirmed:true,
+     need:function(t){return t.cali*4;}},
+    {id:'sausage', list:'food', group:'Food', item:'Breakfast sausage (2 oz ea, Heavy)', unit:'oz',
+     brand:'', sku:'', store:'Costco', pack:'Bulk breakfast sausage ~3 lb (48 oz)', packSize:48, packPrice:15.99, confirmed:false,
+     need:function(t){return t.heavy*2;}},
+    {id:'bacon', list:'food', group:'Food', item:'Bacon (2 slices ea, Heavy)', unit:'slices',
+     brand:'Kirkland', sku:'7000070', store:'Costco', pack:'Sliced bacon 1 lb \u00d7 4 (~64 slices est.)', packSize:64, packPrice:17.01, confirmed:true,
+     need:function(t){return t.heavy*2;}},
+    {id:'avocado', list:'food', group:'Food', item:'Avocados (\u00bd per add-on / Cali)', unit:'halves',
+     brand:'', sku:'647465', store:'Costco', pack:'Hass 6-ct (12 halves)', packSize:12, packPrice:6.23, confirmed:true,
+     need:function(t){return t.avoHalves;}},
+    {id:'onion', list:'food', group:'Food', item:'Yellow onions (1 oz ea)', unit:'oz',
+     brand:'', sku:'', store:'Costco', pack:'Yellow onion bag ~5 lb (80 oz)', packSize:80, packPrice:5.49, confirmed:false,
+     need:function(t){return t.totalB;}},
+    {id:'cilantro', list:'food', group:'Food', item:'Cilantro', unit:'bunches',
+     brand:'', sku:'', store:'Grocery', pack:'Fresh bunch', packSize:1, packPrice:1.29, confirmed:false,
+     need:function(t){return Math.max(1, Math.ceil(t.totalB/20));}}
   ];
 
-  /* ===== INVENTORY (stock-based) — condiments + pack supplies =====
-     usage(t) = amount this Sunday consumes from on-hand stock.
-     reorderAt = warn when on-hand (after Sunday) would be <= this. */
+  /* Inventory = stock-based condiments + pack supplies (not 1:1 food shop) */
   var INV_CATALOG = [
-    {id:'mayo_oz', group:'Condiment', item:'Mayo (house chipotle base)', unit:'oz',
-     usage:function(t){return t.totalB*1.5;}, reorderAt:32,
-     pack:'Kirkland mayo 64 oz (#503961)', packSize:64, packPrice:5.19,
-     note:'1.5 oz mayo base per burrito'},
-    {id:'chipotle_ml', group:'Condiment', item:'Chipotle sauce (La Coste\u00f1a)', unit:'ml',
-     usage:function(t){return t.totalB*(220/25);}, reorderAt:110,
-     pack:'La Coste\u00f1a Medium Chipotle 220 ml', packSize:220, packPrice:1.59,
-     note:'~8.8 ml/burrito (1 bottle ~25 burritos)'},
-    {id:'seasoning_pk', group:'Condiment', item:'Taco seasoning (Cali)', unit:'packets',
-     usage:function(t){return t.cali>0?Math.ceil(t.cali/8):0;}, reorderAt:2,
-     pack:'1 oz packet', packSize:1, packPrice:1.29,
-     note:'~1 packet per 8 Cali burritos'},
-    {id:'sauce_cups', group:'Supply', item:'2 oz sauce cups + lids', unit:'cups',
-     usage:function(t){return t.totalB;}, reorderAt:50,
-     pack:'100-ct', packSize:100, packPrice:11.99,
-     note:'1 cup per burrito'},
-    {id:'boxes', group:'Supply', item:'Takeout / kraft boxes', unit:'boxes',
-     usage:function(t){return t.totalB;}, reorderAt:40,
-     pack:'50-ct', packSize:50, packPrice:18.99,
-     note:'1 box per burrito (adjust if multi-pack orders share)'},
-    {id:'foil', group:'Supply', item:'Foil wrap sheets', unit:'sheets',
-     usage:function(t){return t.totalB;}, reorderAt:80,
-     pack:'Reynolds HD 18 in x 500 ft (#31684) ~400 sheets', packSize:400, packPrice:45.99,
-     note:'1 wrap per burrito'}
+    {id:'mayo_oz', list:'inventory', group:'Condiment', item:'Mayo (house chipotle base)', unit:'oz',
+     brand:'Kirkland', sku:'503961', store:'Costco', pack:'Real Mayonnaise 64 oz', packSize:64, packPrice:5.19, confirmed:true,
+     usage:function(t){return t.totalB*1.5;}, reorderAt:32, note:'1.5 oz mayo base per burrito'},
+    {id:'chipotle_ml', list:'inventory', group:'Condiment', item:'Chipotle sauce (La Coste\u00f1a)', unit:'ml',
+     brand:'La Coste\u00f1a', sku:'', store:'Costco/Grocery', pack:'Medium Chipotle Sauce 220 ml', packSize:220, packPrice:1.59, confirmed:true,
+     usage:function(t){return t.totalB*(220/25);}, reorderAt:110, note:'~8.8 ml/burrito (1 bottle ~25 burritos)'},
+    {id:'seasoning_pk', list:'inventory', group:'Condiment', item:'Taco seasoning (Cali)', unit:'packets',
+     brand:'', sku:'', store:'Grocery', pack:'1 oz packet (or bulk scoop)', packSize:1, packPrice:1.29, confirmed:false,
+     usage:function(t){return t.cali>0?Math.ceil(t.cali/8):0;}, reorderAt:2, note:'~1 packet per 8 Cali burritos'},
+    {id:'sauce_cups', list:'inventory', group:'Supply', item:'2 oz sauce cups + lids', unit:'cups',
+     brand:'', sku:'', store:'Restaurant supply', pack:'100-ct portion cups', packSize:100, packPrice:11.99, confirmed:false,
+     usage:function(t){return t.totalB;}, reorderAt:50, note:'1 cup per burrito'},
+    {id:'boxes', list:'inventory', group:'Supply', item:'Takeout / kraft boxes', unit:'boxes',
+     brand:'', sku:'', store:'Restaurant supply', pack:'50-ct #3 or similar', packSize:50, packPrice:18.99, confirmed:false,
+     usage:function(t){return t.totalB;}, reorderAt:40, note:'1 box per burrito'},
+    {id:'foil', list:'inventory', group:'Supply', item:'Foil wrap sheets', unit:'sheets',
+     brand:'Kirkland/Reynolds', sku:'31684', store:'Costco', pack:'Foodservice Foil HD 18 in x 500 ft (~400 sheets)', packSize:400, packPrice:45.99, confirmed:true,
+     usage:function(t){return t.totalB;}, reorderAt:80, note:'1 wrap per burrito'}
   ];
 
   var INV_KEY = 'bb_kitchen_inventory_v1';
@@ -762,10 +783,12 @@
       var cost = packs * gr.packPrice;
       totalCost += cost;
       var needLabel = (Math.round(need * 10) / 10) + ' ' + gr.unit;
-      var buyLabel = packs + ' \u00d7 ' + gr.pack + ' @ ' + money(gr.packPrice);
-      return '<tr title="' + esc(gr.note || '') + '">' +
+      var buyLabel = packs + ' \u00d7 ' + packLabel(gr) + ' @ ' + money(gr.packPrice);
+      var where = (gr.store || '') + (gr.brand ? ' \u00b7 ' + gr.brand : '');
+      return '<tr title="' + esc((gr.confirmed ? 'LOCKED product' : 'EST — pick exact product later') + (where ? ' · ' + where : '')) + '">' +
         '<td><input type="checkbox" onchange="this.closest(\'tr\').classList.toggle(\'done\', this.checked)"></td>' +
-        '<td>' + esc(gr.item) + '</td>' +
+        '<td>' + lockBadge(gr) + ' ' + esc(gr.item) +
+          (where ? '<br><small>' + esc(where) + '</small>' : '') + '</td>' +
         '<td>' + needLabel + '</td>' +
         '<td>' + buyLabel + '</td>' +
         '<td>' + money(cost) + '</td>' +
@@ -795,17 +818,19 @@
         rowClass = 'low-stock';
         alerts.push(c.item + ' low after Sunday: ' + fmtQty(after, c.unit) + ' left (reorder \u2264 ' + c.reorderAt + ')');
       }
+      var where = (c.store || '') + (c.brand ? ' \u00b7 ' + c.brand : '');
       if(after <= c.reorderAt){
-        var buyPacks = Math.max(1, Math.ceil((c.reorderAt * 2 + use - onHand) / c.packSize));
-        if(buyPacks < 1) buyPacks = 1;
+        var shortfall = Math.max(0, (c.reorderAt * 2) + use - onHand);
+        var buyPacks = Math.max(1, Math.ceil(shortfall / c.packSize));
         reorderLines.push(
-          '• ' + c.item + ': buy ~' + buyPacks + ' \u00d7 ' + c.pack + ' @ ' + money(c.packPrice) +
-          ' (after Sunday ~' + fmtQty(after, c.unit) + ')'
+          '• ' + c.item + ': buy ~' + buyPacks + ' \u00d7 ' + packLabel(c) + ' @ ' + money(c.packPrice) +
+          ' (after Sunday ~' + fmtQty(after, c.unit) + ')' + (c.confirmed ? '' : ' [EST product]')
         );
       }
-      return '<tr class="' + rowClass + '" title="' + esc(c.note || '') + '">' +
-        '<td>' + esc(c.group) + '</td>' +
-        '<td>' + esc(c.item) + '<br><small>' + esc(c.pack) + '</small></td>' +
+      return '<tr class="' + rowClass + '" title="' + esc((c.confirmed ? 'LOCKED' : 'EST') + ' · ' + (c.note || '')) + '">' +
+        '<td>' + esc(c.group) + '<br>' + lockBadge(c) + '</td>' +
+        '<td>' + esc(c.item) + '<br><small>' + esc(packLabel(c)) +
+          (where ? ' · ' + esc(where) : '') + '</small></td>' +
         '<td><input type="number" min="0" step="any" id="inv-stock-' + c.id + '" value="' + onHand + '" aria-label="On hand ' + esc(c.item) + '"> <small>' + esc(c.unit) + '</small></td>' +
         '<td>' + fmtQty(use, c.unit) + '</td>' +
         '<td><strong>' + fmtQty(after, c.unit) + '</strong></td>' +
