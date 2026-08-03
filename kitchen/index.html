@@ -2,46 +2,59 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<title>Bob's Burritos — Kitchen</title>
+<title>Bob's Kitchen — Staff</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --grape:#3D1A5C; --grape-deep:#2A1140; --sunbeam:#FFD23F;
-    --cream:#FFF4DC; --tangerine:#FF8A3D; --lilac:#C9A7F0;
-    --ok:#3E9B4F; --bad:#C0392B;
-    --outline:3px solid var(--grape); --pop:5px 5px 0 var(--grape);
+    --purple:#3D1A5C;
+    --cream:#FFF4DC;
+    --gold:#FFD23F;
+    --orange:#FF8A3D;
+    --lilac:#C9A7F0;
+    --green:#3E9B4F;
+    --green-ink:#2E7A3C;
+    --red:#C0392B;
+    --gold-tint:#FFF3C9;
+    --coral-tint:#FBE0DA;
+    --green-tint:#E1F2E4;
+    --lilac-tint:#F1E8FC;
+    --shadow:4px 4px 0 rgba(61,26,92,.16);
+    --shadow-sm:3px 3px 0 rgba(61,26,92,.14);
+    --shadow-lg:6px 6px 0 rgba(61,26,92,.18);
+    --font-display:'Shrikhand','Arial Rounded MT Bold','Cooper Black',Georgia,serif;
+    --font-ui:'Fredoka','Segoe UI',system-ui,-apple-system,sans-serif;
+    --t-xs:12px; --t-sm:13px; --t-base:16px; --t-lg:20px; --t-xl:25px; --t-2xl:31px; --t-3xl:39px;
   }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  html{-webkit-text-size-adjust:100%;}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html{-webkit-text-size-adjust:100%;height:100%}
   body{
-    font-family:'Fredoka',sans-serif;background:var(--cream);color:var(--grape);
-    padding-bottom:max(60px, env(safe-area-inset-bottom));
-    min-height:100vh;overflow-x:hidden;
+    font-family:var(--font-ui);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(201,167,240,.35), transparent 40%),
+      radial-gradient(circle at 90% 4%, rgba(255,210,63,.30), transparent 38%),
+      var(--cream);
+    color:var(--purple);
+    min-height:100%;min-height:100dvh;
+    overflow-x:hidden;
   }
+  .num{font-variant-numeric:tabular-nums lining-nums}
 
-  /* ---------- Login gate ---------- */
+  /* ---------- Login ---------- */
   #login-gate{
     min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;
     padding:max(16px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
-    background:
-      radial-gradient(ellipse at 20% 0%, var(--lilac) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 100%, var(--sunbeam) 0%, transparent 45%),
-      var(--cream);
   }
-  #login-gate[hidden]{display:none !important;}
+  #login-gate[hidden],#app[hidden]{display:none !important}
   .login-card{
-    width:min(420px,100%);background:#fff;border:var(--outline);border-radius:28px;
-    box-shadow:var(--pop);padding:28px 20px 24px;text-align:center;
+    width:min(420px,100%);background:#fff;border:3px solid var(--purple);border-radius:28px;
+    box-shadow:var(--shadow-lg);padding:28px 20px 24px;text-align:center;
   }
-  .login-card h1{
-    font-family:'Shrikhand',cursive;font-size:clamp(1.5rem,6vw,1.85rem);color:var(--grape);
-    margin-bottom:6px;
-  }
-  .login-card .sub{font-weight:500;opacity:.8;margin-bottom:22px;line-height:1.4;font-size:.95rem;}
+  .login-card h1{font-family:var(--font-display);font-weight:400;font-size:clamp(1.5rem,6vw,1.85rem);margin-bottom:6px}
+  .login-card .sub{font-weight:500;opacity:.8;margin-bottom:22px;line-height:1.4;font-size:.95rem}
   .login-card label{
     display:block;text-align:left;font-weight:700;font-size:.85rem;
     text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;
@@ -49,234 +62,406 @@
   .login-card input[type="password"],
   .login-card input[type="text"],
   .login-card input[type="email"]{
-    width:100%;font-family:'Fredoka',sans-serif;font-size:16px;font-weight:500;
-    padding:14px 16px;border:var(--outline);border-radius:16px;background:var(--cream);
-    color:var(--grape);margin-bottom:14px;
+    width:100%;font-family:var(--font-ui);font-size:16px;font-weight:500;
+    padding:14px 16px;border:3px solid var(--purple);border-radius:16px;background:var(--cream);
+    color:var(--purple);margin-bottom:14px;
   }
-  .login-card input:focus{outline:3px solid var(--tangerine);outline-offset:2px;}
-  .login-card .row{display:flex;align-items:center;gap:8px;margin:4px 0 18px;font-weight:500;font-size:.9rem;}
-  .login-card .row input{width:18px;height:18px;accent-color:var(--tangerine);flex:none;}
+  .login-card input:focus{outline:3px solid var(--orange);outline-offset:2px}
+  .login-card .row{display:flex;align-items:center;gap:8px;margin:4px 0 18px;font-weight:500;font-size:.9rem}
+  .login-card .row input{width:18px;height:18px;accent-color:var(--orange);flex:none}
   .login-card button#login-btn{
-    width:100%;font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.05rem;
-    background:var(--grape);color:var(--sunbeam);border:none;border-radius:999px;
-    padding:14px 20px;cursor:pointer;box-shadow:4px 4px 0 var(--tangerine);
-    min-height:48px;
+    width:100%;font-family:var(--font-ui);font-weight:700;font-size:1.05rem;
+    background:var(--purple);color:var(--gold);border:none;border-radius:999px;
+    padding:14px 20px;cursor:pointer;box-shadow:4px 4px 0 var(--orange);min-height:48px;
   }
-  .login-card button#login-btn:hover{transform:translateY(-1px);}
-  .login-err{color:var(--bad);font-weight:600;min-height:1.3em;margin-bottom:10px;font-size:.95rem;}
-  .login-note{margin-top:16px;font-size:.8rem;opacity:.65;line-height:1.35;}
+  .login-card button#login-btn:active{transform:translate(2px,2px);box-shadow:none}
+  .login-err{color:var(--red);font-weight:600;min-height:1.3em;margin-bottom:10px;font-size:.95rem}
+  .login-note{margin-top:16px;font-size:.8rem;opacity:.65;line-height:1.35}
 
-  #app[hidden]{display:none !important;}
+  /* ---------- App shell ---------- */
+  #app{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
+  .app-head{
+    flex-shrink:0;position:sticky;top:0;z-index:40;background:var(--purple);color:var(--cream);
+    padding:max(12px, env(safe-area-inset-top)) 16px 14px;
+  }
+  .brandrow{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .brand{display:flex;align-items:center;gap:10px;min-width:0}
+  .brand .logo{
+    width:40px;height:40px;border-radius:12px;background:var(--gold);border:3px solid var(--cream);
+    display:grid;place-items:center;font-size:20px;flex-shrink:0;box-shadow:2px 2px 0 rgba(0,0,0,.2);
+  }
+  .brand h1{font-family:var(--font-display);font-weight:400;font-size:22px;color:var(--cream);line-height:1}
+  .brand .sub{font-size:11px;color:var(--lilac);font-weight:600;letter-spacing:.5px;margin-top:2px}
+  .actions{display:flex;gap:8px;flex-shrink:0}
+  .pill{
+    font-family:var(--font-ui);font-weight:600;font-size:var(--t-sm);cursor:pointer;
+    background:var(--cream);color:var(--purple);border:2.5px solid var(--cream);
+    padding:9px 14px;border-radius:999px;min-height:44px;display:inline-flex;align-items:center;gap:6px;
+    box-shadow:2px 2px 0 rgba(0,0,0,.22);transition:transform .08s;
+  }
+  .pill:active{transform:translate(2px,2px);box-shadow:none}
+  .pill.ghost{background:transparent;color:var(--cream);border-color:rgba(255,244,220,.5)}
+  .pill.gold{background:var(--gold);border-color:var(--gold);color:var(--purple)}
+  .pill.icon{width:44px;padding:0;justify-content:center;font-size:17px}
 
-  header{
-    background:var(--grape);color:var(--cream);
-    padding:16px max(16px, env(safe-area-inset-right)) 16px max(16px, env(safe-area-inset-left));
-    display:flex;flex-wrap:wrap;gap:12px;
-    align-items:center;justify-content:space-between;
+  .datenav{
+    display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px;
+    background:rgba(255,255,255,.10);border:2px solid rgba(255,244,220,.35);border-radius:16px;padding:6px;
   }
-  header h1{font-family:'Shrikhand',cursive;font-size:clamp(1.25rem,5vw,1.6rem);color:var(--sunbeam);line-height:1.1;}
-  .header-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
-  .daypick{display:flex;align-items:center;gap:8px;flex:1 1 auto;min-width:0;justify-content:center;}
-  .daypick button{
-    width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;
-    background:var(--sunbeam);color:var(--grape);font-size:1.25rem;font-weight:700;
-    flex:none;touch-action:manipulation;
+  .datenav button{
+    width:48px;height:48px;flex-shrink:0;border-radius:12px;border:none;cursor:pointer;
+    background:var(--gold);color:var(--purple);font-size:22px;font-weight:700;
+    display:grid;place-items:center;box-shadow:2px 2px 0 rgba(0,0,0,.2);
   }
-  .daypick .day{
-    font-weight:700;font-size:clamp(.9rem,3.5vw,1.05rem);
-    min-width:0;flex:1 1 auto;text-align:center;line-height:1.25;
-    word-break:break-word;
-  }
-  #refresh, #logout{
-    font-family:'Fredoka',sans-serif;font-weight:700;
-    border:none;border-radius:999px;padding:10px 16px;cursor:pointer;font-size:.9rem;
-    min-height:44px;touch-action:manipulation;
-  }
-  #refresh{background:var(--tangerine);color:var(--grape);}
-  #logout{background:transparent;color:var(--cream);border:2px solid var(--lilac);}
+  .datenav button:active{transform:translate(1px,1px);box-shadow:none}
+  .datenav .date{flex:1;text-align:center;line-height:1.15;min-width:0}
+  .datenav .date .d{font-weight:700;font-size:var(--t-lg);color:#fff;letter-spacing:.2px}
+  .datenav .date .t{font-size:11px;color:var(--lilac);font-weight:600;letter-spacing:1px;text-transform:uppercase}
 
-  .wrap{max-width:1100px;margin:0 auto;padding:20px max(14px, env(safe-area-inset-right)) 28px max(14px, env(safe-area-inset-left));}
-  .status{font-weight:600;padding:12px 0;text-align:center;font-size:.95rem;line-height:1.4;}
-  .status.error{color:var(--bad);}
+  .status-bar{
+    flex-shrink:0;font-weight:600;font-size:13px;text-align:center;padding:8px 14px;
+    background:rgba(61,26,92,.06);border-bottom:2px solid rgba(61,26,92,.1);
+  }
+  .status-bar.error{color:var(--red);background:var(--coral-tint)}
 
-  h2{
-    font-family:'Shrikhand',cursive;font-size:clamp(1.2rem,5vw,1.5rem);
-    margin:28px 0 14px;line-height:1.15;
+  .main-scroll{
+    flex:1;overflow-y:auto;padding:14px 14px 20px;scrollbar-width:thin;
+    -webkit-overflow-scrolling:touch;
   }
-  h2 small{
-    display:block;font-family:'Fredoka',sans-serif !important;font-size:.75rem !important;
-    font-weight:500 !important;margin-top:6px;line-height:1.35;opacity:.85;
+  .main-scroll::-webkit-scrollbar{width:6px}
+  .main-scroll::-webkit-scrollbar-thumb{background:var(--lilac);border-radius:3px}
+
+  /* Bottom tab bar */
+  .tabbar{
+    flex-shrink:0;display:flex;background:var(--purple);
+    padding:8px 10px max(22px, env(safe-area-inset-bottom));gap:6px;z-index:45;
+  }
+  .tabbar button{
+    flex:1;border:none;cursor:pointer;font-family:var(--font-ui);font-weight:600;font-size:var(--t-xs);
+    min-height:56px;border-radius:14px;background:transparent;color:var(--lilac);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative;
+  }
+  .tabbar button .t-ico{font-size:20px;line-height:1}
+  .tabbar button.on{background:var(--cream);color:var(--purple);box-shadow:inset 0 0 0 2.5px var(--purple), var(--shadow-sm)}
+  .tabbar .badge{
+    position:absolute;top:4px;right:calc(50% - 26px);min-width:20px;height:20px;border-radius:999px;
+    font-size:11px;font-weight:700;display:grid;place-items:center;padding:0 5px;
+    background:var(--gold);color:var(--purple);border:2px solid var(--purple);
+  }
+  .tabbar .badge.alert{background:var(--red);color:#fff}
+  .tabbar .badge[hidden]{display:none !important}
+
+  /* Zone chrome */
+  .zone-title{display:flex;align-items:center;justify-content:space-between;margin:2px 4px 10px;gap:8px}
+  .zone-title .lft{display:flex;align-items:center;gap:9px;min-width:0}
+  .zone-title .ico{
+    width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:18px;
+    border:2.5px solid var(--purple);flex-shrink:0;
+  }
+  .zone-title h2{font-family:var(--font-ui);font-weight:700;font-size:var(--t-lg);letter-spacing:.2px}
+  .zone-title .helper{font-size:var(--t-xs);font-weight:500;opacity:.72;margin-top:1px}
+  .btn-sm{
+    font-family:var(--font-ui);font-weight:600;font-size:var(--t-sm);cursor:pointer;
+    background:var(--lilac);color:var(--purple);border:2.5px solid var(--purple);
+    padding:8px 14px;border-radius:999px;min-height:44px;box-shadow:var(--shadow-sm);white-space:nowrap;
+  }
+  .btn-sm:active{transform:translate(2px,2px);box-shadow:none}
+
+  /* Triage */
+  .triage{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+  .triage button{
+    border-radius:14px;border:2.5px solid var(--purple);padding:10px 6px;text-align:center;
+    background:#fff;cursor:pointer;font-family:var(--font-ui);color:var(--purple);min-height:56px;
+  }
+  .triage .n{font-weight:700;font-size:var(--t-xl);line-height:1;font-variant-numeric:tabular-nums}
+  .triage .k{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;opacity:.75;margin-top:2px}
+  .triage .t-ok{background:var(--green-tint)}
+  .triage .t-ok .n{color:var(--green-ink)}
+  .triage .t-low{background:var(--gold-tint)}
+  .triage .t-buy{background:var(--coral-tint)}
+  .triage .t-buy .n{color:var(--red)}
+  .triage button.filtering{outline:3px solid var(--purple);outline-offset:2px}
+
+  /* Inventory cards */
+  .inv-row{border:2.5px solid var(--purple);border-radius:16px;padding:12px;margin-bottom:9px;background:#fff}
+  .inv-row.low{background:var(--gold-tint)}
+  .inv-row.buy{background:var(--coral-tint)}
+  .inv-row[hidden]{display:none !important}
+  .inv-top{display:flex;align-items:center;gap:10px}
+  .inv-top .thumb{
+    width:38px;height:38px;flex-shrink:0;border-radius:11px;border:2.5px solid var(--purple);
+    background:var(--lilac-tint);display:grid;place-items:center;font-size:19px;
+  }
+  .inv-top .name{flex:1;font-weight:600;font-size:var(--t-base);line-height:1.15;min-width:0}
+  .inv-top .name small{display:block;font-size:var(--t-xs);font-weight:500;opacity:.65;margin-top:2px}
+  .chip{font-weight:700;font-size:var(--t-xs);padding:6px 13px;border-radius:999px;border:2.5px solid var(--purple);white-space:nowrap}
+  .chip.ok{background:var(--green-tint);color:var(--green-ink);border-color:var(--green-ink)}
+  .chip.low{background:var(--gold);color:var(--purple)}
+  .chip.buy{background:var(--red);color:#fff;border-color:var(--red)}
+
+  .gauge-wrap{margin-top:10px}
+  .gauge{position:relative;height:18px;border:2.5px solid var(--purple);border-radius:999px;background:#fff;overflow:hidden}
+  .gauge .fill{position:absolute;inset:0;width:0%;border-radius:999px 0 0 999px;max-width:100%}
+  .gauge .fill.g-ok{background:var(--green)}
+  .gauge .fill.g-low{background:var(--gold)}
+  .gauge .fill.g-buy{background:var(--red)}
+  .gauge .use-tick{
+    position:absolute;top:-3px;bottom:-3px;width:3.5px;background:var(--purple);
+    border-radius:2px;z-index:2;box-shadow:0 0 0 0; /* tick sits on track; slight clip OK at edges */
+  }
+  .gauge-key{display:flex;justify-content:space-between;font-size:11px;font-weight:600;margin-top:5px;opacity:.8}
+  .gauge-key .tick-key::before{
+    content:"";display:inline-block;width:3.5px;height:10px;background:var(--purple);
+    border-radius:2px;margin-right:4px;vertical-align:-1px;
   }
 
-  .bignums{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;}
-  .bignum{
-    background:#fff;border:var(--outline);border-radius:20px;box-shadow:var(--pop);
-    padding:16px 12px;text-align:center;
-  }
-  .bignum .n{font-family:'Shrikhand',cursive;font-size:clamp(1.8rem,8vw,2.6rem);line-height:1;word-break:break-word;}
-  .bignum .l{font-weight:600;font-size:.8rem;margin-top:6px;text-transform:uppercase;letter-spacing:.05em;}
-  .bignum.total{background:var(--sunbeam);}
-  .bignum .sub{font-size:.75rem;font-weight:500;opacity:.75;margin-top:2px;}
+  .inv-nums{display:flex;gap:12px;margin-top:9px;padding-top:9px;border-top:2px dotted rgba(61,26,92,.22)}
+  .inv-nums .s{text-align:center;flex:1}
+  .inv-nums .s .n{font-weight:700;font-size:22px;line-height:1;font-variant-numeric:tabular-nums}
+  .inv-nums .s .n.big{font-size:27px}
+  .inv-nums .s .n.neg{color:var(--red)}
+  .inv-nums .s .l{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;opacity:.65;margin-top:3px}
 
-  .cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+  /* Shop */
+  .shop-progress{
+    background:#fff;border:3px solid var(--purple);border-radius:16px;box-shadow:var(--shadow-sm);
+    padding:12px 14px;margin-bottom:14px;
+  }
+  .shop-progress .row1{display:flex;justify-content:space-between;align-items:baseline;font-weight:600;font-size:14px}
+  .shop-progress .row1 .amt{font-weight:700;font-size:var(--t-lg);font-variant-numeric:tabular-nums}
+  .shop-progress .bar{height:14px;border:2.5px solid var(--purple);border-radius:999px;background:var(--lilac-tint);overflow:hidden;margin-top:8px}
+  .shop-progress .bar i{display:block;height:100%;width:0%;background:var(--green);transition:width .3s}
 
-  ul.check{list-style:none;background:#fff;border:var(--outline);border-radius:20px;box-shadow:var(--pop);padding:10px 0;}
-  ul.check li{
-    display:flex;align-items:flex-start;gap:12px;
-    padding:12px 16px;font-weight:500;border-bottom:2px dashed rgba(61,26,92,.15);
-    line-height:1.35;font-size:.95rem;
+  .aisle{font-weight:700;font-size:var(--t-xs);text-transform:uppercase;letter-spacing:.8px;margin:14px 4px 8px;display:flex;align-items:center;gap:8px}
+  .aisle::after{content:"";flex:1;border-top:2px dashed rgba(61,26,92,.25)}
+  .aisle .a-ico{
+    width:24px;height:24px;border-radius:8px;border:2px solid var(--purple);
+    display:grid;place-items:center;font-size:13px;background:#fff;
   }
-  ul.check li:last-child{border-bottom:none;}
-  ul.check input{width:22px;height:22px;accent-color:var(--tangerine);flex:none;cursor:pointer;margin-top:2px;}
-  ul.check li.done{opacity:.45;text-decoration:line-through;}
-  ul.check .amt{margin-left:auto;font-weight:700;white-space:nowrap;flex:none;}
-  ul.check .oid{flex:none;}
 
-  /* Tables: horizontal scroll on small screens + card layout for delivery */
-  .table-scroll{
-    width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;
-    border-radius:20px;margin:0 0 8px;box-shadow:var(--pop);
+  .shop-row{
+    display:flex;align-items:center;gap:12px;border:2.5px solid var(--purple);border-radius:16px;
+    padding:12px;margin-bottom:9px;background:#fff;cursor:pointer;transition:.15s;min-height:56px;
   }
-  .table-scroll table{box-shadow:none;border-radius:20px;margin:0;}
+  .shop-row .check{
+    width:32px;height:32px;flex-shrink:0;border-radius:9px;border:3px solid var(--purple);
+    background:#fff;display:grid;place-items:center;font-size:18px;color:transparent;font-weight:700;
+  }
+  .shop-row .info{flex:1;line-height:1.2;min-width:0}
+  .shop-row .info b{font-size:var(--t-base);font-weight:600}
+  .shop-row .info small{display:block;font-size:var(--t-xs);opacity:.72;font-weight:500;margin-top:2px}
+  .shop-row .info .tag{
+    display:inline-block;font-size:10px;font-weight:700;background:var(--lilac);color:var(--purple);
+    border-radius:6px;padding:2px 7px;margin-top:4px;
+  }
+  .shop-row .info .tag.auto{background:var(--gold)}
+  .shop-row .est{font-weight:700;font-size:var(--t-base);white-space:nowrap;font-variant-numeric:tabular-nums}
+  .shop-row.done{background:var(--green-tint);border-color:var(--green-ink)}
+  .shop-row.done .check{background:var(--green);border-color:var(--green-ink);color:#fff}
+  .shop-row.done .info b{text-decoration:line-through;opacity:.6}
+  .shop-row.done .info .tag{background:var(--green-ink);color:#fff}
+  .cart-group{margin-top:18px}
+  .cart-group .aisle{color:var(--green-ink)}
+  .cart-group .aisle::after{border-color:rgba(46,122,60,.5)}
+  .cart-empty{font-size:var(--t-xs);font-weight:500;opacity:.6;text-align:center;padding:10px}
+  .shop-empty{
+    text-align:center;padding:28px 16px;border:3px dashed var(--lilac);border-radius:20px;background:#fff;
+    font-weight:500;font-size:14px;opacity:.8;
+  }
 
-  table{width:100%;border-collapse:collapse;background:#fff;border:var(--outline);border-radius:20px;box-shadow:var(--pop);overflow:hidden;}
-  thead th{
-    background:var(--grape);color:var(--sunbeam);
-    text-align:left;padding:12px 14px;font-size:.82rem;text-transform:uppercase;letter-spacing:.05em;
+  /* Orders / KDS */
+  .allday{
+    background:var(--purple);border:3px solid var(--purple);border-radius:20px;box-shadow:var(--shadow);
+    padding:14px;margin-bottom:14px;color:var(--cream);
   }
-  tbody td{padding:12px 14px;font-size:.95rem;border-bottom:2px dashed rgba(61,26,92,.12);vertical-align:top;}
-  tbody tr:last-child td{border-bottom:none;}
-  tbody tr.unpaid{background:#FFE9E4;}
-  .pill{display:inline-block;border-radius:999px;padding:3px 12px;font-size:.78rem;font-weight:700;color:#fff;}
-  .pill.yes{background:var(--ok);}
-  .pill.no{background:var(--bad);}
-  .oid{font-weight:700;}
-  .items small{display:block;font-weight:500;opacity:.8;}
-  td small{font-size:.8rem;opacity:.8;}
+  .allday .ad-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;gap:8px}
+  .allday .ad-head b{font-weight:700;font-size:var(--t-base);letter-spacing:.2px}
+  .allday .ad-head small{font-size:10.5px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--lilac)}
+  .ad-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+  .ad-item{border-radius:14px;padding:10px 6px;text-align:center;border:2.5px solid rgba(255,244,220,.25)}
+  .ad-item .n{font-weight:700;font-size:var(--t-2xl);line-height:1;font-variant-numeric:tabular-nums}
+  .ad-item .k{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-top:3px;opacity:.95}
+  .ad-item.i1{background:var(--gold);color:var(--purple);border-color:var(--gold)}
+  .ad-item.i2{background:var(--orange);color:#4A1A00;border-color:var(--orange)}
+  .ad-item.i3{background:var(--lilac);color:var(--purple);border-color:var(--lilac)}
+  .ad-total{
+    display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;
+    border-top:2px dashed rgba(255,244,220,.3);font-weight:600;font-size:var(--t-sm);
+  }
+  .ad-total .t{font-family:var(--font-display);font-size:var(--t-3xl);color:var(--gold);line-height:1}
 
-  table.grocery{min-width:320px;}
-  table.grocery td, table.grocery th{padding:9px 10px;font-size:.88rem;}
-  table.grocery tbody tr.done td{opacity:.4;text-decoration:line-through;}
-  table.grocery input[type="checkbox"]{width:22px;height:22px;accent-color:var(--tangerine);cursor:pointer;}
-  table.grocery input[type="number"]{
-    width:5.5rem;font-family:'Fredoka',sans-serif;font-size:16px;font-weight:600;
-    padding:6px 8px;border:2px solid var(--grape);border-radius:10px;background:var(--cream);color:var(--grape);
-  }
-  table.grocery tfoot td{padding:12px 10px;border-top:3px solid var(--grape);}
-  table.grocery tr.low-stock{background:#FFF0C8;}
-  table.grocery tr.critical{background:#FFE9E4;}
-  .inv-banner{
-    background:#fff;border:var(--outline);border-radius:18px;box-shadow:var(--pop);
-    padding:14px 16px;margin:12px 0 18px;font-weight:600;line-height:1.4;
-  }
-  .inv-banner.warn{border-color:var(--tangerine);background:#FFF8E6;}
-  .inv-banner.critical{border-color:var(--bad);background:#FFE9E4;}
-  .inv-actions{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 16px;}
-  .inv-actions button{
-    font-family:'Fredoka',sans-serif;font-weight:700;font-size:.9rem;border:none;border-radius:999px;
-    padding:10px 16px;cursor:pointer;min-height:44px;touch-action:manipulation;
-  }
-  .inv-actions .primary{background:var(--grape);color:var(--sunbeam);}
-  .inv-actions .secondary{background:var(--sunbeam);color:var(--grape);}
-  .inv-actions .ghost{background:#fff;color:var(--grape);border:2px solid var(--grape);}
-  .section-note{font-family:'Fredoka',sans-serif;font-size:.85rem;font-weight:500;opacity:.85;margin:0 0 12px;line-height:1.35;}
-  .divider{
-    border:none;border-top:3px dashed rgba(61,26,92,.2);margin:28px 0;
-  }
-  #stats-panel{
-    display:none;background:#fff;border:var(--outline);border-radius:20px;box-shadow:var(--pop);
-    padding:18px 16px;margin:0 0 22px;
-  }
-  #stats-panel.open{display:block;}
-  .markpaid{
-    margin-top:8px;font-family:'Fredoka',sans-serif;font-weight:700;font-size:.85rem;
-    background:var(--grape);color:var(--sunbeam);border:none;border-radius:999px;
-    padding:10px 14px;cursor:pointer;min-height:44px;touch-action:manipulation;
-  }
-  .money{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;}
-  .money .bignum.paid .n{color:var(--ok);}
-  .money .bignum.owed .n{color:var(--bad);}
-  /* Unit text in check cell is for mobile card headers only */
-  table.delivery .cell-check .unit-tag{display:none;}
+  .money{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+  .money .m{border:2.5px solid var(--purple);border-radius:15px;padding:11px 8px;text-align:center;background:#fff}
+  .money .m .v{font-weight:700;font-size:var(--t-lg);line-height:1;font-variant-numeric:tabular-nums}
+  .money .m .k{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;opacity:.68;margin-top:3px}
+  .money .m.paid{background:var(--green-tint)}
+  .money .m.paid .v{color:var(--green-ink)}
+  .money .m.unpaid{background:var(--coral-tint)}
+  .money .m.unpaid .v{color:var(--red)}
+  .paybar{height:14px;border:2.5px solid var(--purple);border-radius:999px;overflow:hidden;display:flex;margin-bottom:14px}
+  .paybar .p{background:var(--green);min-width:0}
+  .paybar .u{background:var(--red);min-width:0}
 
-  /* ----- Mobile ----- */
-  @media (max-width:760px){
-    .cols{grid-template-columns:1fr;gap:8px;}
-    header{
-      flex-direction:column;align-items:stretch;gap:14px;
-      padding-top:max(14px, env(safe-area-inset-top));
+  .mini-title{
+    font-weight:600;font-size:var(--t-sm);text-transform:uppercase;letter-spacing:.6px;opacity:.85;
+    margin:14px 4px 8px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;
+  }
+  .seg-mini{display:inline-flex;gap:4px;background:rgba(61,26,92,.1);padding:3px;border-radius:999px}
+  .seg-mini button{
+    border:none;background:transparent;font-family:var(--font-ui);font-weight:600;font-size:var(--t-xs);
+    padding:7px 12px;border-radius:999px;cursor:pointer;color:var(--purple);min-height:34px;
+  }
+  .seg-mini button.on{background:var(--purple);color:var(--gold)}
+
+  .ticket{border:3px solid var(--purple);border-radius:18px;background:#fff;margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow-sm)}
+  .ticket[hidden]{display:none !important}
+  .ticket .t-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 12px;color:#fff;font-weight:700}
+  .ticket .t-bar.paid{background:var(--green-ink)}
+  .ticket .t-bar.unpaid{background:var(--red)}
+  .ticket .t-bar .unit{font-weight:700;font-size:var(--t-base);background:rgba(0,0,0,.22);border-radius:9px;padding:4px 11px;font-variant-numeric:tabular-nums}
+  .ticket .t-bar .who{flex:1;font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ticket .t-bar .st{font-size:11px;letter-spacing:.6px;text-transform:uppercase;background:rgba(255,255,255,.24);padding:4px 9px;border-radius:999px;white-space:nowrap}
+  .ticket .t-body{padding:10px 14px 12px}
+  .ticket .t-line{display:flex;justify-content:space-between;font-size:14px;font-weight:500;padding:5px 0;border-bottom:2px dotted rgba(61,26,92,.15)}
+  .ticket .t-line:last-of-type{border-bottom:none}
+  .ticket .t-line .q{font-weight:700;width:36px;font-variant-numeric:tabular-nums}
+  .ticket .t-line .nm{flex:1}
+  .ticket .t-foot{
+    display:flex;justify-content:space-between;align-items:center;padding:10px 14px 12px;
+    border-top:2.5px solid rgba(61,26,92,.15);background:var(--lilac-tint);gap:10px;
+  }
+  .ticket.paid-tk .t-foot{background:var(--green-tint)}
+  .ticket .t-foot .tot{font-weight:700;font-size:var(--t-lg);font-variant-numeric:tabular-nums}
+  .ticket .t-foot .oid{font-size:11px;opacity:.65;font-weight:600}
+  .markbtn{
+    font-family:var(--font-ui);font-weight:700;font-size:var(--t-sm);cursor:pointer;
+    background:var(--gold);color:var(--purple);border:2.5px solid var(--purple);
+    padding:11px 18px;border-radius:999px;box-shadow:var(--shadow-sm);white-space:nowrap;min-height:48px;
+  }
+  .markbtn:active{transform:translate(2px,2px);box-shadow:none}
+  .markbtn:disabled{opacity:.6;cursor:wait}
+  .paidchip{
+    font-weight:700;font-size:var(--t-xs);padding:9px 15px;border-radius:999px;
+    border:2.5px solid var(--green-ink);background:#fff;color:var(--green-ink);white-space:nowrap;
+  }
+
+  .empty{text-align:center;padding:34px 20px;border:3px dashed var(--lilac);border-radius:20px;background:#fff;margin-bottom:14px}
+  .empty .big{font-size:44px;margin-bottom:8px}
+  .empty h3{font-weight:700;font-size:var(--t-lg);margin-bottom:6px}
+  .empty p{font-size:var(--t-sm);font-weight:500;opacity:.72;max-width:280px;margin:0 auto;line-height:1.4}
+
+  /* Desktop table (orders) */
+  .desk-table-wrap{display:none}
+  .desk-tickets{display:block}
+
+  /* Sheets */
+  .sheet-scrim{
+    position:fixed;inset:0;background:rgba(61,26,92,.55);z-index:70;
+    display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s;
+  }
+  .sheet-scrim.open{opacity:1;pointer-events:auto}
+  .sheet{
+    width:100%;max-width:560px;margin:0 auto;background:var(--cream);
+    border-top-left-radius:28px;border-top-right-radius:28px;border-top:5px solid var(--purple);
+    padding:14px 16px max(26px, env(safe-area-inset-bottom));max-height:84%;overflow-y:auto;
+    transform:translateY(100%);transition:transform .28s cubic-bezier(.2,.8,.25,1);
+  }
+  .sheet-scrim.open .sheet{transform:translateY(0)}
+  .sheet .grab{width:48px;height:5px;border-radius:3px;background:var(--lilac);margin:2px auto 14px}
+  .sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  .sheet-head h3{font-weight:700;font-size:var(--t-xl)}
+  .sheet-head .x{
+    width:48px;height:48px;border-radius:12px;border:2.5px solid var(--purple);background:#fff;
+    cursor:pointer;font-size:20px;font-weight:700;color:var(--purple);box-shadow:var(--shadow-sm);
+  }
+  .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .stat-big{background:#fff;border:3px solid var(--purple);border-radius:18px;padding:16px 14px;box-shadow:var(--shadow-sm)}
+  .stat-big.wide{grid-column:1/-1;background:var(--purple);color:var(--cream)}
+  .stat-big .v{font-weight:700;font-size:var(--t-2xl);line-height:1;font-variant-numeric:tabular-nums}
+  .stat-big.wide .v.hero{font-family:var(--font-display);font-weight:400;font-size:var(--t-3xl);color:var(--gold)}
+  .stat-big .k{font-size:var(--t-xs);font-weight:600;text-transform:uppercase;letter-spacing:.5px;opacity:.72;margin-top:5px}
+  .split{display:flex;height:16px;border-radius:999px;overflow:hidden;border:2.5px solid var(--purple);margin-top:10px}
+  .split .p{background:var(--green)}
+  .split .u{background:var(--red)}
+  .split-key{display:flex;justify-content:space-between;font-size:11px;font-weight:600;margin-top:6px}
+  .split-key .pk{color:var(--green-ink)}
+  .split-key .uk{color:var(--red)}
+
+  .form-sheet .field{background:#fff;border:2.5px solid var(--purple);border-radius:14px;padding:10px 12px;margin-bottom:9px}
+  .form-sheet .field .f-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .form-sheet .field label{font-weight:600;font-size:14px}
+  .form-sheet .field label small{display:block;font-size:11px;opacity:.65;font-weight:500}
+  .form-sheet .f-pars{
+    display:flex;gap:8px;margin-top:9px;padding-top:9px;border-top:2px dotted rgba(61,26,92,.2);
+  }
+  .form-sheet .f-pars .fp{flex:1;display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:11px;font-weight:600}
+  .form-sheet .f-pars input{
+    width:60px;text-align:center;font-family:var(--font-ui);font-weight:700;font-size:15px;
+    border:2.5px solid var(--purple);border-radius:9px;padding:8px 2px;color:var(--purple);
+  }
+  .stepper{display:flex;align-items:center;gap:8px}
+  .stepper button{
+    width:44px;height:44px;border-radius:10px;border:2.5px solid var(--purple);
+    background:var(--lilac);color:var(--purple);font-size:20px;font-weight:700;cursor:pointer;
+  }
+  .stepper input{
+    width:56px;text-align:center;font-family:var(--font-ui);font-weight:700;font-size:18px;
+    border:2.5px solid var(--purple);border-radius:10px;padding:8px 2px;color:var(--purple);
+  }
+  .save-levels{
+    width:100%;margin-top:8px;min-height:48px;justify-content:center;padding:13px;
+    font-family:var(--font-ui);font-weight:700;font-size:var(--t-base);cursor:pointer;
+    background:var(--gold);color:var(--purple);border:2.5px solid var(--purple);
+    border-radius:999px;box-shadow:var(--shadow-sm);
+  }
+  .save-levels:active{transform:translate(2px,2px);box-shadow:none}
+
+  #toast{
+    position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--purple);color:var(--gold);font-weight:600;font-size:13px;
+    padding:11px 20px;border-radius:999px;box-shadow:var(--shadow);opacity:0;transition:.25s;
+    z-index:80;border:2px solid var(--gold);pointer-events:none;max-width:90vw;text-align:center;
+  }
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  [data-pane]{display:none}
+  [data-pane].on{display:block}
+
+  /* ---------- Desktop 1280+ ---------- */
+  @media (min-width:1280px){
+    .tabbar{display:none}
+    .app-head{padding:16px 22px}
+    .brandrow{flex-wrap:nowrap}
+    .head-right{display:flex;align-items:center;gap:18px}
+    .datenav{margin-top:0;min-width:300px}
+    .main-scroll{
+      display:grid;grid-template-columns:1fr 1.15fr;gap:0;padding:0;overflow:hidden;
     }
-    header h1{text-align:center;width:100%;}
-    .daypick{width:100%;order:2;}
-    .header-actions{width:100%;order:3;justify-content:stretch;}
-    .header-actions #refresh,
-    .header-actions #logout{flex:1;text-align:center;}
-    .bignums{grid-template-columns:repeat(2,1fr);gap:10px;}
-    .bignum.total{grid-column:1 / -1;}
-    .money{grid-template-columns:1fr;}
-    .wrap{padding:16px 12px 32px;}
-    h2{margin:24px 0 12px;}
-    ul.check li{flex-wrap:wrap;}
-    ul.check .amt{margin-left:0;width:100%;text-align:right;padding-top:4px;}
-
-    /* Delivery run: stack rows as cards */
-    table.delivery{border:none;box-shadow:none;background:transparent;min-width:0;}
-    table.delivery thead{display:none;}
-    table.delivery tbody{display:block;}
-    table.delivery tbody tr{
-      display:block;background:#fff;border:var(--outline);border-radius:18px;
-      box-shadow:var(--pop);padding:14px 14px 12px;margin-bottom:14px;
+    .col-buy{
+      overflow-y:auto;padding:18px 18px 30px;border-right:4px solid var(--purple);
     }
-    table.delivery tbody tr.unpaid{background:#FFE9E4;}
-    table.delivery tbody tr:last-child{margin-bottom:0;}
-    table.delivery tbody td{
-      display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
-      border:none;padding:8px 0;font-size:.95rem;
-      border-bottom:1px dashed rgba(61,26,92,.12);
+    .col-orders{
+      overflow-y:auto;padding:18px 18px 30px;background:rgba(201,167,240,.10);
     }
-    table.delivery tbody td:last-child{border-bottom:none;padding-bottom:0;}
-    table.delivery tbody td::before{
-      content:attr(data-label);
-      font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;
-      color:var(--grape);opacity:.7;flex:none;padding-top:3px;max-width:38%;
-    }
-    table.delivery tbody td > *{text-align:right;}
-    table.delivery tbody td.cell-check{
-      justify-content:flex-start;align-items:center;gap:10px;padding-top:0;padding-bottom:10px;
-      border-bottom:2px solid rgba(61,26,92,.12);
-    }
-    table.delivery tbody td.cell-check::before{content:none;}
-    table.delivery .cell-check .unit-tag{display:inline;font-size:1.1rem;}
-    table.delivery tbody td[data-label="Unit"]{display:none !important;}
-    table.delivery .delcheck{width:28px;height:28px;}
-    table.delivery .markpaid{width:100%;margin-top:10px;}
-    table.delivery td.cell-paid{flex-direction:column;align-items:stretch;}
-    table.delivery td.cell-paid::before{max-width:none;margin-bottom:4px;}
-    table.delivery td.cell-paid .pill{align-self:flex-end;}
-
-    /* Grocery: keep scroll, tighter padding */
-    .table-scroll.grocery-scroll{margin-left:-2px;margin-right:-2px;}
-    table.grocery{font-size:.85rem;}
-    table.grocery th, table.grocery td{padding:10px 8px;}
+    [data-pane]{display:block !important}
+    #pane-shop{margin-top:24px}
+    .inv-nums{display:none}
+    .inv-top .name small.mob-line{display:none}
+    .inv-top .name small.desk-meta{display:block !important}
+    .desk-tickets{display:none}
+    .desk-table-wrap{display:block}
+    #toast{bottom:28px}
   }
-
-  @media (max-width:380px){
-    .bignums{grid-template-columns:1fr 1fr;}
-    #refresh, #logout{font-size:.82rem;padding:10px 12px;}
-  }
-
-  @media print{
-    #login-gate, #logout, #refresh, .daypick button{display:none !important;}
-    header{break-after:avoid;}
-    body{background:#fff;padding:0;}
-    .bignum, table, ul.check, .table-scroll{box-shadow:none;}
-    table.delivery tbody tr{box-shadow:none;break-inside:avoid;}
+  @media (max-width:1279px){
+    .head-right{display:contents}
+    .col-buy,.col-orders{display:contents}
+    .inv-top .name small.desk-meta{display:none !important}
   }
 </style>
 </head>
 <body>
 
-<!-- ========== LOGIN (shown first) ========== -->
+<!-- ========== LOGIN ========== -->
 <div id="login-gate">
   <div class="login-card">
     <h1>Bob's Kitchen</h1>
@@ -295,96 +480,204 @@
   </div>
 </div>
 
-<!-- ========== APP (hidden until login) ========== -->
+<!-- ========== APP ========== -->
 <div id="app" hidden>
-<header>
-  <h1>Bob's Kitchen</h1>
-  <div class="daypick">
-    <button id="prev" type="button" aria-label="Previous Sunday">‹</button>
-    <span class="day" id="day-label">—</span>
-    <button id="next" type="button" aria-label="Next Sunday">›</button>
-  </div>
-  <div class="header-actions">
-    <button type="button" id="stats-toggle">Stats</button>
-    <button type="button" id="refresh">Refresh</button>
-    <button type="button" id="logout">Log out</button>
-  </div>
-</header>
-
-<div class="wrap">
-  <p class="status" id="status">Loading…</p>
-
-  <!-- Stats: toggle only (not everyday clutter) -->
-  <div id="stats-panel" aria-hidden="true">
-    <h2 style="margin-top:0">All-time stats</h2>
-    <div class="bignums" id="stats-top"></div>
-    <div class="money" id="stats-money" style="margin-top:12px"></div>
-    <p class="section-note" id="stats-detail" style="margin-top:10px;margin-bottom:0"></p>
-  </div>
-
-  <div id="board" style="display:none">
-    <!-- TOP: inventory -->
-    <h2 style="margin-top:0">Inventory</h2>
-    <p class="section-note">Cups, boxes, foil, condiments — stock on this device. Short items show up on the shopping list.</p>
-    <div id="inv-alerts" class="inv-banner" style="display:none" role="status"></div>
-    <div class="inv-actions">
-      <button type="button" class="secondary" id="inv-seed">Set stock</button>
-    </div>
-    <div id="inv-seed-panel" class="inv-banner" style="display:none">
-      <div id="inv-seed-fields"></div>
-      <div class="inv-actions" style="margin-bottom:0">
-        <button type="button" class="primary" id="inv-seed-save">Save stock</button>
+  <header class="app-head">
+    <div class="brandrow">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">🌯</div>
+        <div>
+          <h1>Bob's Kitchen</h1>
+          <div class="sub">STAFF · SUNDAY OPS</div>
+        </div>
+      </div>
+      <div class="head-right">
+        <div class="datenav">
+          <button type="button" id="prev" aria-label="Previous Sunday">‹</button>
+          <div class="date">
+            <div class="d" id="day-label">—</div>
+            <div class="t" id="day-caption">Delivery day</div>
+          </div>
+          <button type="button" id="next" aria-label="Next Sunday">›</button>
+        </div>
+        <div class="actions">
+          <button type="button" class="pill gold" id="stats-toggle">📊 Stats</button>
+          <button type="button" class="pill ghost icon" id="refresh" title="Refresh" aria-label="Refresh">↻</button>
+          <button type="button" class="pill ghost icon" id="logout" title="Log out" aria-label="Log out">⇥</button>
+        </div>
       </div>
     </div>
-    <div class="table-scroll grocery-scroll">
-    <table class="grocery">
-      <thead><tr><th>Item</th><th>On hand</th><th>Uses (Sun)</th><th>Left after</th><th></th></tr></thead>
-      <tbody id="inventory"></tbody>
-    </table>
+  </header>
+
+  <p class="status-bar" id="status" role="status">Loading…</p>
+
+  <div class="main-scroll" id="main-scroll">
+    <div class="col-buy">
+      <!-- ZONE 1: Inventory -->
+      <section data-pane="inv" id="pane-inv" class="on">
+        <div class="zone-title">
+          <div class="lft">
+            <div class="ico" style="background:var(--gold)">📦</div>
+            <div>
+              <h2>Inventory</h2>
+              <div class="helper">Rolling stock · gauge = level vs par</div>
+            </div>
+          </div>
+          <button type="button" class="btn-sm" id="inv-seed">Set stock</button>
+        </div>
+        <div class="triage" id="triage">
+          <button type="button" class="t-ok" data-filter="ok"><div class="n" id="tri-ok">0</div><div class="k">OK</div></button>
+          <button type="button" class="t-low" data-filter="low"><div class="n" id="tri-low">0</div><div class="k">Low</div></button>
+          <button type="button" class="t-buy" data-filter="buy"><div class="n" id="tri-buy">0</div><div class="k">Buy</div></button>
+        </div>
+        <div id="inventory"></div>
+      </section>
+
+      <!-- ZONE 2: Shop -->
+      <section data-pane="shop" id="pane-shop">
+        <div class="zone-title">
+          <div class="lft">
+            <div class="ico" style="background:var(--orange)">🛒</div>
+            <div>
+              <h2>Shop</h2>
+              <div class="helper" id="shop-helper">Grouped by store section</div>
+            </div>
+          </div>
+        </div>
+        <div class="shop-progress">
+          <div class="row1">
+            <span id="cart-count">0 of 0 in cart</span>
+            <span class="amt" id="shop-total">$0.00</span>
+          </div>
+          <div class="bar"><i id="cart-bar"></i></div>
+        </div>
+        <div id="shop-aisles"></div>
+        <div class="cart-group">
+          <div class="aisle"><span class="a-ico" style="background:var(--green-tint);border-color:var(--green-ink)">✓</span>In cart</div>
+          <div id="cart-zone"><div class="cart-empty" id="cart-empty">Checked items land here — packs restock inventory automatically.</div></div>
+        </div>
+      </section>
     </div>
 
-    <h2>Shop <small>(check when bought)</small></h2>
-    <p class="section-note">Food for this Sunday + anything inventory is short on. Check = bought (restocks inventory packs).</p>
-    <div class="table-scroll grocery-scroll">
-    <table class="grocery">
-      <thead><tr><th>✓</th><th>Item</th><th>Buy</th><th>Est</th></tr></thead>
-      <tbody id="grocery"></tbody>
-      <tfoot><tr><td></td><td colspan="2"><strong>Total</strong></td><td id="grocery-total"><strong>—</strong></td></tr></tfoot>
-    </table>
-    </div>
+    <div class="col-orders">
+      <!-- ZONE 3: Orders -->
+      <section data-pane="ord" id="pane-ord">
+        <div class="zone-title">
+          <div class="lft">
+            <div class="ico" style="background:var(--lilac)">🍳</div>
+            <div>
+              <h2>Orders</h2>
+              <div class="helper" id="ord-helper">Cook + deliver</div>
+            </div>
+          </div>
+        </div>
 
-    <hr class="divider" />
+        <div id="orders-empty" class="empty" hidden>
+          <div class="big">🗓️</div>
+          <h3>No orders this Sunday</h3>
+          <p>Nothing to cook or deliver yet. Inventory still works — Shop shows only below-par restocks.</p>
+        </div>
 
-    <!-- BOTTOM: this Sunday orders only -->
-    <h2>Orders <small id="sunday-detail-label"></small></h2>
-    <div class="bignums" id="cook"></div>
-    <div class="money" id="money" style="margin-top:14px"></div>
-    <h2>Unpaid</h2>
-    <ul class="check" id="chase"></ul>
-    <h2>Delivery</h2>
-    <div class="table-scroll delivery-scroll">
-    <table class="delivery">
-      <thead><tr><th>✓</th><th>Unit</th><th>Name</th><th>Order</th><th>Items</th><th>Total</th><th>Paid</th></tr></thead>
-      <tbody id="orders"></tbody>
-    </table>
+        <div id="orders-board">
+          <div class="allday">
+            <div class="ad-head"><b>All-day count</b><small>totals across all tickets</small></div>
+            <div class="ad-grid">
+              <div class="ad-item i1"><div class="n num" id="cnt-soy">0</div><div class="k">Soyrizo</div></div>
+              <div class="ad-item i2"><div class="n num" id="cnt-cali">0</div><div class="k">Cali</div></div>
+              <div class="ad-item i3"><div class="n num" id="cnt-heavy">0</div><div class="k">Heavywt</div></div>
+            </div>
+            <div class="ad-total"><span>Total burritos</span><span class="t num" id="cnt-total">0</span></div>
+          </div>
+
+          <div class="money">
+            <div class="m"><div class="v num" id="mon-expected">$0</div><div class="k">Expected</div></div>
+            <div class="m paid"><div class="v num" id="mon-paid">$0</div><div class="k">Paid</div></div>
+            <div class="m unpaid"><div class="v num" id="mon-unpaid">$0</div><div class="k">Unpaid</div></div>
+          </div>
+          <div class="paybar"><div class="p" id="pay-p" style="width:0%"></div><div class="u" id="pay-u" style="width:100%"></div></div>
+
+          <div class="mini-title">
+            <span>Delivery run · <span id="stop-cnt">0 stops</span></span>
+            <span class="seg-mini" id="ticket-filter">
+              <button type="button" class="on" data-mode="all">All</button>
+              <button type="button" data-mode="unpaid">Unpaid</button>
+            </span>
+          </div>
+
+          <div class="desk-tickets" id="tickets"></div>
+
+          <div class="desk-table-wrap" id="desk-orders-wrap">
+            <table style="width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:3px solid var(--purple);border-radius:16px;overflow:hidden;font-variant-numeric:tabular-nums" id="desk-orders-table">
+              <thead>
+                <tr style="background:var(--purple);color:var(--cream);font-size:12px;text-align:left">
+                  <th style="padding:10px 12px">Unit</th>
+                  <th style="padding:10px 6px">Name</th>
+                  <th style="padding:10px 6px">Items</th>
+                  <th style="padding:10px 6px;text-align:right">Total</th>
+                  <th style="padding:10px 12px">Paid</th>
+                </tr>
+              </thead>
+              <tbody id="desk-orders"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
-</div>
-</div><!-- /#app -->
 
-<!-- Public encrypted vault (safe on GitHub Pages). Optional local kitchen-config.js overrides for offline. -->
+  <nav class="tabbar" aria-label="Main">
+    <button type="button" class="on" data-tab="inv" id="tab-inv">
+      <span class="t-ico">📦</span>Inventory
+      <span class="badge alert" id="badge-inv" hidden>0</span>
+    </button>
+    <button type="button" data-tab="shop" id="tab-shop">
+      <span class="t-ico">🛒</span>Shop
+      <span class="badge" id="badge-shop" hidden>0</span>
+    </button>
+    <button type="button" data-tab="ord" id="tab-ord">
+      <span class="t-ico">🍳</span>Orders
+    </button>
+  </nav>
+
+  <!-- Stats sheet -->
+  <div class="sheet-scrim" id="stats-sheet" role="dialog" aria-modal="true" aria-labelledby="stats-title">
+    <div class="sheet">
+      <div class="grab"></div>
+      <div class="sheet-head">
+        <h3 id="stats-title">All-time stats</h3>
+        <button type="button" class="x" id="stats-close" aria-label="Close">✕</button>
+      </div>
+      <div class="stats-grid" id="stats-grid"></div>
+    </div>
+  </div>
+
+  <!-- Set stock sheet -->
+  <div class="sheet-scrim" id="stock-sheet" role="dialog" aria-modal="true" aria-labelledby="stock-title">
+    <div class="sheet form-sheet">
+      <div class="grab"></div>
+      <div class="sheet-head">
+        <h3 id="stock-title">Set stock</h3>
+        <button type="button" class="x" id="stock-close" aria-label="Close">✕</button>
+      </div>
+      <p style="font-size:12.5px;font-weight:500;opacity:.72;margin:-6px 2px 12px">
+        On hand = what's in the kitchen. Par = never dip below — drives Low/Buy and auto shop lines.
+      </p>
+      <div id="stock-fields"></div>
+      <button type="button" class="save-levels" id="inv-seed-save">Save levels</button>
+    </div>
+  </div>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+</div>
+
 <script src="vault.js"></script>
 <script src="kitchen-config.js" onerror=""></script>
 <script>
 (function(){
-  /* ===== Multi-device kitchen auth =====
-     - Hosted: decrypt portal key from vault.js using email+password (Web Crypto)
-     - Local optional: plain kitchen-config.js if present (gitignored)
-  */
+  /* ===== Auth (vault + optional local config) ===== */
   var SCRIPT_URL = '';
   var KEY = '';
   var sessionUser = null;
-
   var AUTH_KEY = 'bb_kitchen_session_v4';
   var loginGate = document.getElementById('login-gate');
   var appEl = document.getElementById('app');
@@ -400,13 +693,6 @@
     return out;
   }
 
-  function bytesToB64(buf){
-    var bytes = new Uint8Array(buf);
-    var s = '';
-    for (var i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
-    return btoa(s);
-  }
-
   async function decryptVaultUser(entry, password){
     if (!window.crypto || !crypto.subtle) {
       throw new Error('This browser cannot decrypt kitchen secrets (needs HTTPS or localhost).');
@@ -416,11 +702,9 @@
     var iv = b64ToBytes(entry.iv);
     var tag = b64ToBytes(entry.tag);
     var data = b64ToBytes(entry.data);
-    // Web Crypto expects ciphertext || tag
     var combined = new Uint8Array(data.length + tag.length);
     combined.set(data, 0);
     combined.set(tag, data.length);
-
     var baseKey = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
     var key = await crypto.subtle.deriveKey(
       { name: 'PBKDF2', salt: salt, iterations: 120000, hash: 'SHA-256' },
@@ -451,10 +735,7 @@
     }
     for (var j = 0; j < list.length; j++) {
       if (list[j].email === email && list[j].password === password) {
-        return {
-          portalKey: cfg.portalKey || '',
-          scriptUrl: cfg.scriptUrl || ''
-        };
+        return { portalKey: cfg.portalKey || '', scriptUrl: cfg.scriptUrl || '' };
       }
     }
     return null;
@@ -466,10 +747,7 @@
     KEY = portalKey || '';
     try {
       sessionStorage.setItem(AUTH_KEY, JSON.stringify({
-        email: email,
-        portalKey: portalKey,
-        scriptUrl: scriptUrl,
-        t: Date.now()
+        email: email, portalKey: portalKey, scriptUrl: scriptUrl, t: Date.now()
       }));
     } catch (e) {}
   }
@@ -487,7 +765,6 @@
       if (!raw) return false;
       var s = JSON.parse(raw);
       if (!s || !s.portalKey || !s.scriptUrl) return false;
-      // 12-hour session
       if (s.t && (Date.now() - s.t > 12 * 60 * 60 * 1000)) {
         clearSession();
         return false;
@@ -496,14 +773,10 @@
       SCRIPT_URL = s.scriptUrl;
       KEY = s.portalKey;
       return true;
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return false; }
   }
 
-  function isAuthed(){
-    return !!(KEY && SCRIPT_URL);
-  }
+  function isAuthed(){ return !!(KEY && SCRIPT_URL); }
 
   function showApp(){
     loginGate.hidden = true;
@@ -529,9 +802,7 @@
     }
     loginBtn.disabled = true;
     loginErr.textContent = 'Signing in…';
-
     try {
-      // 1) Optional local plain config (offline / gitignored)
       var local = tryLocalConfig(email, password);
       if (local && local.portalKey && local.scriptUrl) {
         saveSession(email, local.portalKey, local.scriptUrl);
@@ -539,8 +810,6 @@
         showApp();
         return;
       }
-
-      // 2) Public encrypted vault (GitHub Pages)
       var vault = window.BB_KITCHEN_VAULT;
       if (!vault || !vault.users || !vault.users.length) {
         throw new Error('Kitchen vault missing. Open from https://bobsburritos.github.io/BobsNet/kitchen/');
@@ -593,11 +862,35 @@
     showLogin('Logged out.');
   });
 
-  /* ===== Kitchen app (only after login) ===== */
+  /* ===== Kitchen app ===== */
   var statusEl = document.getElementById('status');
-  var boardEl = document.getElementById('board');
   var weekOffset = 0;
   var current = null;
+  var lastTotals = null;
+  var allOrdersCache = [];
+  var invFilter = null; /* null | 'ok' | 'low' | 'buy' */
+  var ticketFilter = 'all';
+  var shopChecked = {}; /* key -> true */
+  var shopRestocked = {}; /* key -> amount added (for reverse) */
+  var activeTab = 'inv';
+  var toastTimer = null;
+
+  function toast(msg){
+    var el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 1600);
+  }
+
+  function openSheet(id){
+    var scrim = document.getElementById(id);
+    if (scrim) scrim.classList.add('open');
+  }
+  function closeSheet(id){
+    var scrim = document.getElementById(id);
+    if (scrim) scrim.classList.remove('open');
+  }
 
   function laNow(){
     var parts = new Intl.DateTimeFormat('en-US', {
@@ -617,74 +910,87 @@
     return new Date(now.getFullYear(), now.getMonth(), now.getDate() + days + weekOffset * 7);
   }
   function sundayLabel(){
-    return targetSunday().toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric'});
+    return targetSunday().toLocaleDateString('en-US', {weekday:'long', month:'short', day:'numeric'});
   }
   function sundayISO(){
     var t = targetSunday();
     return t.getFullYear() + '-' + ('0' + (t.getMonth() + 1)).slice(-2) + '-' + ('0' + t.getDate()).slice(-2);
   }
-
   function money(n){ return '$' + Number(n).toFixed(2); }
-
-  /** Escape text before innerHTML (orders come from the network). */
+  function moneyShort(n){
+    var x = Number(n);
+    return (x % 1 === 0) ? ('$' + x.toFixed(0)) : money(x);
+  }
   function esc(s){
     return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
-
-  /* ===== PRODUCT CATALOG (bones of COGS) =====
-     Shape for every line:
-       id, list: 'food'|'inventory', group, item, unit
-       brand, sku, store, pack, packSize, packPrice
-       confirmed: true once exact product+price locked (optimize over time)
-       need(t) OR usage(t), reorderAt (inventory only)
-     Lock exact products as you shop — see docs/COGS_COSTCO.md
-  */
+  function fmtNum(n){
+    var r = Math.round(Number(n) * 10) / 10;
+    return (r % 1 === 0) ? String(r) : String(r);
+  }
+  function fmtQty(n, unit){
+    return fmtNum(n) + ' ' + unit;
+  }
   function packLabel(p){
     var s = p.pack || '';
-    if(p.sku) s += (s ? ' ' : '') + '(#' + p.sku + ')';
+    if (p.sku) s += (s ? ' ' : '') + '(#' + p.sku + ')';
     return s;
   }
-  function lockBadge(p){
-    return p.confirmed
-      ? '<span class="pill yes" style="font-size:.65rem;padding:2px 8px">LOCKED</span>'
-      : '<span class="pill" style="background:var(--lilac);font-size:.65rem;padding:2px 8px">EST</span>';
+  function productLine(p){
+    var bits = [];
+    if (p.brand) bits.push(p.brand);
+    if (p.pack) bits.push(p.pack);
+    else if (p.store) bits.push(p.store);
+    return bits.join(' · ') || (p.store || '');
   }
 
-  /* Food = order-based Sunday shop (perishables / recipe 1:1) */
+  var INV_EMOJI = {
+    mayo_oz:'🥚', chipotle_ml:'🌶️', seasoning_pk:'🧂',
+    sauce_cups:'🥤', boxes:'📦', foil:'🧻'
+  };
+  var FOOD_AISLE = {
+    eggs:'fridge', cheese:'fridge', soychorizo:'fridge', beef:'fridge',
+    sausage:'fridge', bacon:'fridge', avocado:'fridge',
+    tortillas:'pantry', hashbrowns:'pantry', onion:'pantry', cilantro:'pantry'
+  };
+  var AISLE_META = {
+    fridge: { emoji:'🧊', label:'Fridge & dairy' },
+    pantry: { emoji:'🫓', label:'Pantry' },
+    packaging: { emoji:'📦', label:'Packaging & supplies' }
+  };
+
+  /* ===== PRODUCT CATALOG ===== */
   var FOOD_GROCERY = [
-    {id:'tortillas', list:'food', group:'Food', item:'Flour tortillas (1 per burrito)', unit:'tortillas',
+    {id:'tortillas', list:'food', group:'Food', item:'Flour tortillas', unit:'tortillas',
      brand:'Mission', sku:'208429', store:'Costco', pack:'10" flour 40-ct', packSize:40, packPrice:8.99, confirmed:true,
      need:function(t){return t.totalB;}},
-    {id:'eggs', list:'food', group:'Food', item:'Eggs (2 per burrito)', unit:'eggs',
+    {id:'eggs', list:'food', group:'Food', item:'Eggs', unit:'eggs',
      brand:'Kirkland', sku:'637598', store:'Costco', pack:'Large 24-ct', packSize:24, packPrice:3.28, confirmed:true,
      need:function(t){return t.totalB*2;}},
-    {id:'cheese', list:'food', group:'Food', item:'Shredded cheese (2 oz ea)', unit:'oz',
-     brand:'Kirkland', sku:'1165284', store:'Costco', pack:'Mexican blend 2.5 lb \u00d7 2 (80 oz)', packSize:80, packPrice:15.31, confirmed:true,
+    {id:'cheese', list:'food', group:'Food', item:'Shredded cheese', unit:'oz',
+     brand:'Kirkland', sku:'1165284', store:'Costco', pack:'Mexican blend 2.5 lb × 2 (80 oz)', packSize:80, packPrice:15.31, confirmed:true,
      need:function(t){return t.totalB*2;}},
-    {id:'hashbrowns', list:'food', group:'Food', item:'Hash browns (3 oz ea)', unit:'oz',
+    {id:'hashbrowns', list:'food', group:'Food', item:'Hash browns', unit:'oz',
      brand:'Ore-Ida', sku:'42125', store:'Costco', pack:'Shredded 6 lb (96 oz)', packSize:96, packPrice:6.99, confirmed:true,
      need:function(t){return t.totalB*3;}},
-    {id:'soychorizo', list:'food', group:'Food', item:'Soy chorizo (4 oz ea)', unit:'oz',
+    {id:'soychorizo', list:'food', group:'Food', item:'Soy chorizo', unit:'oz',
      brand:'Trader Joe\u2019s', sku:'092463', store:'Trader Joe\u2019s', pack:'Soy chorizo 12 oz', packSize:12, packPrice:2.99, confirmed:true,
      need:function(t){return t.soy*4;}},
-    {id:'beef', list:'food', group:'Food', item:'Ground beef (4 oz ea, Cali)', unit:'oz',
+    {id:'beef', list:'food', group:'Food', item:'Ground beef', unit:'oz',
      brand:'Kirkland', sku:'33724', store:'Costco', pack:'88/12 ground beef per lb', packSize:16, packPrice:6.80, confirmed:true,
      need:function(t){return t.cali*4;}},
-    {id:'sausage', list:'food', group:'Food', item:'Breakfast sausage (2 oz ea, Heavy)', unit:'oz',
+    {id:'sausage', list:'food', group:'Food', item:'Breakfast sausage', unit:'oz',
      brand:'', sku:'', store:'Costco', pack:'Bulk breakfast sausage ~3 lb (48 oz)', packSize:48, packPrice:15.99, confirmed:false,
      need:function(t){return t.heavy*2;}},
-    {id:'bacon', list:'food', group:'Food', item:'Bacon (2 slices ea, Heavy)', unit:'slices',
-     brand:'Kirkland', sku:'7000070', store:'Costco', pack:'Sliced bacon 1 lb \u00d7 4 (~64 slices est.)', packSize:64, packPrice:17.01, confirmed:true,
+    {id:'bacon', list:'food', group:'Food', item:'Bacon', unit:'slices',
+     brand:'Kirkland', sku:'7000070', store:'Costco', pack:'Sliced bacon 1 lb × 4 (~64 slices est.)', packSize:64, packPrice:17.01, confirmed:true,
      need:function(t){return t.heavy*2;}},
-    {id:'avocado', list:'food', group:'Food', item:'Avocados (\u00bd per add-on / Cali)', unit:'halves',
+    {id:'avocado', list:'food', group:'Food', item:'Avocados', unit:'halves',
      brand:'', sku:'647465', store:'Costco', pack:'Hass 6-ct (12 halves)', packSize:12, packPrice:6.23, confirmed:true,
      need:function(t){return t.avoHalves;}},
-    {id:'onion', list:'food', group:'Food', item:'Yellow onions (1 oz ea)', unit:'oz',
+    {id:'onion', list:'food', group:'Food', item:'Yellow onions', unit:'oz',
      brand:'', sku:'', store:'Costco', pack:'Yellow onion bag ~5 lb (80 oz)', packSize:80, packPrice:5.49, confirmed:false,
      need:function(t){return t.totalB;}},
     {id:'cilantro', list:'food', group:'Food', item:'Cilantro', unit:'bunches',
@@ -692,55 +998,62 @@
      need:function(t){return Math.max(1, Math.ceil(t.totalB/20));}}
   ];
 
-  /* Inventory = stock-based condiments + pack supplies (not 1:1 food shop) */
   var INV_CATALOG = [
-    {id:'mayo_oz', list:'inventory', group:'Condiment', item:'Mayo (house chipotle base)', unit:'oz',
+    {id:'mayo_oz', list:'inventory', group:'Condiment', item:'Mayo', unit:'oz',
      brand:'Kirkland', sku:'503961', store:'Costco', pack:'Real Mayonnaise 64 oz', packSize:64, packPrice:5.19, confirmed:true,
      usage:function(t){return t.totalB*1.5;}, reorderAt:32, note:'1.5 oz mayo base per burrito'},
-    {id:'chipotle_ml', list:'inventory', group:'Condiment', item:'Chipotle sauce (La Coste\u00f1a)', unit:'ml',
+    {id:'chipotle_ml', list:'inventory', group:'Condiment', item:'Chipotle sauce', unit:'ml',
      brand:'La Coste\u00f1a', sku:'', store:'Costco/Grocery', pack:'Medium Chipotle Sauce 220 ml', packSize:220, packPrice:1.59, confirmed:true,
      usage:function(t){return t.totalB*(220/25);}, reorderAt:110, note:'~8.8 ml/burrito (1 bottle ~25 burritos)'},
-    {id:'seasoning_pk', list:'inventory', group:'Condiment', item:'Taco seasoning (Cali)', unit:'packets',
+    {id:'seasoning_pk', list:'inventory', group:'Condiment', item:'Taco seasoning', unit:'packets',
      brand:'', sku:'', store:'Grocery', pack:'1 oz packet (or bulk scoop)', packSize:1, packPrice:1.29, confirmed:false,
      usage:function(t){return t.cali>0?Math.ceil(t.cali/8):0;}, reorderAt:2, note:'~1 packet per 8 Cali burritos'},
-    {id:'sauce_cups', list:'inventory', group:'Supply', item:'2 oz sauce cups + lids', unit:'cups',
+    {id:'sauce_cups', list:'inventory', group:'Supply', item:'Sauce cups', unit:'cups',
      brand:'', sku:'', store:'Restaurant supply', pack:'100-ct portion cups', packSize:100, packPrice:11.99, confirmed:false,
      usage:function(t){return t.totalB;}, reorderAt:50, note:'1 cup per burrito'},
-    {id:'boxes', list:'inventory', group:'Supply', item:'Takeout / kraft boxes', unit:'boxes',
+    {id:'boxes', list:'inventory', group:'Supply', item:'Boxes', unit:'boxes',
      brand:'', sku:'', store:'Restaurant supply', pack:'50-ct #3 or similar', packSize:50, packPrice:18.99, confirmed:false,
      usage:function(t){return t.totalB;}, reorderAt:40, note:'1 box per burrito'},
-    {id:'foil', list:'inventory', group:'Supply', item:'Foil wrap sheets', unit:'sheets',
+    {id:'foil', list:'inventory', group:'Supply', item:'Foil', unit:'sheets',
      brand:'Kirkland/Reynolds', sku:'31684', store:'Costco', pack:'Foodservice Foil HD 18 in x 500 ft (~400 sheets)', packSize:400, packPrice:45.99, confirmed:true,
      usage:function(t){return t.totalB;}, reorderAt:80, note:'1 wrap per burrito'}
   ];
 
   var INV_KEY = 'bb_kitchen_inventory_v2';
   var INV_APPLIED_KEY = 'bb_kitchen_inv_applied_sundays_v2';
-  var lastTotals = null;
-  var allOrdersCache = [];
 
   function defaultInvState(){
-    var s = { stock:{}, updatedAt: null };
-    INV_CATALOG.forEach(function(c){ s.stock[c.id] = 0; });
+    var s = { stock:{}, par:{}, updatedAt: null };
+    INV_CATALOG.forEach(function(c){
+      s.stock[c.id] = 0;
+      s.par[c.id] = c.reorderAt;
+    });
     return s;
   }
 
   function loadInvState(){
     try {
       var raw = localStorage.getItem(INV_KEY);
-      if(!raw) return defaultInvState();
+      if (!raw) return defaultInvState();
       var parsed = JSON.parse(raw);
       var s = defaultInvState();
-      if(parsed && parsed.stock){
+      if (parsed && parsed.stock) {
         INV_CATALOG.forEach(function(c){
-          if(typeof parsed.stock[c.id] === 'number' && !isNaN(parsed.stock[c.id])){
+          if (typeof parsed.stock[c.id] === 'number' && !isNaN(parsed.stock[c.id])) {
             s.stock[c.id] = Math.max(0, parsed.stock[c.id]);
+          }
+        });
+      }
+      if (parsed && parsed.par) {
+        INV_CATALOG.forEach(function(c){
+          if (typeof parsed.par[c.id] === 'number' && !isNaN(parsed.par[c.id]) && parsed.par[c.id] > 0) {
+            s.par[c.id] = parsed.par[c.id];
           }
         });
       }
       s.updatedAt = parsed.updatedAt || null;
       return s;
-    } catch(e){ return defaultInvState(); }
+    } catch (e) { return defaultInvState(); }
   }
 
   function saveInvState(state){
@@ -750,18 +1063,14 @@
 
   function loadAppliedSundays(){
     try { return JSON.parse(localStorage.getItem(INV_APPLIED_KEY) || '{}') || {}; }
-    catch(e){ return {}; }
+    catch (e) { return {}; }
   }
-
   function markSundayApplied(iso){
     var m = loadAppliedSundays();
     m[iso] = new Date().toISOString();
     localStorage.setItem(INV_APPLIED_KEY, JSON.stringify(m));
   }
-
-  function isSundayApplied(iso){
-    return !!loadAppliedSundays()[iso];
-  }
+  function isSundayApplied(iso){ return !!loadAppliedSundays()[iso]; }
 
   function totalsFromOrders(orders){
     var t = {soy:0, soyAvo:0, cali:0, heavy:0, heavyAvo:0, revenue:0, paidRev:0, totalB:0, avoHalves:0};
@@ -770,7 +1079,7 @@
       t.cali += o.cali || 0;
       t.heavy += o.heavy || 0; t.heavyAvo += o.heavyAvo || 0;
       t.revenue += Number(o.total) || 0;
-      if(o.paid) t.paidRev += Number(o.total) || 0;
+      if (o.paid) t.paidRev += Number(o.total) || 0;
     });
     t.totalB = t.soy + t.cali + t.heavy;
     t.avoHalves = t.cali + t.soyAvo + t.heavyAvo;
@@ -782,18 +1091,17 @@
     return n.getFullYear() + '-' + ('0' + (n.getMonth() + 1)).slice(-2) + '-' + ('0' + n.getDate()).slice(-2);
   }
 
-  /** Auto-subtract inventory for past Sundays (before today LA) not yet applied. */
   function autoApplyPastSundays(allOrders){
     var today = laTodayISO();
     var byDay = {};
     (allOrders || []).forEach(function(o){
       var d = toISODate(o.deliveryDate);
-      if(!d) return;
-      if(!byDay[d]) byDay[d] = [];
+      if (!d) return;
+      if (!byDay[d]) byDay[d] = [];
       byDay[d].push(o);
     });
     var days = Object.keys(byDay).filter(function(d){ return d < today && !isSundayApplied(d); }).sort();
-    if(!days.length) return;
+    if (!days.length) return;
     var state = loadInvState();
     days.forEach(function(d){
       var t = totalsFromOrders(byDay[d]);
@@ -806,245 +1114,470 @@
     saveInvState(state);
   }
 
-  function fmtQty(n, unit){
-    var r = Math.round(Number(n) * 10) / 10;
-    return r + ' ' + unit;
-  }
-
-  /** Shopping lines: food always (if need>0) + inventory shortfalls for this Sunday */
-  function buildShopLines(t){
-    var state = loadInvState();
-    var lines = [];
-    FOOD_GROCERY.forEach(function(gr){
-      var need = gr.need(t);
-      if(need <= 0) return;
-      var packs = Math.ceil(need / gr.packSize);
-      lines.push({
-        kind: 'Food',
-        restockId: null,
-        item: gr.item,
-        product: gr,
-        needLabel: (Math.round(need * 10) / 10) + ' ' + gr.unit,
-        packs: packs,
-        cost: packs * gr.packPrice
-      });
-    });
-    INV_CATALOG.forEach(function(c){
-      var onHand = state.stock[c.id] || 0;
-      var use = c.usage(t) || 0;
-      if(use <= 0) return;
-      var short = Math.max(0, use - onHand);
-      if(short <= 0) return;
-      /* buy enough packs to cover shortfall + small buffer to reorderAt */
-      var target = Math.max(short, c.reorderAt);
-      var packs = Math.max(1, Math.ceil(target / c.packSize));
-      lines.push({
-        kind: c.group,
-        restockId: c.id,
-        item: c.item + ' (stock short)',
-        product: c,
-        needLabel: 'short ' + fmtQty(short, c.unit) + ' (use ' + fmtQty(use, c.unit) + ', have ' + fmtQty(onHand, c.unit) + ')',
-        packs: packs,
-        cost: packs * c.packPrice
-      });
-    });
-    return lines;
-  }
-
-  function renderShopping(t){
-    var lines = buildShopLines(t);
-    var totalCost = 0;
-    var html = lines.map(function(line, idx){
-      totalCost += line.cost;
-      var p = line.product;
-      var where = (p.store || '') + (p.brand ? ' \u00b7 ' + p.brand : '');
-      var buyLabel = line.packs + ' \u00d7 ' + packLabel(p) + ' @ ' + money(p.packPrice);
-      var restock = line.restockId
-        ? ' data-restock-id="' + esc(line.restockId) + '" data-restock-packs="' + line.packs + '" data-restock-size="' + p.packSize + '"'
-        : '';
-      return '<tr class="shop-row" data-shop-idx="' + idx + '"' + restock + '>' +
-        '<td><input type="checkbox" class="shop-check" aria-label="Bought ' + esc(line.item) + '"></td>' +
-        '<td>' + lockBadge(p) + ' ' + esc(line.item) +
-          '<br><small>' + esc(line.kind) + (where ? ' · ' + esc(where) : '') +
-          ' · ' + esc(line.needLabel) + '</small></td>' +
-        '<td>' + buyLabel + '</td>' +
-        '<td>' + money(line.cost) + '</td>' +
-        '</tr>';
-    }).join('');
-    document.getElementById('grocery').innerHTML = html ||
-      '<tr><td colspan="4">Nothing to buy for this Sunday.</td></tr>';
-    document.getElementById('grocery-total').innerHTML = '<strong>' + money(totalCost) + '</strong>';
-
-    document.querySelectorAll('.shop-check').forEach(function(cb){
-      cb.addEventListener('change', function(){
-        var tr = cb.closest('tr');
-        tr.classList.toggle('done', cb.checked);
-        if(!cb.checked) return;
-        var id = tr.getAttribute('data-restock-id');
-        if(!id) return; /* food line — checklist only */
-        var packs = parseInt(tr.getAttribute('data-restock-packs'), 10) || 0;
-        var size = parseFloat(tr.getAttribute('data-restock-size')) || 0;
-        var add = packs * size;
-        var state = loadInvState();
-        state.stock[id] = (state.stock[id] || 0) + add;
-        saveInvState(state);
-        if(lastTotals){
-          renderInventory(lastTotals);
-          renderShopping(lastTotals);
-        }
-      });
-    });
-  }
-
-  function renderInventory(t){
-    lastTotals = t;
-    var state = loadInvState();
-    var alerts = [];
-    var reorderLines = [];
-    var html = INV_CATALOG.map(function(c){
-      var onHand = state.stock[c.id] || 0;
-      var use = c.usage(t) || 0;
-      var after = Math.max(0, onHand - use);
-      var status = 'OK';
-      var rowClass = '';
-      if(use > 0 && onHand < use){
-        status = 'BUY — short for Sunday';
-        rowClass = 'critical';
-        alerts.push(c.item + ': need ' + fmtQty(use, c.unit) + ', have ' + fmtQty(onHand, c.unit) + ' \u2192 added to shopping list');
-      } else if(after <= c.reorderAt){
-        status = 'Low after Sunday';
-        rowClass = 'low-stock';
-        alerts.push(c.item + ' low after Sunday: ' + fmtQty(after, c.unit) + ' left');
-      }
-      if(onHand < use || after <= c.reorderAt){
-        var shortfall = Math.max(0, use - onHand);
-        var target = Math.max(shortfall, c.reorderAt);
-        var buyPacks = Math.max(1, Math.ceil((target + (after < c.reorderAt ? c.reorderAt : 0)) / c.packSize));
-        reorderLines.push('• ' + c.item + ': ~' + buyPacks + ' \u00d7 ' + packLabel(c) + ' @ ' + money(c.packPrice));
-      }
-      var where = (c.store || '') + (c.brand ? ' \u00b7 ' + c.brand : '');
-      return '<tr class="' + rowClass + '">' +
-        '<td>' + esc(c.item) + '<br><small>' + esc(c.group) + ' · ' + esc(packLabel(c)) + '</small></td>' +
-        '<td><strong>' + fmtQty(onHand, c.unit) + '</strong></td>' +
-        '<td>' + fmtQty(use, c.unit) + '</td>' +
-        '<td><strong>' + fmtQty(after, c.unit) + '</strong></td>' +
-        '<td>' + status + '</td>' +
-        '</tr>';
-    }).join('');
-    document.getElementById('inventory').innerHTML = html;
-
-    var banner = document.getElementById('inv-alerts');
-    if(alerts.length){
-      banner.style.display = 'block';
-      banner.className = 'inv-banner critical';
-      banner.innerHTML = alerts.map(esc).join('<br>');
-    } else {
-      banner.style.display = 'none';
-      banner.innerHTML = '';
-    }
-  }
-
-  function wireInventoryUi(){
-    var seedBtn = document.getElementById('inv-seed');
-    var seedSave = document.getElementById('inv-seed-save');
-    var seedPanel = document.getElementById('inv-seed-panel');
-    var statsBtn = document.getElementById('stats-toggle');
-    var statsPanel = document.getElementById('stats-panel');
-    if(statsBtn && statsPanel && !statsBtn._wired){
-      statsBtn._wired = true;
-      statsBtn.addEventListener('click', function(){
-        var open = statsPanel.classList.toggle('open');
-        statsPanel.setAttribute('aria-hidden', open ? 'false' : 'true');
-        statsBtn.textContent = open ? 'Stats ✕' : 'Stats';
-        if(open) renderAllTimeStats(allOrdersCache);
-      });
-    }
-    if(seedBtn && !seedBtn._wired){
-      seedBtn._wired = true;
-      seedBtn.addEventListener('click', function(){
-        var open = seedPanel.style.display === 'block';
-        seedPanel.style.display = open ? 'none' : 'block';
-        if(!open){
-          var state = loadInvState();
-          document.getElementById('inv-seed-fields').innerHTML = INV_CATALOG.map(function(c){
-            return '<label style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin:8px 0;font-weight:600">' +
-              '<span>' + esc(c.item) + ' <small>(' + esc(c.unit) + ')</small></span>' +
-              '<input type="number" min="0" step="any" id="seed-' + c.id + '" value="' + (state.stock[c.id] || 0) + '" style="width:7rem">' +
-              '</label>';
-          }).join('');
-        }
-      });
-    }
-    if(seedSave && !seedSave._wired){
-      seedSave._wired = true;
-      seedSave.addEventListener('click', function(){
-        var state = loadInvState();
-        INV_CATALOG.forEach(function(c){
-          var el = document.getElementById('seed-' + c.id);
-          if(el){
-            var v = parseFloat(el.value);
-            state.stock[c.id] = isNaN(v) ? 0 : Math.max(0, v);
-          }
-        });
-        saveInvState(state);
-        seedPanel.style.display = 'none';
-        if(lastTotals){
-          renderInventory(lastTotals);
-          renderShopping(lastTotals);
-        }
-      });
-    }
-  }
-
-  /** Normalize many date shapes to yyyy-mm-dd (Sheets often returns Date strings). */
   function toISODate(v){
     if (v == null || v === '') return '';
     var s = String(v).trim();
     if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
     var d = new Date(s);
     if (!isNaN(d.getTime())) {
-      var y = d.getFullYear();
-      var m = ('0' + (d.getMonth() + 1)).slice(-2);
-      var day = ('0' + d.getDate()).slice(-2);
-      return y + '-' + m + '-' + day;
+      return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
     }
     return s;
+  }
+
+  /* Status: Buy if left ≤ 0 OR onHand < uses; Low if onHand < par; else OK */
+  function invStatus(onHand, use, par){
+    var left = onHand - use;
+    if (left <= 0 || (use > 0 && onHand < use)) return 'buy';
+    if (onHand < par) return 'low';
+    return 'ok';
+  }
+
+  function setTab(t){
+    activeTab = t;
+    document.querySelectorAll('.tabbar button').forEach(function(b){
+      b.classList.toggle('on', b.getAttribute('data-tab') === t);
+    });
+    document.querySelectorAll('[data-pane]').forEach(function(p){
+      p.classList.toggle('on', p.getAttribute('data-pane') === t);
+    });
+    var sc = document.getElementById('main-scroll');
+    if (sc) sc.scrollTop = 0;
+  }
+
+  function filterInv(status, btn){
+    if (invFilter === status) {
+      invFilter = null;
+      document.querySelectorAll('#triage button').forEach(function(b){ b.classList.remove('filtering'); });
+      toast('Showing all items');
+    } else {
+      invFilter = status;
+      document.querySelectorAll('#triage button').forEach(function(b){
+        b.classList.toggle('filtering', b === btn);
+      });
+      toast('Showing ' + status.toUpperCase() + ' items');
+    }
+    document.querySelectorAll('#inventory .inv-row').forEach(function(row){
+      var st = row.getAttribute('data-st');
+      row.hidden = !!(invFilter && st !== invFilter);
+    });
+  }
+
+  function buildShopLines(t){
+    var state = loadInvState();
+    var lines = [];
+    FOOD_GROCERY.forEach(function(gr){
+      var need = gr.need(t);
+      if (need <= 0) return;
+      var packs = Math.ceil(need / gr.packSize);
+      lines.push({
+        key: 'food:' + gr.id,
+        kind: 'food',
+        aisle: FOOD_AISLE[gr.id] || 'pantry',
+        restockId: null,
+        item: gr.item,
+        product: gr,
+        needLabel: (Math.round(need * 10) / 10) + ' ' + gr.unit,
+        packs: packs,
+        cost: packs * gr.packPrice,
+        tag: 'From orders',
+        tagClass: ''
+      });
+    });
+    INV_CATALOG.forEach(function(c){
+      var onHand = state.stock[c.id] || 0;
+      var use = c.usage(t) || 0;
+      var par = state.par[c.id] != null ? state.par[c.id] : c.reorderAt;
+      var left = onHand - use;
+      var short = Math.max(0, use - onHand);
+      /* Shop inv line when short for Sunday OR below par after Sunday */
+      var needBuy = short > 0 || left < par;
+      if (!needBuy && use <= 0 && onHand >= par) return;
+      if (!needBuy) return;
+      var target = Math.max(short, par - Math.max(0, left));
+      if (target <= 0) target = par;
+      var packs = Math.max(1, Math.ceil(target / c.packSize));
+      lines.push({
+        key: 'inv:' + c.id,
+        kind: 'inventory',
+        aisle: 'packaging',
+        restockId: c.id,
+        item: c.item,
+        product: c,
+        needLabel: short > 0
+          ? 'short ' + fmtQty(short, c.unit)
+          : 'below par (left ' + fmtQty(Math.max(0, left), c.unit) + ')',
+        packs: packs,
+        cost: packs * c.packPrice,
+        tag: 'Auto · below par',
+        tagClass: 'auto'
+      });
+    });
+    return lines;
+  }
+
+  function renderInventory(t){
+    lastTotals = t;
+    var state = loadInvState();
+    var counts = { ok:0, low:0, buy:0 };
+    var html = INV_CATALOG.map(function(c){
+      var onHand = state.stock[c.id] || 0;
+      var use = c.usage(t) || 0;
+      var par = state.par[c.id] != null ? state.par[c.id] : c.reorderAt;
+      var left = onHand - use;
+      var st = invStatus(onHand, use, par);
+      counts[st]++;
+      var fillPct = par > 0 ? Math.min(100, Math.round((onHand / par) * 100)) : (onHand > 0 ? 100 : 0);
+      var tickPct = par > 0 ? Math.min(100, Math.round((use / par) * 100)) : 0;
+      var leftLabel = left < 0 ? ('−' + fmtNum(Math.abs(left))) : fmtNum(left);
+      var emoji = INV_EMOJI[c.id] || '📦';
+      var pline = productLine(c);
+      var deskMeta = pline + ' · ' + fmtNum(onHand) + ' on hand · uses ' + fmtNum(use) + ' · left ' + leftLabel;
+      var hidden = invFilter && st !== invFilter;
+      return '<div class="inv-row ' + (st === 'ok' ? '' : st) + '" data-st="' + st + '"' + (hidden ? ' hidden' : '') + '>' +
+        '<div class="inv-top">' +
+          '<div class="thumb">' + emoji + '</div>' +
+          '<div class="name">' + esc(c.item) +
+            '<small class="mob-line">' + esc(pline) + '</small>' +
+            '<small class="desk-meta">' + esc(deskMeta) + '</small>' +
+          '</div>' +
+          '<span class="chip ' + st + '">' + (st === 'ok' ? 'OK' : st === 'low' ? 'Low' : 'Buy') + '</span>' +
+        '</div>' +
+        '<div class="gauge-wrap">' +
+          '<div class="gauge">' +
+            '<div class="fill g-' + st + '" style="width:' + fillPct + '%"></div>' +
+            (use > 0 ? '<div class="use-tick" style="left:' + tickPct + '%"></div>' : '') +
+          '</div>' +
+          '<div class="gauge-key"><span class="tick-key">Sunday uses ' + fmtNum(use) + '</span><span>Par ' + fmtNum(par) + '</span></div>' +
+        '</div>' +
+        '<div class="inv-nums">' +
+          '<div class="s"><div class="n big num">' + fmtNum(onHand) + '</div><div class="l">On hand</div></div>' +
+          '<div class="s"><div class="n num">' + fmtNum(use) + '</div><div class="l">Sun uses</div></div>' +
+          '<div class="s"><div class="n num' + (left <= 0 ? ' neg' : '') + '">' + leftLabel + '</div><div class="l">Left after</div></div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    document.getElementById('inventory').innerHTML = html ||
+      '<div class="shop-empty">No inventory items configured.</div>';
+    document.getElementById('tri-ok').textContent = counts.ok;
+    document.getElementById('tri-low').textContent = counts.low;
+    document.getElementById('tri-buy').textContent = counts.buy;
+
+    var badgeInv = document.getElementById('badge-inv');
+    if (counts.buy > 0) {
+      badgeInv.hidden = false;
+      badgeInv.textContent = String(counts.buy);
+      badgeInv.classList.add('alert');
+    } else {
+      badgeInv.hidden = true;
+    }
+
+  }
+
+  function renderShopping(t){
+    var lines = buildShopLines(t);
+    var totalCost = 0;
+    lines.forEach(function(l){ totalCost += l.cost; });
+
+    var byAisle = { fridge:[], pantry:[], packaging:[] };
+    var checkedLines = [];
+    lines.forEach(function(line){
+      if (shopChecked[line.key]) checkedLines.push(line);
+      else {
+        var a = line.aisle in byAisle ? line.aisle : 'pantry';
+        byAisle[a].push(line);
+      }
+    });
+
+    function rowHtml(line, done){
+      var p = line.product;
+      var buyLabel = line.packs + ' × ' + packLabel(p) + ' @ ' + money(p.packPrice);
+      var tagText = done
+        ? (line.restockId ? '✓ ' + line.item + ' restocked' : 'In cart')
+        : line.tag;
+      var tagCls = done ? '' : line.tagClass;
+      return '<div class="shop-row' + (done ? ' done' : '') + '" data-key="' + esc(line.key) + '"' +
+        (line.restockId ? ' data-restock-id="' + esc(line.restockId) + '" data-restock-packs="' + line.packs + '" data-restock-size="' + p.packSize + '" data-restock-name="' + esc(line.item) + '"' : '') +
+        ' data-home="' + esc(line.aisle) + '" role="button" tabindex="0">' +
+        '<div class="check">✓</div>' +
+        '<div class="info"><b>' + esc(line.item) + '</b><small>' + esc(buyLabel) +
+          (line.needLabel ? ' · ' + esc(line.needLabel) : '') +
+          '</small><span class="tag' + (tagCls ? ' ' + tagCls : '') + '">' + esc(tagText) + '</span></div>' +
+        '<div class="est">' + money(line.cost) + '</div>' +
+      '</div>';
+    }
+
+    var aislesHtml = '';
+    ['fridge','pantry','packaging'].forEach(function(a){
+      if (!byAisle[a].length) return;
+      var meta = AISLE_META[a];
+      aislesHtml += '<div class="aisle-block" data-aisle="' + a + '">' +
+        '<div class="aisle"><span class="a-ico">' + meta.emoji + '</span>' + meta.label + '</div>' +
+        byAisle[a].map(function(l){ return rowHtml(l, false); }).join('') +
+        '</div>';
+    });
+
+    if (!lines.length) {
+      aislesHtml = '<div class="shop-empty">Nothing to buy for this Sunday.</div>';
+    }
+
+    document.getElementById('shop-aisles').innerHTML = aislesHtml;
+
+    var cartZone = document.getElementById('cart-zone');
+    if (checkedLines.length) {
+      cartZone.innerHTML = checkedLines.map(function(l){ return rowHtml(l, true); }).join('');
+    } else {
+      cartZone.innerHTML = '<div class="cart-empty" id="cart-empty">Checked items land here — packs restock inventory automatically.</div>';
+    }
+
+    var doneN = checkedLines.length;
+    var totalN = lines.length;
+    document.getElementById('cart-count').textContent = doneN + ' of ' + totalN + ' in cart';
+    document.getElementById('shop-total').textContent = money(totalCost);
+    document.getElementById('cart-bar').style.width = (totalN ? Math.round((doneN / totalN) * 100) : 0) + '%';
+
+    var remaining = totalN - doneN;
+    var badgeShop = document.getElementById('badge-shop');
+    if (remaining > 0) {
+      badgeShop.hidden = false;
+      badgeShop.textContent = String(remaining);
+      badgeShop.classList.remove('alert');
+    } else {
+      badgeShop.hidden = true;
+    }
+
+    var label = sundayLabel();
+    var short = label.replace(/^Sunday,?\s*/i, 'Sun ');
+    document.getElementById('shop-helper').textContent = short + ' · grouped by store section';
+
+    document.querySelectorAll('.shop-row').forEach(function(row){
+      row.addEventListener('click', function(){ toggleShop(row); });
+      row.addEventListener('keydown', function(e){
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleShop(row); }
+      });
+    });
+  }
+
+  function toggleShop(row){
+    var key = row.getAttribute('data-key');
+    if (!key) return;
+    var wasChecked = !!shopChecked[key];
+    if (wasChecked) {
+      delete shopChecked[key];
+      /* reverse restock */
+      var id = row.getAttribute('data-restock-id');
+      if (id && shopRestocked[key]) {
+        var state = loadInvState();
+        state.stock[id] = Math.max(0, (state.stock[id] || 0) - shopRestocked[key]);
+        saveInvState(state);
+        delete shopRestocked[key];
+      }
+    } else {
+      shopChecked[key] = true;
+      var rid = row.getAttribute('data-restock-id');
+      if (rid) {
+        var packs = parseInt(row.getAttribute('data-restock-packs'), 10) || 0;
+        var size = parseFloat(row.getAttribute('data-restock-size')) || 0;
+        var add = packs * size;
+        var st = loadInvState();
+        st.stock[rid] = (st.stock[rid] || 0) + add;
+        saveInvState(st);
+        shopRestocked[key] = add;
+        var name = row.getAttribute('data-restock-name') || 'Item';
+        toast(name + ' restocked ✓');
+      }
+    }
+    if (lastTotals) {
+      renderInventory(lastTotals);
+      renderShopping(lastTotals);
+    }
+  }
+
+  function orderItemLines(o){
+    var items = [];
+    if ((o.soyrizo || 0) - (o.soyrizoAvo || 0) > 0) items.push({ q:(o.soyrizo - o.soyrizoAvo), n:'Soyrizo' });
+    if (o.soyrizoAvo > 0) items.push({ q:o.soyrizoAvo, n:'Soyrizo +avo' });
+    if (o.cali > 0) items.push({ q:o.cali, n:'Cali' });
+    if ((o.heavy || 0) - (o.heavyAvo || 0) > 0) items.push({ q:(o.heavy - o.heavyAvo), n:'Heavyweight' });
+    if (o.heavyAvo > 0) items.push({ q:o.heavyAvo, n:'Heavyweight +avo' });
+    return items;
+  }
+
+  function renderOrders(orders, label){
+    var t = totalsFromOrders(orders);
+    document.getElementById('cnt-soy').textContent = t.soy;
+    document.getElementById('cnt-cali').textContent = t.cali;
+    document.getElementById('cnt-heavy').textContent = t.heavy;
+    document.getElementById('cnt-total').textContent = t.totalB;
+    document.getElementById('mon-expected').textContent = moneyShort(t.revenue);
+    document.getElementById('mon-paid').textContent = moneyShort(t.paidRev);
+    document.getElementById('mon-unpaid').textContent = moneyShort(t.revenue - t.paidRev);
+    var sum = t.revenue || 1;
+    var paidPct = Math.round((t.paidRev / sum) * 100);
+    document.getElementById('pay-p').style.width = paidPct + '%';
+    document.getElementById('pay-u').style.width = (100 - paidPct) + '%';
+
+    document.getElementById('ord-helper').textContent = label + ' only · cook + deliver';
+
+    var emptyEl = document.getElementById('orders-empty');
+    var boardEl = document.getElementById('orders-board');
+    if (!orders.length) {
+      emptyEl.hidden = false;
+      boardEl.style.display = 'none';
+      document.getElementById('day-caption').textContent = 'No orders yet';
+      return;
+    }
+    emptyEl.hidden = true;
+    boardEl.style.display = 'block';
+    document.getElementById('day-caption').textContent = 'Delivery day';
+
+    var sorted = orders.slice().sort(function(a, b){
+      return String(a.unit).localeCompare(String(b.unit), undefined, { numeric:true });
+    });
+
+    var visible = sorted.filter(function(o){
+      if (ticketFilter === 'unpaid') return !o.paid;
+      return true;
+    });
+
+    document.getElementById('stop-cnt').textContent = visible.length + ' stop' + (visible.length === 1 ? '' : 's');
+
+    document.getElementById('tickets').innerHTML = visible.map(function(o){
+      var items = orderItemLines(o);
+      var safeId = esc(o.orderId).replace(/'/g, '');
+      var lines = items.map(function(it){
+        return '<div class="t-line"><span class="q">' + it.q + '×</span><span class="nm">' + esc(it.n) + '</span></div>';
+      }).join('') || '<div class="t-line"><span class="nm">—</span></div>';
+      return '<div class="ticket' + (o.paid ? ' paid-tk' : '') + '" data-paid="' + (o.paid ? '1' : '0') + '">' +
+        '<div class="t-bar ' + (o.paid ? 'paid' : 'unpaid') + '">' +
+          '<span class="unit">' + esc(o.unit) + '</span>' +
+          '<span class="who">' + esc(o.name) + '</span>' +
+          '<span class="st">' + (o.paid ? 'Paid ✓' : 'Unpaid') + '</span>' +
+        '</div>' +
+        '<div class="t-body">' + lines + '</div>' +
+        '<div class="t-foot">' +
+          '<div><div class="tot">' + moneyShort(o.total) + '</div><div class="oid">' + esc(o.orderId) + '</div></div>' +
+          (o.paid
+            ? '<span class="paidchip">Paid ✓</span>'
+            : '<button type="button" class="markbtn" data-oid="' + safeId + '">Mark paid</button>') +
+        '</div></div>';
+    }).join('');
+
+    document.getElementById('desk-orders').innerHTML = visible.map(function(o){
+      var items = orderItemLines(o);
+      var itemsStr = items.map(function(it){ return it.q + '× ' + it.n; }).join(' · ');
+      var safeId = esc(o.orderId).replace(/'/g, '');
+      var edge = o.paid ? 'var(--green)' : 'var(--red)';
+      var bg = o.paid ? '' : 'background:var(--coral-tint)';
+      return '<tr style="border-top:2px solid rgba(61,26,92,.12);' + bg + '">' +
+        '<td style="padding:11px 12px;font-weight:700;border-left:6px solid ' + edge + '">' + esc(o.unit) + '</td>' +
+        '<td style="padding:11px 6px">' + esc(o.name) + '<br><small style="opacity:.65">' + esc(o.orderId) + '</small></td>' +
+        '<td style="padding:11px 6px;opacity:.75;font-size:13px">' + esc(itemsStr) + '</td>' +
+        '<td style="padding:11px 6px;font-weight:700;text-align:right">' + moneyShort(o.total) + '</td>' +
+        '<td style="padding:8px 12px">' +
+          (o.paid
+            ? '<span class="paidchip">Paid ✓</span>'
+            : '<button type="button" class="markbtn" style="min-height:40px;padding:8px 13px;font-size:12px" data-oid="' + safeId + '">Mark paid</button>') +
+        '</td></tr>';
+    }).join('');
+
+    document.querySelectorAll('.markbtn').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        bbMarkPaid(btn.getAttribute('data-oid'), btn);
+      });
+    });
   }
 
   function renderAllTimeStats(allOrders){
     var t = totalsFromOrders(allOrders || []);
     var nOrders = (allOrders || []).length;
-    var paidN = (allOrders || []).filter(function(o){ return o.paid; }).length;
     var pop = [
-      { name: 'Soyrizo', n: t.soy },
-      { name: 'Cali', n: t.cali },
-      { name: 'Heavyweight', n: t.heavy }
+      { name: 'Cali burrito', n: t.cali },
+      { name: 'Soyrizo burrito', n: t.soy },
+      { name: 'Heavyweight burrito', n: t.heavy }
     ].sort(function(a, b){ return b.n - a.n; });
     var top = pop[0];
-    var topLabel = top && top.n > 0
-      ? top.name + ' (' + top.n + ')'
-      : '—';
+    var topLabel = top && top.n > 0 ? '🥇 ' + top.name : '—';
     var aov = nOrders ? (t.revenue / nOrders) : 0;
-    var el = document.getElementById('stats-top');
-    if(el){
-      el.innerHTML =
-        '<div class="bignum total"><div class="n">' + t.totalB + '</div><div class="l">Burritos sold</div></div>' +
-        '<div class="bignum"><div class="n">' + nOrders + '</div><div class="l">Orders</div></div>' +
-        '<div class="bignum"><div class="n" style="font-size:clamp(1.1rem,4vw,1.6rem);padding-top:8px">' + esc(topLabel) + '</div><div class="l">Most popular</div></div>' +
-        '<div class="bignum paid"><div class="n">' + money(t.revenue) + '</div><div class="l">Gross sales</div></div>';
-    }
-    var mon = document.getElementById('stats-money');
-    if(mon){
-      mon.innerHTML =
-        '<div class="bignum paid"><div class="n">' + money(t.paidRev) + '</div><div class="l">Marked paid</div></div>' +
-        '<div class="bignum owed"><div class="n">' + money(t.revenue - t.paidRev) + '</div><div class="l">Unpaid / open</div></div>' +
-        '<div class="bignum"><div class="n">' + money(aov) + '</div><div class="l">Avg order</div></div>' +
-        '<div class="bignum"><div class="n">' + paidN + '/' + nOrders + '</div><div class="l">Paid orders</div></div>';
-    }
-    var det = document.getElementById('stats-detail');
-    if(det){
-      det.textContent = 'Mix: Soyrizo ' + t.soy + ' · Cali ' + t.cali + ' · Heavyweight ' + t.heavy +
-        ' · Avocado sides/add-ons (halves) ' + t.avoHalves;
+    var unpaid = t.revenue - t.paidRev;
+    var paidPct = t.revenue ? Math.round((t.paidRev / t.revenue) * 100) : 0;
+
+    document.getElementById('stats-grid').innerHTML =
+      '<div class="stat-big wide"><div class="v hero num">' + t.totalB.toLocaleString() + '</div><div class="k">Burritos sold</div></div>' +
+      '<div class="stat-big"><div class="v num">' + nOrders.toLocaleString() + '</div><div class="k">Orders</div></div>' +
+      '<div class="stat-big"><div class="v num">' + money(aov) + '</div><div class="k">Avg order</div></div>' +
+      '<div class="stat-big" style="grid-column:1/-1"><div class="v" style="font-size:22px">' + esc(topLabel) + '</div><div class="k">Most popular item</div></div>' +
+      '<div class="stat-big wide" style="background:#fff;color:var(--purple)">' +
+        '<div class="v num" style="color:var(--purple);font-family:var(--font-ui);font-weight:700">' + money(t.revenue) + '</div>' +
+        '<div class="k">Gross sales</div>' +
+        '<div class="split"><div class="p" style="width:' + paidPct + '%"></div><div class="u" style="width:' + (100 - paidPct) + '%"></div></div>' +
+        '<div class="split-key"><span class="pk">Paid ' + money(t.paidRev) + '</span><span class="uk">Unpaid ' + money(unpaid) + '</span></div>' +
+      '</div>';
+  }
+
+  function openStockSheet(){
+    var state = loadInvState();
+    document.getElementById('stock-fields').innerHTML = INV_CATALOG.map(function(c){
+      var onHand = state.stock[c.id] || 0;
+      var par = state.par[c.id] != null ? state.par[c.id] : c.reorderAt;
+      var pline = productLine(c);
+      return '<div class="field" data-id="' + esc(c.id) + '">' +
+        '<div class="f-top">' +
+          '<label>' + esc(c.item) + '<small>' + esc(pline) + ' · ' + esc(c.unit) + '</small></label>' +
+          '<div class="stepper">' +
+            '<button type="button" class="step-minus" data-for="seed-' + esc(c.id) + '" aria-label="Decrease">−</button>' +
+            '<input type="number" min="0" step="any" id="seed-' + esc(c.id) + '" value="' + onHand + '">' +
+            '<button type="button" class="step-plus" data-for="seed-' + esc(c.id) + '" aria-label="Increase">+</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="f-pars"><div class="fp"><span>PAR</span><input type="number" min="0" step="any" id="par-' + esc(c.id) + '" value="' + par + '"></div></div>' +
+      '</div>';
+    }).join('');
+
+    document.querySelectorAll('.step-minus').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var inp = document.getElementById(btn.getAttribute('data-for'));
+        if (!inp) return;
+        var v = parseFloat(inp.value) || 0;
+        inp.value = Math.max(0, Math.round((v - 1) * 10) / 10);
+      });
+    });
+    document.querySelectorAll('.step-plus').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var inp = document.getElementById(btn.getAttribute('data-for'));
+        if (!inp) return;
+        var v = parseFloat(inp.value) || 0;
+        inp.value = Math.round((v + 1) * 10) / 10;
+      });
+    });
+    openSheet('stock-sheet');
+  }
+
+  function saveStockLevels(){
+    var state = loadInvState();
+    INV_CATALOG.forEach(function(c){
+      var el = document.getElementById('seed-' + c.id);
+      var pe = document.getElementById('par-' + c.id);
+      if (el) {
+        var v = parseFloat(el.value);
+        state.stock[c.id] = isNaN(v) ? 0 : Math.max(0, v);
+      }
+      if (pe) {
+        var p = parseFloat(pe.value);
+        state.par[c.id] = isNaN(p) || p <= 0 ? c.reorderAt : p;
+      }
+    });
+    saveInvState(state);
+    closeSheet('stock-sheet');
+    toast('Stock & pars saved ✓');
+    /* Clear shop check state for inv lines so re-render is clean */
+    shopChecked = {};
+    shopRestocked = {};
+    if (lastTotals) {
+      renderInventory(lastTotals);
+      renderShopping(lastTotals);
     }
   }
 
@@ -1053,127 +1586,114 @@
     var label = sundayLabel();
     var want = sundayISO();
     document.getElementById('day-label').textContent = label;
-    var sdl = document.getElementById('sunday-detail-label');
-    if(sdl) sdl.textContent = label;
-    boardEl.style.display = 'none';
-    statusEl.className = 'status';
-    if(!SCRIPT_URL || !KEY){
-      statusEl.className = 'status error';
+    statusEl.className = 'status-bar';
+    if (!SCRIPT_URL || !KEY) {
+      statusEl.className = 'status-bar error';
       statusEl.textContent = 'Missing scriptUrl/portalKey in kitchen-config.js.';
       return;
     }
-    statusEl.textContent = 'Loading orders for ' + label + '\u2026';
+    statusEl.textContent = 'Loading ' + label + '…';
     fetch(SCRIPT_URL + '?key=' + encodeURIComponent(KEY))
       .then(function(r){ return r.json(); })
       .then(function(res){
-        if(!res.ok){ throw new Error(res.error || 'backend error'); }
+        if (!res.ok) throw new Error(res.error || 'backend error');
         allOrdersCache = res.orders || [];
         autoApplyPastSundays(allOrdersCache);
         var filtered = allOrdersCache.filter(function(o){
           return toISODate(o.deliveryDate) === want;
         });
         current = filtered;
+        /* Reset shop checks when day changes */
+        shopChecked = {};
+        shopRestocked = {};
         render(filtered, label);
+        toast(label + ' loaded');
       })
       .catch(function(err){
-        statusEl.className = 'status error';
+        statusEl.className = 'status-bar error';
         statusEl.textContent = 'Could not load orders: ' + err.message;
       });
   }
 
   function render(orders, label){
-    boardEl.style.display = 'block';
-    var sdl = document.getElementById('sunday-detail-label');
-    if(sdl) sdl.textContent = label;
-
-    renderAllTimeStats(allOrdersCache);
-
-    if(!orders.length){
-      statusEl.textContent = 'No orders yet for ' + label + ' — inventory still shown; shopping may only list stock shortfalls.';
+    if (!orders.length) {
+      statusEl.textContent = 'No orders yet for ' + label + ' — inventory still shown; Shop may only list restocks.';
     } else {
-      statusEl.textContent = orders.length + ' order' + (orders.length === 1 ? '' : 's') + ' for ' + label;
+      statusEl.textContent = orders.length + ' order' + (orders.length === 1 ? '' : 's') + ' · ' + label;
     }
-
     var t = totalsFromOrders(orders);
-
-    document.getElementById('cook').innerHTML =
-      '<div class="bignum total"><div class="n">' + t.totalB + '</div><div class="l">Total burritos</div></div>' +
-      '<div class="bignum"><div class="n">' + t.soy + '</div><div class="l">Soyrizo</div><div class="sub">' + t.soyAvo + ' with avo</div></div>' +
-      '<div class="bignum"><div class="n">' + t.cali + '</div><div class="l">Cali</div><div class="sub">all with avo</div></div>' +
-      '<div class="bignum"><div class="n">' + t.heavy + '</div><div class="l">Heavyweight</div><div class="sub">' + t.heavyAvo + ' with avo</div></div>';
-
     renderInventory(t);
     renderShopping(t);
-    wireInventoryUi();
-
-    document.getElementById('money').innerHTML =
-      '<div class="bignum"><div class="n">' + money(t.revenue) + '</div><div class="l">Expected</div></div>' +
-      '<div class="bignum paid"><div class="n">' + money(t.paidRev) + '</div><div class="l">Paid</div></div>' +
-      '<div class="bignum owed"><div class="n">' + money(t.revenue - t.paidRev) + '</div><div class="l">Unpaid</div></div>';
-
-    var chase = orders.filter(function(o){ return !o.paid; });
-    document.getElementById('chase').innerHTML = !orders.length
-      ? '<li>No orders this Sunday</li>'
-      : (chase.length
-        ? chase.map(function(o){
-            return '<li><span class="oid">' + esc(o.orderId) + '</span> ' + esc(o.name) + ' \u00b7 Unit ' + esc(o.unit) +
-                   (o.phone ? ' \u00b7 ' + esc(o.phone) : '') + '<span class="amt">' + money(o.total) + '</span></li>';
-          }).join('')
-        : '<li>Everyone has paid</li>');
-
-    var sorted = orders.slice().sort(function(a, b){
-      return String(a.unit).localeCompare(String(b.unit), undefined, {numeric:true});
-    });
-    document.getElementById('orders').innerHTML = sorted.map(function(o){
-      var items = [];
-      if(o.soyrizo - o.soyrizoAvo > 0){ items.push((o.soyrizo - o.soyrizoAvo) + ' Soyrizo'); }
-      if(o.soyrizoAvo > 0){ items.push(o.soyrizoAvo + ' Soyrizo +avo'); }
-      if(o.cali > 0){ items.push(o.cali + ' Cali'); }
-      if(o.heavy - o.heavyAvo > 0){ items.push((o.heavy - o.heavyAvo) + ' Heavyweight'); }
-      if(o.heavyAvo > 0){ items.push(o.heavyAvo + ' Heavyweight +avo'); }
-      var safeId = esc(o.orderId).replace(/'/g, '');
-      return '<tr class="' + (o.paid ? '' : 'unpaid') + '">' +
-        '<td class="cell-check" data-label="Done"><input type="checkbox" class="delcheck" aria-label="Delivered unit ' + esc(o.unit) + '" onchange="this.closest(\'tr\').style.opacity = this.checked ? .35 : 1"> <strong class="unit-tag">Unit ' + esc(o.unit) + '</strong></td>' +
-        '<td data-label="Unit"><strong>' + esc(o.unit) + '</strong></td>' +
-        '<td data-label="Name">' + esc(o.name) + (o.phone ? '<br><small>' + esc(o.phone) + '</small>' : '') + '</td>' +
-        '<td class="oid" data-label="Order">' + esc(o.orderId) + '</td>' +
-        '<td class="items" data-label="Items">' + items.map(esc).join('<br>') + '</td>' +
-        '<td data-label="Total">' + money(o.total) + '</td>' +
-        '<td class="cell-paid" data-label="Paid"><span class="pill ' + (o.paid ? 'yes">PAID' : 'no">NO') + '</span>' +
-        (o.paid ? '' : '<button type="button" class="markpaid" data-oid="' + safeId + '">Mark paid</button>') +
-        '</td></tr>';
-    }).join('');
-
-    document.querySelectorAll('.markpaid').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        bbMarkPaid(btn.getAttribute('data-oid'), btn);
-      });
-    });
-    boardEl.style.display = 'block';
+    renderOrders(orders, label);
   }
 
   window.bbMarkPaid = function(orderId, btn){
     if (!isAuthed()) { showLogin('Session expired. Log in again.'); return; }
-    if(!confirm('Mark ' + orderId + ' as PAID?')){ return; }
+    if (!confirm('Mark ' + orderId + ' as PAID?')) return;
     btn.disabled = true;
-    btn.textContent = '\u2026';
+    btn.textContent = '…';
     fetch(SCRIPT_URL, {
       method: 'POST',
-      headers: {'Content-Type': 'text/plain;charset=utf-8'},
-      body: JSON.stringify({action:'markPaid', key: KEY, orderId: orderId, ref: 'kitchen-portal-manual'})
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action:'markPaid', key: KEY, orderId: orderId, ref: 'kitchen-portal-manual' })
     }).then(function(r){ return r.json(); }).then(function(res){
-      if(res.ok){ load(); }
-      else { alert('Failed: ' + res.error); btn.disabled = false; btn.textContent = 'Mark paid'; }
+      if (res.ok) {
+        toast('Marked paid ✓');
+        load();
+      } else {
+        alert('Failed: ' + res.error);
+        btn.disabled = false;
+        btn.textContent = 'Mark paid';
+      }
     }).catch(function(err){
-      alert('Failed: ' + err.message); btn.disabled = false; btn.textContent = 'Mark paid';
+      alert('Failed: ' + err.message);
+      btn.disabled = false;
+      btn.textContent = 'Mark paid';
     });
   };
 
+  /* Wire chrome */
   document.getElementById('prev').addEventListener('click', function(){ weekOffset--; load(); });
   document.getElementById('next').addEventListener('click', function(){ weekOffset++; load(); });
-  document.getElementById('refresh').addEventListener('click', load);
+  document.getElementById('refresh').addEventListener('click', function(){ load(); });
 
-  /* Boot: restore session or show login */
+  document.querySelectorAll('.tabbar button').forEach(function(btn){
+    btn.addEventListener('click', function(){ setTab(btn.getAttribute('data-tab')); });
+  });
+
+  document.querySelectorAll('#triage button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      filterInv(btn.getAttribute('data-filter'), btn);
+    });
+  });
+
+  document.getElementById('ticket-filter').addEventListener('click', function(e){
+    var b = e.target.closest('button[data-mode]');
+    if (!b) return;
+    ticketFilter = b.getAttribute('data-mode');
+    document.querySelectorAll('#ticket-filter button').forEach(function(x){
+      x.classList.toggle('on', x === b);
+    });
+    if (current) renderOrders(current, sundayLabel());
+  });
+
+  document.getElementById('stats-toggle').addEventListener('click', function(){
+    renderAllTimeStats(allOrdersCache);
+    openSheet('stats-sheet');
+  });
+  document.getElementById('stats-close').addEventListener('click', function(){ closeSheet('stats-sheet'); });
+  document.getElementById('stats-sheet').addEventListener('click', function(e){
+    if (e.target === this) closeSheet('stats-sheet');
+  });
+
+  document.getElementById('inv-seed').addEventListener('click', openStockSheet);
+  document.getElementById('stock-close').addEventListener('click', function(){ closeSheet('stock-sheet'); });
+  document.getElementById('stock-sheet').addEventListener('click', function(e){
+    if (e.target === this) closeSheet('stock-sheet');
+  });
+  document.getElementById('inv-seed-save').addEventListener('click', saveStockLevels);
+
+  /* Boot */
   if (restoreSession() && isAuthed()) showApp();
   else showLogin();
 })();
