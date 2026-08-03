@@ -13,7 +13,7 @@
 - [x] Order POST → sheet + owner email
 - [x] Kitchen portal with email + password login (config gitignored)
 - [x] Kitchen mark paid / cook board / grocery / delivery run
-- [x] Zelle destination shown (`bobsburritosco@gmail.com`)
+- [x] Zelle destination shown (`7148120977`)
 - [x] Venmo username set (`@Khushbu-Kotecha`)
 - [x] Compressed menu images + cache bust
 - [x] Desktop copy-button fix
@@ -22,7 +22,7 @@
 ## Needs you (cannot automate)
 
 1. **Apps Script:** paste `local/bobs-burritos-backend.READY.gs` → **Deploy → New version** (clipboard often has latest)
-2. **Confirm Zelle** is enabled on `bobsburritosco@gmail.com` (or give phone)
+2. **Confirm Zelle** works for phone `7148120977`
 4. **Delete smoke-test rows** on Orders if still present (`BB-SMOKE1`)
 5. **Real product run:** phone order + pay + kitchen mark paid
 6. Optional: Venmo/Zelle handles on flyers

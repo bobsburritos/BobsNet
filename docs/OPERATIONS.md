@@ -71,4 +71,4 @@ Venmo/Zelle are out of band. Residents copy a note like:
 
 `BB-XXXXX | Name | Unit NNN | $TT.TT`
 
-Venmo: **@Khushbu-Kotecha** · Zelle: **bobsburritosco@gmail.com** (wired on the public order page).
+Venmo: **@Khushbu-Kotecha** · Zelle: **7148120977** (wired on the public order page).
