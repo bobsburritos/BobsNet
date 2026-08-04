@@ -204,8 +204,8 @@ The name story unlocks humor and vulnerability without apology.
 ## Woman-owned on the order page
 **Exactly two placements** (do not scatter more):
 
-1. **Hero badge:** `★ Proudly woman-owned ★`
-2. **Footer signature:** `Proudly woman-owned · Small-batch breakfast burritos · 1111 Wilshire, Los Angeles · Sundays only`
+1. **Hero badge:** `★ Woman-owned ★`
+2. **Footer signature:** `Woman-owned · Small-batch breakfast burritos · 1111 Wilshire, Los Angeles · Sundays only`
 
 Elsewhere use product language: small-batch, hand-rolled, Sunday, sauce — not repeated "woman-owned."
 
