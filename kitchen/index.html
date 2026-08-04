@@ -80,19 +80,37 @@
 
   /* ---------- App shell ---------- */
   #app{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
+  /* Mobile-first header: brand + actions on row 1, date nav full-width on row 2 */
   .app-head{
     flex-shrink:0;position:sticky;top:0;z-index:40;background:var(--purple);color:var(--cream);
-    padding:max(12px, env(safe-area-inset-top)) 16px 14px;
+    padding:max(12px, env(safe-area-inset-top)) 14px 12px;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    grid-template-areas:
+      "brand actions"
+      "datenav datenav";
+    gap:10px 8px;
+    align-items:center;
   }
-  .brandrow{display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .brand{display:flex;align-items:center;gap:10px;min-width:0}
+  .brand{
+    grid-area:brand;display:flex;align-items:center;gap:8px;min-width:0;
+  }
   .brand .logo{
-    width:40px;height:40px;border-radius:12px;background:var(--gold);border:3px solid var(--cream);
-    display:grid;place-items:center;font-size:20px;flex-shrink:0;box-shadow:2px 2px 0 rgba(0,0,0,.2);
+    width:36px;height:36px;border-radius:11px;background:var(--gold);border:3px solid var(--cream);
+    display:grid;place-items:center;font-size:18px;flex-shrink:0;box-shadow:2px 2px 0 rgba(0,0,0,.2);
   }
-  .brand h1{font-family:var(--font-display);font-weight:400;font-size:22px;color:var(--cream);line-height:1}
-  .brand .sub{font-size:11px;color:var(--lilac);font-weight:600;letter-spacing:.5px;margin-top:2px}
-  .actions{display:flex;gap:8px;flex-shrink:0}
+  .brand > div{min-width:0;overflow:hidden}
+  .brand h1{
+    font-family:var(--font-display);font-weight:400;font-size:clamp(15px,4.6vw,20px);
+    color:var(--cream);line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .brand .sub{
+    font-size:10px;color:var(--lilac);font-weight:600;letter-spacing:.4px;margin-top:2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .actions{
+    grid-area:actions;display:flex;gap:6px;flex-shrink:0;align-items:center;justify-content:flex-end;
+  }
   .pill{
     font-family:var(--font-ui);font-weight:600;font-size:var(--t-sm);cursor:pointer;
     background:var(--cream);color:var(--purple);border:2.5px solid var(--cream);
@@ -102,20 +120,27 @@
   .pill:active{transform:translate(2px,2px);box-shadow:none}
   .pill.ghost{background:transparent;color:var(--cream);border-color:rgba(255,244,220,.5)}
   .pill.gold{background:var(--gold);border-color:var(--gold);color:var(--purple)}
-  .pill.icon{width:44px;padding:0;justify-content:center;font-size:17px}
+  .pill.icon{width:40px;height:40px;min-height:40px;padding:0;justify-content:center;font-size:17px;flex-shrink:0}
+  /* Stats icon-only by default (phones); label restored from 480px+ */
+  .actions .pill.gold{width:40px;height:40px;min-height:40px;padding:0;justify-content:center;font-size:16px}
+  .actions .pill.gold .lbl{display:none}
 
   .datenav{
-    display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px;
+    grid-area:datenav;display:flex;align-items:center;justify-content:space-between;gap:8px;
+    width:100%;min-width:0;margin:0;
     background:rgba(255,255,255,.10);border:2px solid rgba(255,244,220,.35);border-radius:16px;padding:6px;
   }
   .datenav button{
-    width:48px;height:48px;flex-shrink:0;border-radius:12px;border:none;cursor:pointer;
+    width:44px;height:44px;flex-shrink:0;border-radius:12px;border:none;cursor:pointer;
     background:var(--gold);color:var(--purple);font-size:22px;font-weight:700;
     display:grid;place-items:center;box-shadow:2px 2px 0 rgba(0,0,0,.2);
   }
   .datenav button:active{transform:translate(1px,1px);box-shadow:none}
   .datenav .date{flex:1;text-align:center;line-height:1.15;min-width:0}
-  .datenav .date .d{font-weight:700;font-size:var(--t-lg);color:#fff;letter-spacing:.2px}
+  .datenav .date .d{
+    font-weight:700;font-size:clamp(15px,4.2vw,20px);color:#fff;letter-spacing:.2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
   .datenav .date .t{font-size:11px;color:var(--lilac);font-weight:600;letter-spacing:1px;text-transform:uppercase}
 
   .status-bar{
@@ -427,13 +452,30 @@
   [data-pane]{display:none}
   [data-pane].on{display:block}
 
+  /* Wider phones / small tablets: show Stats label */
+  @media (min-width:480px){
+    .actions .pill.gold{width:auto;height:auto;min-height:40px;padding:7px 12px}
+    .actions .pill.gold .lbl{display:inline}
+  }
+
   /* ---------- Desktop 1280+ ---------- */
   @media (min-width:1280px){
     .tabbar{display:none}
-    .app-head{padding:16px 22px}
-    .brandrow{flex-wrap:nowrap}
-    .head-right{display:flex;align-items:center;gap:18px}
-    .datenav{margin-top:0;min-width:300px}
+    .app-head{
+      padding:16px 22px;
+      display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:18px;
+    }
+    .brand{flex-shrink:0}
+    .brand .logo{width:40px;height:40px;font-size:20px}
+    .brand h1{font-size:22px}
+    .brand .sub{font-size:11px;letter-spacing:.5px}
+    .datenav{flex:0 1 340px;min-width:280px;width:auto}
+    .datenav button{width:48px;height:48px}
+    .datenav .date .d{font-size:var(--t-lg)}
+    .actions{gap:8px}
+    .actions .pill.icon{width:44px;height:44px;min-height:44px}
+    .actions .pill.gold{width:auto;height:auto;min-height:44px;padding:9px 14px;font-size:var(--t-sm)}
+    .actions .pill.gold .lbl{display:inline}
     .main-scroll{
       display:grid;grid-template-columns:1fr 1.15fr;gap:0;padding:0;overflow:hidden;
     }
@@ -453,7 +495,6 @@
     #toast{bottom:28px}
   }
   @media (max-width:1279px){
-    .head-right{display:contents}
     .col-buy,.col-orders{display:contents}
     .inv-top .name small.desk-meta{display:none !important}
   }
@@ -483,29 +524,25 @@
 <!-- ========== APP ========== -->
 <div id="app" hidden>
   <header class="app-head">
-    <div class="brandrow">
-      <div class="brand">
-        <div class="logo" aria-hidden="true">🌯</div>
-        <div>
-          <h1>Bob's Kitchen</h1>
-          <div class="sub">STAFF · SUNDAY OPS</div>
-        </div>
+    <div class="brand">
+      <div class="logo" aria-hidden="true">🌯</div>
+      <div>
+        <h1>Bob's Kitchen</h1>
+        <div class="sub">STAFF · SUNDAY OPS</div>
       </div>
-      <div class="head-right">
-        <div class="datenav">
-          <button type="button" id="prev" aria-label="Previous Sunday">‹</button>
-          <div class="date">
-            <div class="d" id="day-label">—</div>
-            <div class="t" id="day-caption">Delivery day</div>
-          </div>
-          <button type="button" id="next" aria-label="Next Sunday">›</button>
-        </div>
-        <div class="actions">
-          <button type="button" class="pill gold" id="stats-toggle">📊 Stats</button>
-          <button type="button" class="pill ghost icon" id="refresh" title="Refresh" aria-label="Refresh">↻</button>
-          <button type="button" class="pill ghost icon" id="logout" title="Log out" aria-label="Log out">⇥</button>
-        </div>
+    </div>
+    <div class="datenav">
+      <button type="button" id="prev" aria-label="Previous Sunday">‹</button>
+      <div class="date">
+        <div class="d" id="day-label">—</div>
+        <div class="t" id="day-caption">Delivery day</div>
       </div>
+      <button type="button" id="next" aria-label="Next Sunday">›</button>
+    </div>
+    <div class="actions">
+      <button type="button" class="pill gold" id="stats-toggle" title="Stats" aria-label="Stats">📊 <span class="lbl">Stats</span></button>
+      <button type="button" class="pill ghost icon" id="refresh" title="Refresh" aria-label="Refresh">↻</button>
+      <button type="button" class="pill ghost icon" id="logout" title="Log out" aria-label="Log out">⇥</button>
     </div>
   </header>
 
