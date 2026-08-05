@@ -11,6 +11,8 @@
 - [x] Apps Script Web app wired (`SCRIPT_URL` in `index.html`)
 - [x] Google Sheet Orders / Prep tabs
 - [x] Order POST → sheet + owner email
+- [x] Customer email required on order form + auto “order received” confirmation (Apps Script MailApp)
+- [x] Kitchen “Email customer” (payment / delivery / resend confirmation)
 - [x] Kitchen portal with email + password login (config gitignored)
 - [x] Kitchen mark paid / cook board / grocery / delivery run
 - [x] Zelle destination shown (`7148120977`)
@@ -36,7 +38,7 @@
 - Custom domain
 - Real auth for hosted kitchen (Firebase / Cloudflare Access)
 - Receipt-based grocery COGS lock-in
-- SMS notifications
+- SMS notifications (email is the primary customer channel for now)
 - Instagram Graph API auto-publish
 
 ## Paths

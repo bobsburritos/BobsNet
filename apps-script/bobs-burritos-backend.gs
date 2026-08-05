@@ -16,16 +16,23 @@ var MAX_TOTAL_BURRITOS = 40;
 var MAX_NAME_LEN = 80;
 var MAX_UNIT_LEN = 20;
 var MAX_PHONE_LEN = 30;
+var MAX_EMAIL_LEN = 120;
 var MAX_ORDER_ID_LEN = 24;
+var MAX_NOTE_LEN = 500;
 
+/* Email is trailing column Q so Prep SUMIFS (H–N) stay valid on existing sheets. */
 var HEADERS = [
   'OrderID', 'ReceivedAt', 'DeliveryDate', 'DeliveryLabel',
   'Name', 'Unit', 'Phone',
   'Soyrizo', 'SoyrizoAvo', 'Cali', 'Heavy', 'HeavyAvo',
-  'Total', 'Paid', 'PaidAt', 'PaidRef'
+  'Total', 'Paid', 'PaidAt', 'PaidRef',
+  'Email'
 ];
+var COL_EMAIL = 17; /* 1-based */
 
 var PRICES = { soyrizo: 10, cali: 12, heavy: 10, avo: 2 };
+var VENMO_USERNAME = 'Khushbu-Kotecha';
+var ZELLE_TO = '7148120977';
 
 function getSS() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -42,8 +49,107 @@ function ensureOrdersSheet() {
     orders.appendRow(HEADERS);
     orders.getRange(1, 1, 1, HEADERS.length).setFontWeight('bold');
     orders.setFrozenRows(1);
+  } else {
+    ensureEmailColumn(orders);
   }
   return orders;
+}
+
+/** Append Email header at column Q if missing (does not shift existing qty/money columns). */
+function ensureEmailColumn(sheet) {
+  var lastCol = Math.max(sheet.getLastColumn(), 1);
+  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+  for (var i = 0; i < headers.length; i++) {
+    if (String(headers[i]).toLowerCase() === 'email') return i + 1;
+  }
+  sheet.getRange(1, COL_EMAIL).setValue('Email').setFontWeight('bold');
+  return COL_EMAIL;
+}
+
+function isValidEmail(s) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+}
+
+function rowEmail(r) {
+  if (!r || r.length < COL_EMAIL) return '';
+  return cleanStr(r[COL_EMAIL - 1], MAX_EMAIL_LEN);
+}
+
+function orderLinesFromQty(qty) {
+  var lines = [];
+  if (qty.soyrizo) lines.push('Soyrizo Sunrise: ' + qty.soyrizo + (qty.soyrizoAvo ? ' (avo on ' + qty.soyrizoAvo + ')' : ''));
+  if (qty.cali) lines.push('The Cali: ' + qty.cali);
+  if (qty.heavy) lines.push('The Heavyweight: ' + qty.heavy + (qty.heavyAvo ? ' (avo on ' + qty.heavyAvo + ')' : ''));
+  return lines;
+}
+
+function customerEmailBody(kind, o, extraNote) {
+  var payNote = o.orderId + ' | ' + o.name + ' | Unit ' + o.unit + ' | $' + o.total;
+  var payBits = [];
+  if (VENMO_USERNAME) payBits.push('Venmo @' + VENMO_USERNAME);
+  if (ZELLE_TO) payBits.push('Zelle ' + ZELLE_TO);
+  var payTo = payBits.length ? payBits.join(' or ') : 'Venmo / Zelle (see order page)';
+  var itemLines = (o.itemLines && o.itemLines.length) ? o.itemLines.join('\n') : '(see confirmation on site)';
+  var note = extraNote ? ('\n\nNote from kitchen:\n' + extraNote) : '';
+
+  if (kind === 'payment') {
+    return (
+      'Hi ' + o.name + ',\n\n' +
+      'Friendly reminder: we still need payment for order ' + o.orderId + ' so we can cook it.\n\n' +
+      'Total: $' + o.total + '\n' +
+      'Unit: ' + o.unit + '\n' +
+      'Delivery: ' + o.deliveryLabel + ' (' + o.deliveryDate + ') · 9 AM–12 PM LA time\n\n' +
+      'Pay by Saturday 3:00 PM (America/Los_Angeles) via ' + payTo + '.\n' +
+      'Paste this exact payment note in the memo:\n' + payNote + '\n\n' +
+      'No payment by the cutoff = we do not cook that order.\n' +
+      note + '\n\n' +
+      '— Bob\'s Burritos\n' +
+      'Questions: ' + OWNER_EMAIL + '\n' +
+      'This is a transactional order message only — not marketing.'
+    );
+  }
+  if (kind === 'delivery') {
+    return (
+      'Hi ' + o.name + ',\n\n' +
+      'Your Bob\'s Burritos order ' + o.orderId + ' is on the Sunday delivery run.\n\n' +
+      'Unit: ' + o.unit + '\n' +
+      'Window: 9 AM–12 PM (America/Los_Angeles) · ' + o.deliveryLabel + '\n\n' +
+      'We\'ll knock / leave at your door as usual for 1111 Wilshire.\n' +
+      note + '\n\n' +
+      '— Bob\'s Burritos\n' +
+      OWNER_EMAIL + '\n' +
+      'Transactional order message only.'
+    );
+  }
+  /* received (default) */
+  return (
+    'Hi ' + o.name + ',\n\n' +
+    'Thanks for ordering Bob\'s Burritos — we received order ' + o.orderId + '.\n\n' +
+    'Delivery: ' + o.deliveryLabel + ' (' + o.deliveryDate + ')\n' +
+    'Window: Sunday 9 AM–12 PM (America/Los_Angeles)\n' +
+    'Unit: ' + o.unit + '\n\n' +
+    'Items:\n' + itemLines + '\n\n' +
+    'TOTAL: $' + o.total + '\n\n' +
+    'Please pay by Saturday 3:00 PM LA time via ' + payTo + '.\n' +
+    'Include this payment note in the memo so we can match you:\n' + payNote + '\n\n' +
+    'No payment by the cutoff = we do not cook that order.\n' +
+    note + '\n\n' +
+    '— Bob\'s Burritos (woman-owned)\n' +
+    '1111 Wilshire · ' + OWNER_EMAIL + '\n\n' +
+    'You received this because you placed an order and provided this email for order updates only.'
+  );
+}
+
+function sendCustomerMail(to, subject, body) {
+  if (!to || !isValidEmail(to)) return false;
+  MailApp.sendEmail({
+    to: to,
+    subject: subject,
+    body: body,
+    replyTo: OWNER_EMAIL,
+    name: "Bob's Burritos"
+  });
+  return true;
 }
 
 function isoNow() {
@@ -95,6 +201,7 @@ function doPost(e) {
     if (data.action === 'markPaid') return markPaid(data);
     if (data.action === 'deleteOrder') return deleteOrder(data);
     if (data.action === 'cleanupTests') return cleanupTests(data);
+    if (data.action === 'emailCustomer') return emailCustomer(data);
     return insertOrder(data);
   } catch (err) {
     return json({ ok: false, error: String(err) });
@@ -105,11 +212,13 @@ function insertOrder(data) {
   var name = cleanStr(data.name, MAX_NAME_LEN);
   var unit = cleanStr(data.unit, MAX_UNIT_LEN);
   var phone = cleanStr(data.phone, MAX_PHONE_LEN);
+  var email = cleanStr(data.email, MAX_EMAIL_LEN).toLowerCase();
   var orderId = cleanStr(data.orderId, MAX_ORDER_ID_LEN);
   var deliveryDate = cleanStr(data.deliveryDate, 12);
   var deliveryLabel = cleanStr(data.deliverySunday || data.deliveryLabel, 60);
 
   if (!name || !unit) return json({ ok: false, error: 'name and unit required' });
+  if (!email || !isValidEmail(email)) return json({ ok: false, error: 'valid email required' });
   if (!isValidOrderId(orderId)) return json({ ok: false, error: 'bad orderId' });
   if (deliveryDate && !isValidDateISO(deliveryDate)) return json({ ok: false, error: 'bad deliveryDate' });
 
@@ -167,10 +276,24 @@ function insertOrder(data) {
     orderId, isoNow(), deliveryDate, deliveryLabel,
     name, unit, phone,
     qty.soyrizo, qty.soyrizoAvo, qty.cali, qty.heavy, qty.heavyAvo,
-    total, 'NO', '', ''
+    total, 'NO', '', '',
+    email
   ]);
   var row = sheet.getLastRow();
   sheet.getRange(row, 3).setNumberFormat('@').setValue(deliveryDate);
+  sheet.getRange(row, COL_EMAIL).setValue(email);
+
+  var itemLines = orderLinesFromQty(qty);
+  var custObj = {
+    orderId: orderId,
+    name: name,
+    unit: unit,
+    email: email,
+    deliveryDate: deliveryDate,
+    deliveryLabel: deliveryLabel,
+    total: total,
+    itemLines: itemLines
+  };
 
   try {
     MailApp.sendEmail({
@@ -179,16 +302,77 @@ function insertOrder(data) {
       body:
         'Order ID: ' + orderId + '\n' +
         'Delivery: ' + deliveryLabel + ' (' + deliveryDate + ')\n' +
-        'Name: ' + name + '\nUnit: ' + unit + '\nPhone: ' + (phone || '-') + '\n\n' +
-        'Soyrizo: ' + qty.soyrizo + ' (with avo: ' + qty.soyrizoAvo + ')\n' +
-        'Cali: ' + qty.cali + '\n' +
-        'Heavyweight: ' + qty.heavy + ' (with avo: ' + qty.heavyAvo + ')\n\n' +
+        'Name: ' + name + '\nUnit: ' + unit +
+        '\nEmail: ' + email +
+        '\nPhone: ' + (phone || '-') + '\n\n' +
+        itemLines.join('\n') + '\n\n' +
         'TOTAL: $' + total + '\n\n' +
         'Do not edit the sheet by hand.'
     });
   } catch (mailErr) {}
 
-  return json({ ok: true, orderId: orderId, total: total });
+  var customerEmailed = false;
+  try {
+    customerEmailed = sendCustomerMail(
+      email,
+      "Bob's Burritos — order " + orderId + ' received',
+      customerEmailBody('received', custObj, '')
+    );
+  } catch (custErr) {}
+
+  return json({ ok: true, orderId: orderId, total: total, customerEmailed: customerEmailed });
+}
+
+/** Kitchen portal: email customer about payment / delivery / resend receipt. */
+function emailCustomer(data) {
+  if (!requireKey(data)) return json({ ok: false, error: 'bad key' });
+  var orderId = cleanStr(data.orderId, MAX_ORDER_ID_LEN);
+  if (!isValidOrderId(orderId)) return json({ ok: false, error: 'bad orderId' });
+  var kind = cleanStr(data.kind || 'received', 20).toLowerCase();
+  if (kind !== 'payment' && kind !== 'delivery' && kind !== 'received') {
+    kind = 'received';
+  }
+  var note = cleanStr(data.note || '', MAX_NOTE_LEN);
+
+  var sheet = ensureOrdersSheet();
+  var rows = sheet.getDataRange().getValues();
+  for (var i = 1; i < rows.length; i++) {
+    var r = rows[i];
+    if (String(r[0]) !== orderId) continue;
+    var email = rowEmail(r);
+    if (!email || !isValidEmail(email)) {
+      return json({ ok: false, error: 'no email on file for ' + orderId });
+    }
+    var qty = {
+      soyrizo: Number(r[7]) || 0,
+      soyrizoAvo: Number(r[8]) || 0,
+      cali: Number(r[9]) || 0,
+      heavy: Number(r[10]) || 0,
+      heavyAvo: Number(r[11]) || 0
+    };
+    var o = {
+      orderId: orderId,
+      name: String(r[4] || ''),
+      unit: String(r[5] || ''),
+      email: email,
+      deliveryDate: cellText(r[2], true),
+      deliveryLabel: cellText(r[3], false),
+      total: Number(r[12]) || 0,
+      itemLines: orderLinesFromQty(qty)
+    };
+    var subjects = {
+      received: "Bob's Burritos — order " + orderId + ' received',
+      payment: "Bob's Burritos — payment needed for " + orderId,
+      delivery: "Bob's Burritos — delivery update " + orderId
+    };
+    try {
+      sendCustomerMail(email, subjects[kind] || subjects.received, customerEmailBody(kind, o, note));
+      return json({ ok: true, orderId: orderId, kind: kind, to: email });
+    } catch (err) {
+      return json({ ok: false, error: 'send failed: ' + String(err) });
+    }
+  }
+  return json({ ok: false, error: 'order not found: ' + orderId });
 }
 
 function markPaid(data) {
@@ -270,7 +454,8 @@ function doGet(e) {
         total: Number(r[12]) || 0,
         paid: String(r[13]).toUpperCase() === 'YES',
         paidAt: cellText(r[14], false),
-        paidRef: String(r[15] || '')
+        paidRef: String(r[15] || ''),
+        email: rowEmail(r)
       });
     }
     return json({ ok: true, orders: orders });

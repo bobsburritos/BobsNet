@@ -358,13 +358,18 @@
   .ticket.paid-tk .t-foot{background:var(--green-tint)}
   .ticket .t-foot .tot{font-weight:700;font-size:var(--t-lg);font-variant-numeric:tabular-nums}
   .ticket .t-foot .oid{font-size:11px;opacity:.65;font-weight:600}
-  .markbtn{
+  .markbtn,.mailbtn{
     font-family:var(--font-ui);font-weight:700;font-size:var(--t-sm);cursor:pointer;
     background:var(--gold);color:var(--purple);border:2.5px solid var(--purple);
     padding:11px 18px;border-radius:999px;box-shadow:var(--shadow-sm);white-space:nowrap;min-height:48px;
   }
-  .markbtn:active{transform:translate(2px,2px);box-shadow:none}
-  .markbtn:disabled{opacity:.6;cursor:wait}
+  .mailbtn{
+    background:var(--cream);padding:9px 14px;min-height:40px;font-size:12px;
+  }
+  .markbtn:active,.mailbtn:active{transform:translate(2px,2px);box-shadow:none}
+  .markbtn:disabled,.mailbtn:disabled{opacity:.6;cursor:wait}
+  .t-actions{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:flex-end}
+  .t-contact{font-size:11px;font-weight:600;opacity:.72;margin-top:2px;word-break:break-all}
   .paidchip{
     font-weight:700;font-size:var(--t-xs);padding:9px 15px;border-radius:999px;
     border:2.5px solid var(--green-ink);background:#fff;color:var(--green-ink);white-space:nowrap;
@@ -1486,18 +1491,29 @@
       var lines = items.map(function(it){
         return '<div class="t-line"><span class="q">' + it.q + '×</span><span class="nm">' + esc(it.n) + '</span></div>';
       }).join('') || '<div class="t-line"><span class="nm">—</span></div>';
+      var contact = [];
+      if (o.email) contact.push(esc(o.email));
+      if (o.phone) contact.push(esc(o.phone));
+      var mailBtn = o.email
+        ? '<button type="button" class="mailbtn" data-oid="' + safeId + '" title="Email customer">✉ Email</button>'
+        : '';
       return '<div class="ticket' + (o.paid ? ' paid-tk' : '') + '" data-paid="' + (o.paid ? '1' : '0') + '">' +
         '<div class="t-bar ' + (o.paid ? 'paid' : 'unpaid') + '">' +
           '<span class="unit">' + esc(o.unit) + '</span>' +
           '<span class="who">' + esc(o.name) + '</span>' +
           '<span class="st">' + (o.paid ? 'Paid ✓' : 'Unpaid') + '</span>' +
         '</div>' +
-        '<div class="t-body">' + lines + '</div>' +
+        '<div class="t-body">' + lines +
+          (contact.length ? '<div class="t-contact">' + contact.join(' · ') + '</div>' : '') +
+        '</div>' +
         '<div class="t-foot">' +
           '<div><div class="tot">' + moneyShort(o.total) + '</div><div class="oid">' + esc(o.orderId) + '</div></div>' +
-          (o.paid
-            ? '<span class="paidchip">Paid ✓</span>'
-            : '<button type="button" class="markbtn" data-oid="' + safeId + '">Mark paid</button>') +
+          '<div class="t-actions">' +
+            mailBtn +
+            (o.paid
+              ? '<span class="paidchip">Paid ✓</span>'
+              : '<button type="button" class="markbtn" data-oid="' + safeId + '">Mark paid</button>') +
+          '</div>' +
         '</div></div>';
     }).join('');
 
@@ -1507,15 +1523,23 @@
       var safeId = esc(o.orderId).replace(/'/g, '');
       var edge = o.paid ? 'var(--green)' : 'var(--red)';
       var bg = o.paid ? '' : 'background:var(--coral-tint)';
+      var contact = o.email ? esc(o.email) : (o.phone ? esc(o.phone) : '—');
+      var mailBtn = o.email
+        ? '<button type="button" class="mailbtn" style="min-height:36px;padding:6px 10px" data-oid="' + safeId + '">✉ Email</button> '
+        : '';
       return '<tr style="border-top:2px solid rgba(61,26,92,.12);' + bg + '">' +
         '<td style="padding:11px 12px;font-weight:700;border-left:6px solid ' + edge + '">' + esc(o.unit) + '</td>' +
-        '<td style="padding:11px 6px">' + esc(o.name) + '<br><small style="opacity:.65">' + esc(o.orderId) + '</small></td>' +
+        '<td style="padding:11px 6px">' + esc(o.name) + '<br><small style="opacity:.65">' + esc(o.orderId) +
+          '<br>' + contact + '</small></td>' +
         '<td style="padding:11px 6px;opacity:.75;font-size:13px">' + esc(itemsStr) + '</td>' +
         '<td style="padding:11px 6px;font-weight:700;text-align:right">' + moneyShort(o.total) + '</td>' +
         '<td style="padding:8px 12px">' +
-          (o.paid
-            ? '<span class="paidchip">Paid ✓</span>'
-            : '<button type="button" class="markbtn" style="min-height:40px;padding:8px 13px;font-size:12px" data-oid="' + safeId + '">Mark paid</button>') +
+          '<div class="t-actions">' +
+            mailBtn +
+            (o.paid
+              ? '<span class="paidchip">Paid ✓</span>'
+              : '<button type="button" class="markbtn" style="min-height:40px;padding:8px 13px;font-size:12px" data-oid="' + safeId + '">Mark paid</button>') +
+          '</div>' +
         '</td></tr>';
     }).join('');
 
@@ -1523,6 +1547,12 @@
       btn.addEventListener('click', function(e){
         e.stopPropagation();
         bbMarkPaid(btn.getAttribute('data-oid'), btn);
+      });
+    });
+    document.querySelectorAll('.mailbtn').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        bbEmailCustomer(btn.getAttribute('data-oid'), btn);
       });
     });
   }
@@ -1686,6 +1716,50 @@
       alert('Failed: ' + err.message);
       btn.disabled = false;
       btn.textContent = 'Mark paid';
+    });
+  };
+
+  window.bbEmailCustomer = function(orderId, btn){
+    if (!isAuthed()) { showLogin('Session expired. Log in again.'); return; }
+    var kind = prompt(
+      'Email type for ' + orderId + ':\n\n' +
+      'payment  — unpaid / pay reminder\n' +
+      'delivery — Sunday delivery update\n' +
+      'received — resend order confirmation\n',
+      'payment'
+    );
+    if (kind == null) return;
+    kind = String(kind).trim().toLowerCase();
+    if (kind !== 'payment' && kind !== 'delivery' && kind !== 'received') {
+      alert('Use: payment, delivery, or received');
+      return;
+    }
+    var note = prompt('Optional note to include in the email (or leave blank):', '') || '';
+    var prev = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '…';
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        action: 'emailCustomer',
+        key: KEY,
+        orderId: orderId,
+        kind: kind,
+        note: note
+      })
+    }).then(function(r){ return r.json(); }).then(function(res){
+      btn.disabled = false;
+      btn.textContent = prev;
+      if (res.ok) {
+        toast('Emailed ' + (res.to || 'customer') + ' ✓');
+      } else {
+        alert('Email failed: ' + (res.error || 'unknown'));
+      }
+    }).catch(function(err){
+      btn.disabled = false;
+      btn.textContent = prev;
+      alert('Email failed: ' + err.message);
     });
   };
 
