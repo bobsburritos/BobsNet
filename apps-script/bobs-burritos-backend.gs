@@ -311,8 +311,8 @@ function insertOrder(data) {
 
 /**
  * One kitchen email summarizing orders (not per-order).
- * Run from the script editor, or set a time-driven trigger (e.g. daily 9 AM LA).
- * Optional: pass deliveryDate 'yyyy-mm-dd' via trigger property — otherwise next Sunday.
+ * Default schedule: daily 3:00 PM America/Los_Angeles — run installKitchenDigestTrigger() once.
+ * Optional: pass deliveryDate 'yyyy-mm-dd' — otherwise next Sunday.
  */
 function sendKitchenDigest(deliveryDateOpt) {
   var sheet = ensureOrdersSheet();
@@ -350,7 +350,7 @@ function sendKitchenDigest(deliveryDateOpt) {
     ' · Paid so far: $' + (Math.round(paidRev * 100) / 100) + '\n\n' +
     (lines.length ? lines.join('\n') : '(no orders for this date)') + '\n\n' +
     'Open the kitchen portal for full board. Do not edit the sheet by hand.\n' +
-    'To schedule: Apps Script → Triggers → sendKitchenDigest → Day timer.';
+    'Scheduled digest: daily 3:00 PM America/Los_Angeles (order cutoff hour).';
 
   MailApp.sendEmail({
     to: OWNER_EMAIL,
@@ -359,6 +359,27 @@ function sendKitchenDigest(deliveryDateOpt) {
     name: "Bob's Burritos Kitchen"
   });
   return { ok: true, deliveryDate: target, orders: n, unpaid: unpaid };
+}
+
+/**
+ * Install (or reinstall) a daily trigger: sendKitchenDigest at 3:00 PM LA.
+ * Run once from the Apps Script editor after deploy. Authorizes mail + triggers.
+ */
+function installKitchenDigestTrigger() {
+  var handlers = ScriptApp.getProjectTriggers();
+  for (var i = 0; i < handlers.length; i++) {
+    if (handlers[i].getHandlerFunction() === 'sendKitchenDigest') {
+      ScriptApp.deleteTrigger(handlers[i]);
+    }
+  }
+  ScriptApp.newTrigger('sendKitchenDigest')
+    .timeBased()
+    .atHour(15)
+    .nearMinute(0)
+    .everyDays(1)
+    .inTimezone('America/Los_Angeles')
+    .create();
+  Logger.log('Kitchen digest trigger installed: daily 3:00 PM America/Los_Angeles');
 }
 
 /** Next Sunday from "now" in America/Los_Angeles (for digest default). */
