@@ -295,22 +295,8 @@ function insertOrder(data) {
     itemLines: itemLines
   };
 
-  try {
-    MailApp.sendEmail({
-      to: OWNER_EMAIL,
-      subject: 'Burrito order ' + orderId + ' - ' + name + ' (Unit ' + unit + ') $' + total,
-      body:
-        'Order ID: ' + orderId + '\n' +
-        'Delivery: ' + deliveryLabel + ' (' + deliveryDate + ')\n' +
-        'Name: ' + name + '\nUnit: ' + unit +
-        '\nEmail: ' + email +
-        '\nPhone: ' + (phone || '-') + '\n\n' +
-        itemLines.join('\n') + '\n\n' +
-        'TOTAL: $' + total + '\n\n' +
-        'Do not edit the sheet by hand.'
-    });
-  } catch (mailErr) {}
-
+  /* Customer only — no per-order kitchen email (saves Gmail quota).
+     Kitchen uses the sheet + kitchen portal; optional daily digest: sendKitchenDigest(). */
   var customerEmailed = false;
   try {
     customerEmailed = sendCustomerMail(
@@ -321,6 +307,71 @@ function insertOrder(data) {
   } catch (custErr) {}
 
   return json({ ok: true, orderId: orderId, total: total, customerEmailed: customerEmailed });
+}
+
+/**
+ * One kitchen email summarizing orders (not per-order).
+ * Run from the script editor, or set a time-driven trigger (e.g. daily 9 AM LA).
+ * Optional: pass deliveryDate 'yyyy-mm-dd' via trigger property — otherwise next Sunday.
+ */
+function sendKitchenDigest(deliveryDateOpt) {
+  var sheet = ensureOrdersSheet();
+  var rows = sheet.getDataRange().getValues();
+  var target = cleanStr(deliveryDateOpt || '', 12);
+  if (target && !isValidDateISO(target)) target = '';
+  if (!target) target = nextSundayISO_();
+
+  var lines = [];
+  var n = 0, unpaid = 0, revenue = 0, paidRev = 0;
+  for (var i = 1; i < rows.length; i++) {
+    var r = rows[i];
+    var d = cellText(r[2], true);
+    if (d !== target) continue;
+    n++;
+    var id = String(r[0] || '');
+    var name = String(r[4] || '');
+    var unit = String(r[5] || '');
+    var email = rowEmail(r);
+    var total = Number(r[12]) || 0;
+    var paid = String(r[13]).toUpperCase() === 'YES';
+    revenue += total;
+    if (paid) paidRev += total; else unpaid++;
+    lines.push(
+      (paid ? '[PAID] ' : '[UNPAID] ') + id + ' · Unit ' + unit + ' · ' + name +
+      ' · $' + total + (email ? ' · ' + email : '')
+    );
+  }
+
+  var body =
+    "Bob's Burritos — kitchen digest\n" +
+    'Delivery date: ' + target + '\n' +
+    'Orders: ' + n + ' · Unpaid: ' + unpaid + '\n' +
+    'Revenue: $' + (Math.round(revenue * 100) / 100) +
+    ' · Paid so far: $' + (Math.round(paidRev * 100) / 100) + '\n\n' +
+    (lines.length ? lines.join('\n') : '(no orders for this date)') + '\n\n' +
+    'Open the kitchen portal for full board. Do not edit the sheet by hand.\n' +
+    'To schedule: Apps Script → Triggers → sendKitchenDigest → Day timer.';
+
+  MailApp.sendEmail({
+    to: OWNER_EMAIL,
+    subject: "Bob's kitchen digest — " + target + ' (' + n + ' orders, ' + unpaid + ' unpaid)',
+    body: body,
+    name: "Bob's Burritos Kitchen"
+  });
+  return { ok: true, deliveryDate: target, orders: n, unpaid: unpaid };
+}
+
+/** Next Sunday from "now" in America/Los_Angeles (for digest default). */
+function nextSundayISO_() {
+  var now = new Date();
+  var la = Utilities.formatDate(now, 'America/Los_Angeles', 'yyyy-MM-dd');
+  var parts = la.split('-');
+  var y = +parts[0], m = +parts[1] - 1, d = +parts[2];
+  var local = new Date(y, m, d);
+  var dow = local.getDay(); /* 0=Sun */
+  var add = dow === 0 ? 7 : 7 - dow;
+  var sun = new Date(y, m, d + add);
+  return Utilities.formatDate(sun, 'America/Los_Angeles', 'yyyy-MM-dd');
 }
 
 /** Kitchen portal: email customer about payment / delivery / resend receipt. */

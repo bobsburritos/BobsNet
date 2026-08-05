@@ -1054,7 +1054,7 @@
         'Thank you for ordering from Bob\u2019s Burritos. We\u2019ve received your order' +
         (ctx.orderId ? ' (' + ctx.orderId + ')' : '') +
         emailBit +
-        '. Our kitchen has the order too. We\u2019ll match your payment and look forward to serving you Sunday morning.';
+        '. We\u2019ll match your payment in the kitchen and look forward to serving you Sunday morning.';
     }
     if(thanksMeta){
       var bits = [];
@@ -1467,7 +1467,7 @@
         if(confirmMsg){
           var mailLine = opts.customerEmailed === false
             ? 'Your order is saved. If you don\u2019t see a confirmation in your inbox, check spam or email us at bobsburritosco@gmail.com with order <strong>' + oid + '</strong>.'
-            : 'We emailed a confirmation to <strong>' + email + '</strong>, and our kitchen got a new-order alert too.';
+            : 'We emailed a confirmation to <strong>' + email + '</strong>. Our kitchen sees your order in the portal.';
           confirmMsg.innerHTML =
             'We got your order. ' + mailLine + ' ' +
             'Pay the total below (include the payment note) so we can cook it. ' +
