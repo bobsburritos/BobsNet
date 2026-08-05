@@ -408,6 +408,27 @@
     padding:12px 16px;
     margin-bottom:26px;
   }
+  .field-hint{
+    margin-top:8px;font-size:.82rem;font-weight:500;line-height:1.4;opacity:.82;
+  }
+  .legal-box{
+    margin:0 0 22px;
+    padding:14px 16px;
+    background:rgba(61,26,92,.05);
+    border:2px dashed rgba(61,26,92,.28);
+    border-radius:var(--radius-md);
+    font-size:.78rem;font-weight:500;line-height:1.5;
+    color:var(--grape);
+  }
+  .legal-box strong{font-weight:700}
+  .legal-box ul{margin:8px 0 0 1.1em;padding:0}
+  .legal-box li{margin:4px 0}
+  .legal-box a{color:var(--grape);font-weight:700;text-underline-offset:2px}
+  footer .legal-foot{
+    max-width:640px;margin:18px auto 0;font-size:.75rem;line-height:1.45;
+    color:rgba(201,167,240,.9);font-weight:500;
+  }
+  footer .legal-foot a{color:var(--sunbeam);font-weight:700}
   .btn{
     width:100%;
     font-family:'Shrikhand',cursive;
@@ -698,8 +719,9 @@
         <input id="f-unit" type="text" placeholder="e.g. 704" maxlength="20" required inputmode="text">
       </div>
       <div class="field">
-        <label for="f-phone">Phone (for delivery ping)</label>
-        <input id="f-phone" type="tel" autocomplete="tel" placeholder="(310) 555-0134" maxlength="30" inputmode="tel">
+        <label for="f-phone">Phone <span style="font-weight:500;text-transform:none;letter-spacing:0;opacity:.75">(optional)</span></label>
+        <input id="f-phone" type="tel" autocomplete="tel" placeholder="(310) 555-0134" maxlength="30" inputmode="tel" aria-describedby="phone-hint phone-consent">
+        <p class="field-hint" id="phone-hint">So we can reach you about <strong>this order only</strong> (delivery timing, payment match, or a door issue). We do <strong>not</strong> send automated “order ready” texts, marketing blasts, or share your number for ads.</p>
       </div>
       <!-- Honeypot: leave empty. Hidden from real users. -->
       <div class="field" aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">
@@ -711,7 +733,26 @@
         <p class="summary__empty">Your order shows up here once you add burritos.</p>
       </div>
 
-      <div class="paynote">☀️ <span>After you order, pay by <strong>Venmo</strong> or <strong>Zelle</strong> using the buttons on the confirmation — include the payment note so we can match your order. Orders close Saturday 3 PM sharp.</span></div>
+      <div class="paynote">☀️ <span>After you order, pay by <strong>Venmo</strong> or <strong>Zelle</strong> using the buttons on the confirmation — include the payment note so we can match your order. Orders close Saturday 3 PM sharp. <strong>No payment by the cutoff = we don’t cook that order.</strong></span></div>
+
+      <div class="legal-box" id="phone-consent">
+        <strong>Phone &amp; contact consent</strong>
+        <ul>
+          <li>Phone is <strong>optional</strong>. Unit number is enough for building delivery; phone just helps if we need you.</li>
+          <li>If you enter a number, you consent to a <strong>transactional</strong> call or text from Bob’s Burritos about <strong>this order</strong> (for example: “we’re at your door,” payment note missing, or a schedule change).</li>
+          <li>These are <strong>manual staff contacts</strong> — not an automated SMS alert system and not marketing messages.</li>
+          <li><strong>Msg &amp; data rates</strong> may apply to any text you receive. Frequency: only as needed for your order (usually zero or a few messages that week).</li>
+          <li>To stop order texts: reply <strong>STOP</strong> if you can, or email <a href="mailto:bobsburritosco@gmail.com">bobsburritosco@gmail.com</a> and we’ll remove your number from future contact.</li>
+          <li>We store your details (name, unit, phone, order) to fulfill the order in our kitchen sheet/email. We do <strong>not sell</strong> your phone number or use it for third-party marketing.</li>
+        </ul>
+        <p style="margin-top:10px"><strong>Order terms (short version)</strong></p>
+        <ul>
+          <li>Delivery is for <strong>1111 Wilshire</strong> residents/guests only, Sundays <strong>9 AM–12 PM (America/Los_Angeles)</strong>.</li>
+          <li>Orders close <strong>Saturday 3:00 PM LA time</strong>. Unpaid orders by cutoff are not cooked.</li>
+          <li>Menu items may contain or be prepared near common allergens (eggs, dairy, gluten, soy, etc.). Ask us before ordering if you have a severe allergy — we are a small kitchen and cannot guarantee a fully allergen-free environment.</li>
+          <li>Placing an order does not guarantee delivery if the building is inaccessible, payment fails to match, or stock runs out; we’ll contact you if something changes.</li>
+        </ul>
+      </div>
 
       <button type="button" class="btn" id="submit">Place my order</button>
       <p class="err" id="err">Add at least one burrito and fill in your name and unit.</p>
@@ -742,6 +783,12 @@
   <a class="ig-link" href="https://www.instagram.com/bobsburritosco/" target="_blank" rel="noopener noreferrer" aria-label="Bob's Burritos on Instagram">Instagram @bobsburritosco</a>
   <div class="share-qr"><div id="share-qr"></div></div>
   <p class="share-label">Show a neighbor — Sundays only, order by Sat 3 PM</p>
+  <p class="legal-foot">
+    Contact: <a href="mailto:bobsburritosco@gmail.com">bobsburritosco@gmail.com</a>.
+    Phone numbers are collected only to fulfill and coordinate your order; we do not sell personal information.
+    For privacy or data-removal requests, email us with your name, unit, and order ID if you have it.
+    Prices and menu subject to change. Not affiliated with the building management.
+  </p>
 </footer>
 
 <!-- Full-size burrito photo viewer -->
