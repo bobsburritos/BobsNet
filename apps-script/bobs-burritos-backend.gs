@@ -63,6 +63,16 @@ var EMAIL_LEGACY = 'LEGACY';
  */
 var DRAFT_FALLBACK = true;
 
+/**
+ * Test hook: pretend the send quota is gone.
+ *
+ * Deliberately a plain global, never a Script Property. Apps Script resets globals
+ * between executions, so this cannot survive the function that sets it — there is no
+ * way to leave production wedged in "always draft" mode by forgetting to reset it.
+ * Only testDraftFlowEndToEndFromEditor() sets it.
+ */
+var FORCE_QUOTA_BLOCK = false;
+
 var MAX_EMAIL_ATTEMPTS = 6;      /* total attempts before FAILED */
 var INLINE_EMAIL_ATTEMPTS = 2;   /* attempts during the order POST itself */
 var INLINE_RETRY_SLEEP_MS = 900; /* keep the web app response well under its limit */
@@ -314,6 +324,12 @@ function customerEmailHtml(kind, o, extraNote) {
 function sendCustomerMail(to, subject, body, htmlBody) {
   if (!to || !isValidEmail(to)) {
     return { ok: false, retryable: false, error: 'no valid address' };
+  }
+  if (FORCE_QUOTA_BLOCK) {
+    return {
+      ok: false, retryable: true, quotaBlocked: true,
+      error: 'forced quota block (test hook)'
+    };
   }
   var remaining = -1;
   try {
@@ -929,6 +945,88 @@ function testDraftFallbackFromEditor() {
   return verdict;
 }
 
+/**
+ * End-to-end test of the draft path without burning ~100 emails to reach quota 0.
+ *
+ * Forces one order down the quota-blocked branch and checks the whole chain: the row
+ * lands DRAFTED, a real draft appears in Gmail, and the draft id is recorded in column V.
+ * Addressed to OWNER_EMAIL, so no customer is involved. Nothing is sent.
+ *
+ * Leaves a BB-DRAFTTEST row on Orders on purpose — go hit Send on the draft, wait for
+ * the next sweep, and watch that row settle to SENT by itself. That is the half of the
+ * design a unit test cannot show you. Clean up afterwards with cleanupTestsFromEditor().
+ *
+ * What this does NOT prove: that Google still permits createDraft when the send quota is
+ * genuinely 0. Real quota is untouched here. That one only gets confirmed by running
+ * testDraftFallbackFromEditor() on a day you actually hit the cap.
+ */
+function testDraftFlowEndToEndFromEditor() {
+  var TEST_ID = 'BB-DRAFTTEST';
+  var sheet = ensureOrdersSheet();
+
+  /* Clear any previous run, otherwise insertOrder dedupes and tests nothing. */
+  var rows = sheet.getDataRange().getValues();
+  for (var i = rows.length - 1; i >= 1; i--) {
+    if (String(rows[i][0]) === TEST_ID) sheet.deleteRow(i + 1);
+  }
+  SpreadsheetApp.flush();
+
+  var out;
+  FORCE_QUOTA_BLOCK = true;
+  try {
+    var res = JSON.parse(insertOrder({
+      orderId: TEST_ID,
+      name: 'DRAFT FALLBACK TEST',
+      unit: '000',
+      email: OWNER_EMAIL,
+      deliveryDate: nextSundayISO_(),
+      deliverySunday: 'Draft fallback test',
+      items: [{ id: 'cali', qty: 1 }]
+    }).getContent());
+
+    /* Re-read so we assert what actually landed on the sheet, not what we hoped. */
+    var after = sheet.getDataRange().getValues();
+    var found = null, foundRow = -1;
+    for (var j = 1; j < after.length; j++) {
+      if (String(after[j][0]) === TEST_ID) { found = after[j]; foundRow = j + 1; break; }
+    }
+
+    var status = found ? String(found[COL_EMAIL_STATUS - 1] || '') : '(row missing)';
+    var draftId = found ? String(found[COL_EMAIL_DRAFT_ID - 1] || '') : '';
+    var attempts = found ? Number(found[COL_EMAIL_ATTEMPTS - 1]) || 0 : -1;
+    var draftLives = draftStillExists_(draftId);
+
+    var okAll = (status === EMAIL_DRAFTED) && !!draftId && draftLives &&
+                (attempts === 0) && (res.ok === true) && (res.customerEmailed === false);
+
+    out = {
+      orderAccepted: res.ok === true,
+      orderRow: foundRow,
+      emailStatus: status,
+      emailAttempts: attempts,
+      draftIdRecorded: draftId || '(none)',
+      draftPresentInGmail: draftLives,
+      quotaUntouched: (function () {
+        try { return MailApp.getRemainingDailyQuota(); } catch (e) { return -1; }
+      })(),
+      verdict: okAll ? 'PASS' : 'FAIL',
+      nextStep: okAll
+        ? 'Open Gmail > Drafts, Send the "' + TEST_ID + '" receipt, wait ~10 min, then ' +
+          'check Orders row ' + foundRow + ': EmailStatus should flip to SENT on its own. ' +
+          'Then run cleanupTestsFromEditor() to remove the test row.'
+        : 'Something is off - read the fields above. A missing draftId with ' +
+          'draftPresentInGmail=false usually means the Gmail scope was not granted.'
+    };
+  } catch (err) {
+    out = { verdict: 'ERROR', error: String(err) };
+  } finally {
+    FORCE_QUOTA_BLOCK = false; /* redundant - globals reset per execution - but explicit */
+  }
+
+  Logger.log(JSON.stringify(out, null, 2));
+  return out;
+}
+
 /** Editor helper: which receipts are sitting in Drafts waiting for a manual Send? */
 function listDraftedReceiptsFromEditor() {
   var h = confirmationHealth_();
@@ -1134,7 +1232,8 @@ function cleanupTests(data) {
   var deleted = [];
   for (var i = rows.length - 1; i >= 1; i--) {
     var id = String(rows[i][0]);
-    if (id.indexOf('BB-SMOKE') === 0 || id.indexOf('BB-TEST') === 0 || id === 'BB-SETUP') {
+    if (id.indexOf('BB-SMOKE') === 0 || id.indexOf('BB-TEST') === 0 ||
+        id.indexOf('BB-DRAFTTEST') === 0 || id === 'BB-SETUP') {
       sheet.deleteRow(i + 1);
       deleted.push(id);
     }

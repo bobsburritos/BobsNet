@@ -303,6 +303,14 @@ treats an unsent confirmation as a defect to be recovered from, not a lost cause
    sent. Run it while quota is 0 and a success is direct evidence that drafting is
    independent of send quota. A failure there almost always means the Gmail scope was
    never granted; re-run `installAllTriggers()` and approve the prompts.
+2c. To exercise the **whole** draft chain without burning ~100 emails to reach quota 0,
+   run `testDraftFlowEndToEndFromEditor()`. It forces one order down the quota-blocked
+   branch and asserts the row lands `DRAFTED` with a live draft and a draft id in
+   column V, using your own address. It leaves a `BB-DRAFTTEST` row on purpose so you
+   can hit Send in Gmail and watch the next sweep reconcile that row to `SENT` — the
+   half of the design a unit test can't show you. Then `cleanupTestsFromEditor()`.
+   Caveat: real quota is untouched, so this does not prove Google still permits
+   `createDraft` at a genuine quota of 0. Only step 2b on a capped day shows that.
 3. Triggers list missing `retryPendingConfirmations` → run `installAllTriggers()`.
 4. Rows stuck `PENDING` with a repeating error in column U → read the error; it is the
    real `MailApp` message, not a guess.
