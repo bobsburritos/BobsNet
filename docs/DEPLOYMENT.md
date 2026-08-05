@@ -137,6 +137,26 @@ One row per order. Append-only except columns N–P.
 | N | Paid | `YES` / `NO` | written only by markPaid |
 | O | PaidAt | ISO 8601 | |
 | P | PaidRef | string | how the payment was matched (audit trail) |
+| Q | Email | string | required at order time; the receipt destination |
+| R | EmailStatus | enum | see state machine below |
+| S | EmailSentAt | ISO 8601 | when the confirmation actually went out |
+| T | EmailAttempts | int | real send attempts; quota blocks don't count |
+| U | EmailLastError | string | why the last attempt failed |
+| V | EmailDraftId | string | Gmail draft id when the receipt is awaiting manual Send |
+
+⚠ **Q–V are trailing columns on purpose.** The Prep tab's SUMIFS are positional
+over H–N. Never insert a column before R — append new fields at the end instead.
+
+`EmailStatus` is the confirmation queue's state machine:
+
+| Status | Meaning | Retried automatically? |
+|---|---|---|
+| `SENT` | Customer has their receipt. Terminal. | no |
+| `PENDING` | Send failed but is retryable. | yes, every 10 min |
+| `DRAFTED` | Send quota gone; receipt is a Gmail draft. | no — you hit Send, then it self-reconciles |
+| `FAILED` | Gave up (6 real attempts, or >14 days). | no — needs kitchen resend |
+| `NOEMAIL` | No usable address on the row. | no |
+| `LEGACY` | Predates confirmation tracking. | never (guards against back-mailing) |
 
 Payment note format (what residents paste into Venmo/Zelle):
 `BB-XXXXX | Name | Unit NNN | $TT.TT` — pipe-delimited, ID first, exact amount
@@ -163,6 +183,14 @@ email here; forward bank Zelle notification emails here with a Gmail filter.
    - ⚠ **Every future edit to the script requires Deploy → Manage
      deployments → ✎ → Version: New version.** Editing code without a new
      version silently serves the old code.
+6. **Run `installAllTriggers()` once from the editor.** Approve the extra
+   permission prompts (triggers + mail).
+   - ⚠ **Required, not optional.** This installs the confirmation retry sweep
+     (every 10 min) and the kitchen digest (3:00 PM LA). Without the sweep,
+     any confirmation email that fails stays unsent forever — and that email
+     is the customer's only receipt. See §6 Confirmation email reliability.
+   - Verify: Apps Script → Triggers should list `retryPendingConfirmations`
+     and `sendKitchenDigest`.
 
 ### Step 2 — Wire the frontends
 1. `bobs-burritos.html`: set `SCRIPT_URL` to the Web app URL.
@@ -220,7 +248,76 @@ email here; forward bank Zelle notification emails here with a Gmail filter.
   foil/box. Multi-burrito orders bagged per unit, bag labeled with order ID.
 - Estimated COGS ≈ $4.20–4.40/burrito incl. packaging (pre-receipt estimates).
 
-## 6. Not built yet (roadmap)
+## 6. Confirmation email reliability
+
+The confirmation email is the **customer's only receipt** — there is no account, no
+order-history page, and no payment processor sending its own receipt. So the system
+treats an unsent confirmation as a defect to be recovered from, not a lost cause.
+
+### How the guarantee holds
+
+1. **The order row is written before any send is attempted.** An order can never be
+   lost because email failed; worst case the receipt is late.
+2. **Two immediate attempts** during the order request itself. Most `MailApp`
+   failures are transient and clear on the second try, so the customer usually still
+   sees "confirmation sent" on the page.
+3. **Every outcome is recorded on the row** (columns R–U). A failure is now a queryable
+   fact instead of a swallowed exception.
+4. **`retryPendingConfirmations()` sweeps every 10 minutes** and retries every `PENDING`
+   row until it sends. This is the part that makes the guarantee real.
+5. **Quota exhaustion never consumes the attempt budget.** Gmail's daily cap (~100
+   sends on a consumer account) resets at midnight PT. A quota block means `MailApp`
+   was never called, so it doesn't count — receipts blocked today go out tomorrow
+   rather than burning through six attempts in an hour and being marked failed.
+5b. **Draft fallback** (`DRAFT_FALLBACK = true`). When the send quota is gone, the
+   receipt is written into **Gmail → Drafts** instead of only waiting. You open Gmail
+   and press Send; nothing has to be retyped. This buys real headroom because a draft
+   is not a send: creating one costs a Gmail read/write call (~20,000/day) rather than
+   a send credit, and sending it by hand draws on Gmail's own ~500/day UI limit, a
+   separate and much larger bucket than the ~100/day Apps Script gets.
+   The sweep **never auto-sends a drafted receipt** — that would duplicate what you are
+   about to send. Instead it watches for the draft to disappear from Gmail and flips the
+   row to `SENT` on its own. Set `DRAFT_FALLBACK = false` for pure auto-retry.
+6. **Bounded**: 6 real attempts, or 14 days, then `FAILED`. Nothing retries forever.
+7. **The owner is told.** Any `FAILED` row triggers an alert email. Because that alert
+   often has to be sent while mail is broken, it is retried every sweep until it
+   actually gets out, then the row is marked `[owner notified]` so it isn't repeated.
+8. **The kitchen board flags it.** Orders show `⚠ No receipt — resend` or
+   `✉ Receipt retrying…`, and the 3:00 PM digest reports the count plus remaining quota.
+9. **Manual recovery**: kitchen → order → **✉ Email** → *resend order confirmation*.
+   A successful resend flips the row back to `SENT`.
+10. **On-page fallback**: the thank-you step shows the full receipt and a
+    **Copy my receipt** button, so the customer can keep one even if email never lands.
+
+### If customers report missing confirmations
+
+1. Apps Script editor → run `confirmationHealthFromEditor()` → check the log. It prints
+   counts per status, the order IDs needing manual resend, and remaining Gmail quota.
+2. `remainingDailyQuota` at or near 0 → you hit the Gmail cap. New receipts are written
+   to **Gmail → Drafts**; open it and press Send on each (`listDraftedReceiptsFromEditor()`
+   lists which orders are waiting). Anything not drafted drains automatically after
+   midnight PT. For sustained volume above ~100 sends/day, move to Google Workspace
+   (1,500/day) or a transactional mail provider.
+2b. To prove the draft path works in your account, run `testDraftFallbackFromEditor()`.
+   It creates one draft addressed to you, reads it back, and deletes it — nothing is
+   sent. Run it while quota is 0 and a success is direct evidence that drafting is
+   independent of send quota. A failure there almost always means the Gmail scope was
+   never granted; re-run `installAllTriggers()` and approve the prompts.
+3. Triggers list missing `retryPendingConfirmations` → run `installAllTriggers()`.
+4. Rows stuck `PENDING` with a repeating error in column U → read the error; it is the
+   real `MailApp` message, not a guess.
+5. `LEGACY` rows are intentionally never mailed. To send one, use the kitchen resend.
+
+### Deliberate non-goals
+
+- No third-party mail provider (SendGrid/Postmark). Keeps the zero-infrastructure,
+  zero-cost model. Revisit only if daily volume outgrows the Gmail cap.
+- No SMS receipt. Email is the channel; phone stays optional and delivery-day only.
+- No auto-resend of `FAILED` rows. At that point something needs a human's eyes.
+
+---
+
+## 7. Not built yet (roadmap)
 1. **Payment reconciler** (local Python + Ollama vision model, e.g.
    Qwen2.5-VL 7B): screenshots of Venmo/Zelle activity → extract
    {sender, amount, note} → GET unpaid orders → match (exact on order ID in

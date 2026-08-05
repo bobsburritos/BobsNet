@@ -859,6 +859,7 @@
           <h3>Thank you!</h3>
           <p id="thanks-msg">We’ve got your order. Once we match your payment, you’re locked in for Sunday delivery.</p>
           <div class="thanks-meta" id="thanks-meta"></div>
+          <button type="button" id="copy-receipt">Copy my receipt</button>
           <p class="thanks-note">Questions? Email <a href="mailto:bobsburritosco@gmail.com" style="color:var(--sunbeam);font-weight:700">bobsburritosco@gmail.com</a> with your order ID.</p>
         </div>
       </div>
@@ -1045,7 +1046,11 @@
       var emailBit = '';
       if(ctx.email){
         if(ctx.customerEmailed === false){
-          emailBit = '. We couldn\u2019t send the confirmation email right now \u2014 your order is still saved; keep this order ID';
+          /* Queued is the normal failure now: the backend keeps retrying every 10 min
+             until it lands, so promise the retry instead of implying the receipt is lost. */
+          emailBit = ctx.emailQueued === false
+            ? '. We could not email ' + ctx.email + ' \u2014 please check the address and email us for your receipt'
+            : '. Your confirmation to ' + ctx.email + ' is taking a moment \u2014 we\u2019ll keep sending it and it should arrive shortly';
         } else {
           emailBit = ' and sent a confirmation to ' + ctx.email;
         }
@@ -1078,6 +1083,32 @@
   if(paidConfirmBtn){
     paidConfirmBtn.addEventListener('click', function(){
       showThanksStage();
+    });
+  }
+
+  /* A receipt the customer can keep no matter what email does. Built from the same
+     order context, so it stays correct even when the confirmation never arrives. */
+  function receiptText(){
+    var ctx = lastOrderCtx || {};
+    var out = ["BOB'S BURRITOS — ORDER RECEIPT"];
+    if(ctx.orderId) out.push('Order ID: ' + ctx.orderId);
+    if(ctx.total != null) out.push('Total: ' + money(ctx.total));
+    if(ctx.deliveryLabel) out.push('Delivery: ' + ctx.deliveryLabel + ' · 9 AM–12 PM (LA)');
+    if(ctx.email) out.push('Email: ' + ctx.email);
+    if(orderTextEl && orderTextEl.textContent){
+      out.push('', orderTextEl.textContent);
+    }
+    if(payNoteEl && payNoteEl.textContent){
+      out.push('', 'Payment note (paste in Venmo/Zelle memo):', payNoteEl.textContent);
+    }
+    out.push('', 'Pay by Saturday 3:00 PM LA time.', 'Questions: bobsburritosco@gmail.com');
+    return out.join('\n');
+  }
+
+  var copyReceiptBtn = document.getElementById('copy-receipt');
+  if(copyReceiptBtn){
+    copyReceiptBtn.addEventListener('click', function(){
+      copyText(receiptText(), copyReceiptBtn, 'Receipt copied!');
     });
   }
 
@@ -1453,7 +1484,8 @@
       email: email,
       total: total,
       deliveryLabel: sc.label,
-      customerEmailed: null
+      customerEmailed: null,
+      emailQueued: null
     };
 
     function openOrderReceived(kind, opts){
@@ -1461,13 +1493,26 @@
       if(typeof opts.customerEmailed === 'boolean'){
         orderCtx.customerEmailed = opts.customerEmailed;
       }
+      if(typeof opts.emailQueued === 'boolean'){
+        orderCtx.emailQueued = opts.emailQueued;
+      }
       showPayStage(orderCtx);
       if(kind === 'ok'){
         if(confirmTitle) confirmTitle.textContent = 'Next: send payment';
         if(confirmMsg){
-          var mailLine = opts.customerEmailed === false
-            ? 'Your order is saved. If you don\u2019t see a confirmation in your inbox, check spam or email us at bobsburritosco@gmail.com with order <strong>' + oid + '</strong>.'
-            : 'We emailed a confirmation to <strong>' + email + '</strong>. Our kitchen sees your order in the portal.';
+          var mailLine;
+          if(opts.customerEmailed === false && opts.emailQueued === false){
+            /* Address itself is unusable \u2014 retrying will not help, so ask them to reach us. */
+            mailLine = 'Your order is saved, but we could not send email to <strong>' + email +
+              '</strong>. Email us at bobsburritosco@gmail.com with order <strong>' + oid +
+              '</strong> and we\u2019ll send your receipt.';
+          } else if(opts.customerEmailed === false){
+            mailLine = 'Your order is saved and your confirmation is queued \u2014 we retry ' +
+              'automatically every few minutes, so it should reach <strong>' + email +
+              '</strong> shortly (check spam too). Your order ID is <strong>' + oid + '</strong>.';
+          } else {
+            mailLine = 'We emailed a confirmation to <strong>' + email + '</strong>. Our kitchen sees your order in the portal.';
+          }
           confirmMsg.innerHTML =
             'We got your order. ' + mailLine + ' ' +
             'Pay the total below (include the payment note) so we can cook it. ' +
@@ -1522,7 +1567,12 @@
         btn.disabled = false;
         btn.textContent = 'Place my order';
         if(res && res.ok){
-          openOrderReceived('ok', { customerEmailed: res.customerEmailed !== false });
+          openOrderReceived('ok', {
+            customerEmailed: res.customerEmailed !== false,
+            /* Absent on an older backend deploy: treat unknown as queued (retryable) so the
+               page never tells someone their receipt is lost when it may still arrive. */
+            emailQueued: res.emailQueued !== false
+          });
         } else {
           openOrderReceived('fallback');
         }

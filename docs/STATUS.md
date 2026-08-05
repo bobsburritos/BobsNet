@@ -12,6 +12,11 @@
 - [x] Google Sheet Orders / Prep tabs
 - [x] Order POST → sheet + owner email
 - [x] Customer email required on order form + auto “order received” confirmation (Apps Script MailApp)
+- [x] Confirmation email retry queue — status tracked per order (Orders R–V), retried every
+      10 min, quota-aware, owner alerted on give-up, kitchen chips + resend, on-page
+      “Copy my receipt” fallback (see `docs/DEPLOYMENT.md` §6)
+- [x] Draft fallback — when the ~100/day Gmail send cap is hit, receipts are written to
+      Gmail Drafts for one-click manual Send, then self-reconcile to `SENT`
 - [x] Kitchen “Email customer” (payment / delivery / resend confirmation)
 - [x] Kitchen portal with email + password login (config gitignored)
 - [x] Kitchen mark paid / cook board / grocery / delivery run
@@ -26,11 +31,16 @@
 
 ## Needs you (cannot automate)
 
-1. **Delete test rows** on Orders (`BB-REL*`, `BB-DRY*`, `TEST`)
-2. **Browser smoke:** one test order + payment UI (no real transfer) + kitchen mark paid
-3. **Confirm Zelle** phone `7148120977` resolves in bank app (cancel before send)
-4. **Instagram:** bio + art in `Posts/*/artwork/` + post 9→1
-5. Optional: founder photo for Post 8 / Who's Bob?
+1. **Deploy the backend + run `installAllTriggers()` once** in the Apps Script editor.
+   Paste `local/bobs-burritos-backend.READY.gs`, Deploy → New version, then run
+   `installAllTriggers()` and approve the prompts. **The confirmation retry queue does
+   not run until this is done** — without it a failed receipt stays unsent forever.
+2. **Delete test rows** on Orders (`BB-REL*`, `BB-DRY*`, `TEST`)
+3. **Browser smoke:** one test order + payment UI (no real transfer) + kitchen mark paid.
+   Confirm the confirmation email arrives, then check Orders column R reads `SENT`.
+4. **Confirm Zelle** phone `7148120977` resolves in bank app (cancel before send)
+5. **Instagram:** bio + art in `Posts/*/artwork/` + post 9→1
+6. Optional: founder photo for Post 8 / Who's Bob?
 
 ## Intentionally not built yet (roadmap)
 

@@ -56,6 +56,49 @@ Template: `kitchen-config.example.js`
 2. **Deploy → Manage deployments → pencil → Version: New version → Deploy**  
 3. Saving alone does **not** update the live site
 
+## Confirmation emails (the customer's only receipt)
+
+The backend retries failed confirmations automatically every 10 minutes. You only
+step in when a receipt is marked **FAILED**.
+
+**Required once per Apps Script project:** run `installAllTriggers()` from the editor.
+Check Apps Script → Triggers lists `retryPendingConfirmations` and `sendKitchenDigest`.
+Without it nothing retries and failed receipts stay unsent.
+
+### Reading the board
+| Chip on an order | Meaning | Do |
+|---|---|---|
+| *(no chip)* | Receipt sent | nothing |
+| `✉ Receipt retrying…` | Queued, retrying automatically | nothing, wait |
+| `✉ Draft ready — hit Send in Gmail` | Send quota gone; receipt is written and waiting | open **Gmail → Drafts**, press **Send** |
+| `⚠ No receipt — resend` | Gave up. Customer has no receipt. | **✉ Email → resend order confirmation** |
+| `⚠ No email on file` | No usable address | contact by phone if needed |
+
+### When you're out of send quota (drafts)
+Hitting the ~100/day Gmail cap no longer blocks receipts. Each new one is written into
+**Gmail → Drafts**, fully formatted. You just press **Send** — nothing to retype.
+
+- `listDraftedReceiptsFromEditor()` in the Apps Script editor lists which orders are waiting.
+- After you send them, **do nothing else.** The next 10-minute sweep sees the draft is gone
+  and flips the row to `SENT` by itself.
+- The system will **never** auto-send a draft — that would duplicate what you just sent.
+- Sending by hand from Gmail draws on Gmail's own ~500/day limit, which is a separate,
+  larger allowance than the ~100/day the script gets. That's why this buys real headroom.
+
+### Diagnosing
+Apps Script editor → run `confirmationHealthFromEditor()` → View → Logs. Shows counts
+per status, order IDs needing resend, and **remaining Gmail sends today**.
+
+Gmail caps a consumer account at ~100 sends/day. If `remainingDailyQuota` is 0, queued
+receipts drain automatically after midnight PT — no action needed. If you regularly
+exceed it, move to Google Workspace (1,500/day).
+
+You'll also get an automatic **ACTION** email listing any receipt that could not be sent,
+and the 3:00 PM digest reports receipt health for the upcoming Sunday.
+
+Sheet columns **R–U** on Orders carry the per-order detail (status, sent time, attempts,
+last error). Read them, don't hand-edit them — the retry sweep owns those cells.
+
 ## Cleanup smoke-test rows
 
 **Option A — Sheet (allowed for whole test rows)**  
