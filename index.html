@@ -545,8 +545,11 @@
     font-weight:500;
     font-size:.95rem;
   }
-  .share-qr{
+  .share-row{
     margin:22px auto 0;
+    display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;
+  }
+  .share-qr{
     background:#fff;
     border-radius:16px;
     padding:12px;
@@ -555,14 +558,17 @@
   .share-qr img,.share-qr canvas{display:block;width:120px !important;height:120px !important;}
   .share-label{margin-top:10px;font-size:.85rem;font-weight:600;color:var(--sunbeam);}
   footer .foot-name{font-family:'Shrikhand',cursive;color:var(--sunbeam);font-size:1.2rem;display:block;margin-bottom:6px;}
-  footer .ig-link{
-    display:inline-flex;align-items:center;gap:8px;
-    margin:14px 0 4px;
-    color:var(--sunbeam);font-weight:700;font-size:1rem;
-    text-decoration:none;border-bottom:2px solid var(--tangerine);
-    padding-bottom:2px;
+  footer .ig-icon{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:56px;height:56px;border-radius:16px;
+    background:var(--sunbeam);color:var(--grape);
+    text-decoration:none;border:3px solid var(--cream);
+    box-shadow:3px 3px 0 rgba(0,0,0,.2);
+    transition:transform .12s ease,box-shadow .12s ease;
   }
-  footer .ig-link:hover{color:#fff;border-bottom-color:var(--sunbeam);}
+  footer .ig-icon:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 rgba(0,0,0,.22);}
+  footer .ig-icon:active{transform:translate(1px,1px);box-shadow:1px 1px 0 rgba(0,0,0,.2);}
+  footer .ig-icon svg{display:block;width:28px;height:28px;}
   .chip a{color:inherit;text-decoration:none;}
   .chip a:hover{color:var(--tangerine);}
 
@@ -605,7 +611,7 @@
 <section class="menu" id="menu">
   <div class="wrap">
     <h2 class="sec-title">This Sunday's Menu</h2>
-    <p class="sec-sub">Made in small batches — every burrito ships with our house chipotle mayo. People come back for the sauce.</p>
+    <p class="sec-sub">Made in small batches — every burrito comes with our house chipotle mayo. People come back for the sauce.</p>
     <div class="cards">
 
       <article class="card" data-id="soyrizo" data-name="Soyrizo Sunrise" data-price="10" data-avo="2">
@@ -715,7 +721,7 @@
         <input id="f-name" type="text" autocomplete="name" placeholder="Miguel R." maxlength="80" required>
       </div>
       <div class="field">
-        <label for="f-unit">Unit number (1111 Wilshire)</label>
+        <label for="f-unit">Unit number (1111 Wilshire residents)</label>
         <input id="f-unit" type="text" placeholder="e.g. 704" maxlength="20" required inputmode="text">
       </div>
       <div class="field">
@@ -724,7 +730,7 @@
         <p class="field-hint" id="email-hint">Required for your <strong>order confirmation</strong> and payment/delivery updates. Order updates only — no marketing lists.</p>
       </div>
       <div class="field">
-        <label for="f-phone">Phone <span style="font-weight:500;text-transform:none;letter-spacing:0;opacity:.75">(optional · door-day only)</span></label>
+        <label for="f-phone">Phone <span style="font-weight:500;text-transform:none;letter-spacing:0;opacity:.75">(optional · for delivery updates)</span></label>
         <input id="f-phone" type="tel" autocomplete="tel" placeholder="(310) 555-0134" maxlength="30" inputmode="tel" aria-describedby="phone-hint phone-consent">
         <p class="field-hint" id="phone-hint">Optional. Only if we need you the day of delivery (door issue, timing). We do <strong>not</strong> send automated texts or marketing blasts.</p>
       </div>
@@ -784,9 +790,17 @@
 <footer>
   <span class="foot-name">Bob's Burritos</span>
   Woman-owned · Small-batch breakfast burritos · 1111 Wilshire, Los Angeles · Sundays only
-  <a class="ig-link" href="https://www.instagram.com/bobsburritosco/" target="_blank" rel="noopener noreferrer" aria-label="Bob's Burritos on Instagram">Instagram @bobsburritosco</a>
-  <div class="share-qr"><div id="share-qr"></div></div>
-  <p class="share-label">Show a neighbor — Sundays only, order by Sat 3 PM</p>
+  <div class="share-row">
+    <div class="share-qr"><div id="share-qr"></div></div>
+    <a class="ig-icon" href="https://www.instagram.com/bobsburritosco/" target="_blank" rel="noopener noreferrer" aria-label="Bob's Burritos on Instagram" title="@bobsburritosco">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+        <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/>
+        <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/>
+        <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/>
+      </svg>
+    </a>
+  </div>
+  <p class="share-label">Share with a neighbor</p>
   <p class="legal-foot">
     Contact: <a href="mailto:bobsburritosco@gmail.com">bobsburritosco@gmail.com</a>.
     Email and phone (if provided) are collected only to fulfill and coordinate your order; we do not sell personal information.
@@ -949,13 +963,12 @@
     if(user){
       actions.push(
         '<a class="pay-btn venmo" id="pay-venmo" target="_blank" rel="noopener noreferrer" href="' +
-        venmoPayUrl(total, note) + '">2. Open Venmo &amp; pay ' + money(total) + '</a>'
+        venmoPayUrl(total, note) + '">Pay with Venmo ' + money(total) + '</a>'
       );
     }
     if(ZELLE_TO){
-      var step = user ? '3' : '2';
       actions.push(
-        '<button type="button" class="pay-btn zelle" id="pay-zelle">' + step + '. Copy Zelle info</button>'
+        '<button type="button" class="pay-btn zelle" id="pay-zelle">Copy Zelle info</button>'
       );
     }
     payActionsEl.innerHTML = actions.join('');
