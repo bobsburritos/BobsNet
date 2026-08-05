@@ -476,7 +476,14 @@
   }
   .confirm.show{display:block;animation:pop .3s cubic-bezier(.22,1.4,.36,1);}
   @keyframes pop{from{transform:scale(.94);opacity:0;}to{transform:scale(1);opacity:1;}}
-  .confirm h3{font-family:'Shrikhand',cursive;color:var(--sunbeam);margin-bottom:10px;}
+  .confirm h3{font-family:'Shrikhand',cursive;color:var(--sunbeam);margin-bottom:10px;font-size:1.45rem;line-height:1.15;}
+  .confirm-banner{
+    background:var(--sunbeam);color:var(--grape);
+    border-radius:14px;padding:12px 14px;margin-bottom:14px;
+    font-weight:700;font-size:.95rem;line-height:1.35;
+  }
+  .confirm-banner .oid{display:block;font-size:1.05rem;margin-top:4px;letter-spacing:.02em}
+  .confirm-lead{font-weight:500;line-height:1.45;margin-bottom:14px;font-size:.95rem}
   .confirm pre{
     font-family:'Fredoka',sans-serif;
     white-space:pre-wrap;
@@ -488,7 +495,7 @@
     user-select:text;
     -webkit-user-select:text;
   }
-  .confirm #paystep{margin-bottom:18px;padding-bottom:18px;border-bottom:2px dashed rgba(255,244,220,.35);position:relative;z-index:21;}
+  .confirm #paystep{margin-bottom:14px;position:relative;z-index:21;}
   .confirm button, .confirm .pay-btn{
     font-family:'Fredoka',sans-serif;
     font-weight:700;
@@ -524,6 +531,15 @@
   .confirm .pay-btn.zelle{
     background:#6D1ED4;color:#fff;
   }
+  .confirm .pay-btn.paid-done{
+    background:var(--sunbeam);color:var(--grape);
+    border:3px solid var(--cream);
+    font-size:1.05rem;min-height:54px;margin-top:14px;
+    box-shadow:4px 4px 0 rgba(0,0,0,.2);
+  }
+  .confirm .paid-hint{
+    margin-top:10px;font-size:.8rem;font-weight:500;opacity:.8;line-height:1.4;text-align:center;
+  }
   .confirm #copy-note,
   .confirm #copy{
     min-height:44px;
@@ -535,6 +551,26 @@
     margin-top:12px;font-size:.92rem;line-height:1.45;font-weight:500;
     background:var(--grape-deep);border-radius:12px;padding:12px 14px;
   }
+  .confirm .order-details-fold{
+    margin-top:16px;border-top:2px dashed rgba(255,244,220,.35);padding-top:14px;
+  }
+  .confirm .order-details-fold > summary{
+    list-style:none;cursor:pointer;font-weight:700;color:var(--sunbeam);font-size:.9rem;
+  }
+  .confirm .order-details-fold > summary::-webkit-details-marker{display:none}
+  .confirm .order-details-fold > summary::after{content:' ▾';opacity:.75}
+  .confirm-thanks{
+    display:none;text-align:center;padding:8px 4px 4px;
+  }
+  .confirm-thanks.show{display:block;animation:pop .3s cubic-bezier(.22,1.4,.36,1)}
+  .confirm-thanks .thanks-ico{font-size:2.4rem;line-height:1;margin-bottom:8px}
+  .confirm-thanks h3{margin-bottom:12px}
+  .confirm-thanks p{font-weight:500;line-height:1.5;font-size:1rem;margin:0 auto 12px;max-width:28em}
+  .confirm-thanks .thanks-meta{
+    background:var(--grape-deep);border-radius:14px;padding:12px 14px;
+    font-size:.9rem;font-weight:600;line-height:1.45;margin-bottom:12px;
+  }
+  .confirm-thanks .thanks-note{font-size:.85rem;opacity:.85;margin-bottom:0}
   .confirm .pay-dest strong{color:var(--sunbeam);}
   .confirm .pay-steps{margin-bottom:10px;line-height:1.45;}
   .err{color:#C0392B;font-weight:600;font-size:.9rem;display:none;margin-top:6px;}
@@ -791,21 +827,40 @@
       <button type="button" class="btn" id="submit">Place my order</button>
       <p class="err" id="err">Add at least one burrito and fill in your name, unit, and email.</p>
 
-      <div class="confirm" id="confirm">
-        <h3>Order saved!</h3>
-        <div id="paystep" style="display:none">
-          <p class="pay-steps" id="pay-steps">
-            <strong>Step 1:</strong> Copy your payment note.<br>
-            <strong>Step 2:</strong> Tap Venmo or Zelle and send the total — paste that note in the payment memo.
-          </p>
-          <pre id="paynote-text"></pre>
-          <button type="button" id="copy-note">Copy payment note</button>
-          <div class="pay-dest" id="pay-dest"></div>
-          <div class="pay-actions" id="pay-actions"></div>
+      <div class="confirm" id="confirm" aria-live="polite">
+        <div id="confirm-pay-stage">
+          <div class="confirm-banner" id="confirm-banner">
+            Your order is in ☀️
+            <span class="oid" id="confirm-oid">—</span>
+          </div>
+          <h3 id="confirm-title">Next: send payment</h3>
+          <p class="confirm-lead" id="confirm-msg">We’ll email your confirmation. Pay below so we can cook your order.</p>
+          <div id="paystep" style="display:none">
+            <p class="pay-steps" id="pay-steps">
+              <strong>Step 1:</strong> Copy your payment note.<br>
+              <strong>Step 2:</strong> Pay with Venmo or Zelle — paste that note in the memo.<br>
+              <strong>Step 3:</strong> Come back here and tap <strong>I’ve sent my payment</strong>.
+            </p>
+            <pre id="paynote-text"></pre>
+            <button type="button" id="copy-note">Copy payment note</button>
+            <div class="pay-dest" id="pay-dest"></div>
+            <div class="pay-actions" id="pay-actions"></div>
+            <button type="button" class="pay-btn paid-done" id="paid-confirm">I’ve sent my payment ✓</button>
+            <p class="paid-hint">This tells us you’re done on your side. We’ll match your payment to this order (usually by Saturday).</p>
+          </div>
+          <details class="order-details-fold">
+            <summary>Order details (for your records)</summary>
+            <pre id="order-text"></pre>
+            <button type="button" id="copy">Copy full order</button>
+          </details>
         </div>
-        <p id="confirm-msg">Your full order, for your records:</p>
-        <pre id="order-text"></pre>
-        <button type="button" id="copy">Copy full order</button>
+        <div class="confirm-thanks" id="confirm-thanks-stage" hidden>
+          <div class="thanks-ico" aria-hidden="true">🌯</div>
+          <h3>Thank you!</h3>
+          <p id="thanks-msg">We’ve got your order. Once we match your payment, you’re locked in for Sunday delivery.</p>
+          <div class="thanks-meta" id="thanks-meta"></div>
+          <p class="thanks-note">Questions? Email <a href="mailto:bobsburritosco@gmail.com" style="color:var(--sunbeam);font-weight:700">bobsburritosco@gmail.com</a> with your order ID.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -949,11 +1004,73 @@
   var errEl = document.getElementById('err');
   var confirmEl = document.getElementById('confirm');
   var confirmMsg = document.getElementById('confirm-msg');
+  var confirmTitle = document.getElementById('confirm-title');
+  var confirmOid = document.getElementById('confirm-oid');
+  var confirmBanner = document.getElementById('confirm-banner');
+  var payStage = document.getElementById('confirm-pay-stage');
+  var thanksStage = document.getElementById('confirm-thanks-stage');
+  var thanksMsg = document.getElementById('thanks-msg');
+  var thanksMeta = document.getElementById('thanks-meta');
   var payStep = document.getElementById('paystep');
   var payNoteEl = document.getElementById('paynote-text');
   var orderTextEl = document.getElementById('order-text');
   var payDestEl = document.getElementById('pay-dest');
   var payActionsEl = document.getElementById('pay-actions');
+  var paidConfirmBtn = document.getElementById('paid-confirm');
+  var lastOrderCtx = null; /* { orderId, email, total, deliveryLabel } */
+
+  function showPayStage(ctx){
+    lastOrderCtx = ctx || lastOrderCtx;
+    if(payStage) payStage.style.display = '';
+    if(thanksStage){
+      thanksStage.hidden = true;
+      thanksStage.classList.remove('show');
+    }
+    if(confirmOid && lastOrderCtx) confirmOid.textContent = lastOrderCtx.orderId;
+    if(confirmBanner){
+      confirmBanner.innerHTML = 'Your order is in ☀️<span class="oid">' +
+        (lastOrderCtx ? lastOrderCtx.orderId : '—') + '</span>';
+    }
+    if(confirmTitle) confirmTitle.textContent = 'Next: send payment';
+  }
+
+  function showThanksStage(){
+    var ctx = lastOrderCtx || {};
+    if(payStage) payStage.style.display = 'none';
+    if(thanksStage){
+      thanksStage.hidden = false;
+      thanksStage.classList.add('show');
+    }
+    if(thanksMsg){
+      thanksMsg.textContent =
+        'Thank you for ordering from Bob\u2019s Burritos. We\u2019ve received your order' +
+        (ctx.orderId ? ' (' + ctx.orderId + ')' : '') +
+        ' and will match your payment. We look forward to serving you Sunday morning.';
+    }
+    if(thanksMeta){
+      var bits = [];
+      if(ctx.orderId) bits.push('<strong>Order</strong> ' + ctx.orderId);
+      if(ctx.total != null) bits.push('<strong>Total</strong> ' + money(ctx.total));
+      if(ctx.deliveryLabel) bits.push('<strong>Delivery</strong> ' + ctx.deliveryLabel + ' · 9 AM\u201312 PM');
+      if(ctx.email) bits.push('<strong>Email</strong> ' + ctx.email);
+      thanksMeta.innerHTML = bits.join('<br>') || 'You\u2019re all set on this page.';
+    }
+    try {
+      if(ctx.orderId){
+        localStorage.setItem('bb_last_thanks_v1', JSON.stringify({
+          orderId: ctx.orderId, email: ctx.email || '', total: ctx.total,
+          deliveryLabel: ctx.deliveryLabel || '', t: Date.now()
+        }));
+      }
+    } catch(e) {}
+    confirmEl.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+
+  if(paidConfirmBtn){
+    paidConfirmBtn.addEventListener('click', function(){
+      showThanksStage();
+    });
+  }
 
   function venmoUser(){
     return String(VENMO_USERNAME || '').replace(/^@/, '').trim();
@@ -1265,7 +1382,7 @@
     var honeypot = document.getElementById('f-company');
     if(honeypot && honeypot.value){
       /* bot: pretend success without sending */
-      confirmEl.querySelector('h3').textContent = 'Order received!';
+      showPayStage({ orderId: 'BB-OK', email: '', total: 0, deliveryLabel: '' });
       confirmEl.classList.add('show');
       return;
     }
@@ -1322,6 +1439,48 @@
     payStep.style.display = 'block';
     renderPaymentUI(total, payNote);
 
+    var orderCtx = {
+      orderId: oid,
+      email: email,
+      total: total,
+      deliveryLabel: sc.label
+    };
+
+    function openOrderReceived(kind){
+      showPayStage(orderCtx);
+      if(kind === 'ok'){
+        if(confirmTitle) confirmTitle.textContent = 'Next: send payment';
+        if(confirmMsg){
+          confirmMsg.innerHTML =
+            'We got your order and emailed a confirmation to <strong>' + email + '</strong>. ' +
+            'Pay the total below (include the payment note) so we can cook it. ' +
+            'When you\u2019re done, tap <strong>I\u2019ve sent my payment</strong>.';
+        }
+      } else if(kind === 'offline'){
+        if(confirmBanner){
+          confirmBanner.innerHTML = 'Order saved on this device ☀️<span class="oid">' + oid + '</span>';
+        }
+        if(confirmTitle) confirmTitle.textContent = 'Next: send payment';
+        if(confirmMsg){
+          confirmMsg.textContent =
+            'Copy your full order (below) and email it to us if needed, then pay using the note. When you\u2019ve paid, tap I\u2019ve sent my payment.';
+        }
+      } else {
+        if(confirmBanner){
+          confirmBanner.innerHTML = 'Almost there ☀️<span class="oid">' + oid + '</span>';
+        }
+        if(confirmTitle) confirmTitle.textContent = 'Save your order + pay';
+        if(confirmMsg){
+          confirmMsg.textContent =
+            'We couldn\u2019t reach the order system \u2014 copy your full order and email bobsburritosco@gmail.com, then pay with the note. Tap I\u2019ve sent my payment when done.';
+        }
+      }
+      try { localStorage.removeItem(CART_KEY); } catch(e) {}
+      updateCartResumeBanner();
+      confirmEl.classList.add('show');
+      confirmEl.scrollIntoView({behavior:'smooth', block:'nearest'});
+    }
+
     if(SCRIPT_URL){
       var btn = this;
       submitting = true;
@@ -1346,35 +1505,18 @@
         btn.disabled = false;
         btn.textContent = 'Place my order';
         if(res && res.ok){
-          try { localStorage.removeItem(CART_KEY); } catch(e) {}
-          updateCartResumeBanner();
-          confirmEl.querySelector('h3').textContent = 'Order received! ' + oid;
-          confirmMsg.textContent = 'We emailed a confirmation to ' + email + '. Your full order, for your records:';
-          confirmEl.classList.add('show');
-          confirmEl.scrollIntoView({behavior:'smooth', block:'nearest'});
+          openOrderReceived('ok');
         } else {
-          fallbackConfirm();
+          openOrderReceived('fallback');
         }
       }).catch(function(){
         submitting = false;
         btn.disabled = false;
         btn.textContent = 'Place my order';
-        fallbackConfirm();
+        openOrderReceived('fallback');
       });
     } else {
-      try { localStorage.removeItem(CART_KEY); } catch(e) {}
-      updateCartResumeBanner();
-      confirmEl.querySelector('h3').textContent = 'Order saved! ' + oid;
-      confirmMsg.textContent = 'Copy your full order and text it to us, then pay using the payment note above.';
-      confirmEl.classList.add('show');
-      confirmEl.scrollIntoView({behavior:'smooth', block:'nearest'});
-    }
-
-    function fallbackConfirm(){
-      confirmEl.querySelector('h3').textContent = 'Almost there! ' + oid;
-      confirmMsg.textContent = 'We couldn\u2019t reach the order system \u2014 copy your full order and text it to us, then pay using the payment note above.';
-      confirmEl.classList.add('show');
-      confirmEl.scrollIntoView({behavior:'smooth', block:'nearest'});
+      openOrderReceived('offline');
     }
   });
 
