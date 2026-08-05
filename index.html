@@ -411,14 +411,32 @@
   .field-hint{
     margin-top:8px;font-size:.82rem;font-weight:500;line-height:1.4;opacity:.82;
   }
-  .legal-box{
-    margin:0 0 22px;
-    padding:14px 16px;
-    background:rgba(61,26,92,.05);
+  .legal-summary{
+    margin:0 0 10px;font-size:.82rem;font-weight:500;line-height:1.4;opacity:.88;
+  }
+  .legal-details{
+    margin:0 0 20px;
     border:2px dashed rgba(61,26,92,.28);
     border-radius:var(--radius-md);
-    font-size:.78rem;font-weight:500;line-height:1.5;
+    background:rgba(61,26,92,.05);
     color:var(--grape);
+  }
+  .legal-details > summary{
+    list-style:none;cursor:pointer;
+    font-weight:700;font-size:.88rem;
+    padding:12px 16px;
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    user-select:none;-webkit-user-select:none;
+  }
+  .legal-details > summary::-webkit-details-marker{display:none}
+  .legal-details > summary::after{
+    content:'▾';font-weight:700;opacity:.7;transition:transform .15s ease;flex-shrink:0;
+  }
+  .legal-details[open] > summary::after{transform:rotate(-180deg)}
+  .legal-details > summary:focus-visible{outline:3px solid var(--tangerine);outline-offset:2px;border-radius:10px}
+  .legal-box{
+    padding:0 16px 14px;
+    font-size:.78rem;font-weight:500;line-height:1.5;
   }
   .legal-box strong{font-weight:700}
   .legal-box ul{margin:8px 0 0 1.1em;padding:0}
@@ -726,12 +744,12 @@
       </div>
       <div class="field">
         <label for="f-email">Email</label>
-        <input id="f-email" type="email" autocomplete="email" placeholder="you@example.com" maxlength="120" required inputmode="email" aria-describedby="email-hint phone-consent">
+        <input id="f-email" type="email" autocomplete="email" placeholder="you@example.com" maxlength="120" required inputmode="email" aria-describedby="email-hint order-disclaimer">
         <p class="field-hint" id="email-hint">Required for your <strong>order confirmation</strong> and payment/delivery updates. Order updates only — no marketing lists.</p>
       </div>
       <div class="field">
         <label for="f-phone">Phone <span style="font-weight:500;text-transform:none;letter-spacing:0;opacity:.75">(optional · for delivery updates)</span></label>
-        <input id="f-phone" type="tel" autocomplete="tel" placeholder="(310) 555-0134" maxlength="30" inputmode="tel" aria-describedby="phone-hint phone-consent">
+        <input id="f-phone" type="tel" autocomplete="tel" placeholder="(310) 555-0134" maxlength="30" inputmode="tel" aria-describedby="phone-hint order-disclaimer">
         <p class="field-hint" id="phone-hint">Optional. Only if we need you the day of delivery (door issue, timing). We do <strong>not</strong> send automated texts or marketing blasts.</p>
       </div>
       <!-- Honeypot: leave empty. Hidden from real users. -->
@@ -746,23 +764,29 @@
 
       <div class="paynote">☀️ <span>After you order, pay by <strong>Venmo</strong> or <strong>Zelle</strong> using the buttons on the confirmation — include the payment note so we can match your order. Orders close Saturday 3 PM sharp. <strong>No payment by the cutoff = we don’t cook that order.</strong></span></div>
 
-      <div class="legal-box" id="phone-consent">
-        <strong>Contact consent (email &amp; phone)</strong>
-        <ul>
-          <li><strong>Email is required</strong> so we can send a transactional order confirmation and occasional updates about <strong>this order</strong> (payment reminder, delivery window, schedule change). Not for marketing.</li>
-          <li><strong>Phone is optional</strong> (door-day only). If you enter a number, you consent to a transactional call or text about this order only. No automated “order ready” SMS system; no marketing blasts.</li>
-          <li><strong>Msg &amp; data rates</strong> may apply to any text. Frequency: only as needed for your order.</li>
-          <li>To stop order emails/texts: reply STOP to a text if you can, or email <a href="mailto:bobsburritosco@gmail.com">bobsburritosco@gmail.com</a> and we’ll remove your contact info from future outreach.</li>
-          <li>We store name, unit, email, phone (if given), and order details to fulfill the order. We do <strong>not sell</strong> your contact info or use it for third-party marketing.</li>
-        </ul>
-        <p style="margin-top:10px"><strong>Order terms (short version)</strong></p>
-        <ul>
-          <li>Delivery is for <strong>1111 Wilshire</strong> residents/guests only, Sundays <strong>9 AM–12 PM (America/Los_Angeles)</strong>.</li>
-          <li>Orders close <strong>Saturday 3:00 PM LA time</strong>. Unpaid orders by cutoff are not cooked.</li>
-          <li>Menu items may contain or be prepared near common allergens (eggs, dairy, gluten, soy, etc.). Ask us before ordering if you have a severe allergy — we are a small kitchen and cannot guarantee a fully allergen-free environment.</li>
-          <li>Placing an order does not guarantee delivery if the building is inaccessible, payment fails to match, or stock runs out; we’ll contact you if something changes.</li>
-        </ul>
-      </div>
+      <p class="legal-summary" id="order-disclaimer-summary">
+        By placing an order you agree to our contact &amp; order terms. Email is for <strong>order updates only</strong> (not marketing).
+      </p>
+      <details class="legal-details" id="order-disclaimer">
+        <summary>Contact &amp; order terms</summary>
+        <div class="legal-box">
+          <strong>Contact consent (email &amp; phone)</strong>
+          <ul>
+            <li><strong>Email is required</strong> so we can send a transactional order confirmation and occasional updates about <strong>this order</strong> (payment reminder, delivery window, schedule change). Not for marketing.</li>
+            <li><strong>Phone is optional</strong> (door-day only). If you enter a number, you consent to a transactional call or text about this order only. No automated “order ready” SMS system; no marketing blasts.</li>
+            <li><strong>Msg &amp; data rates</strong> may apply to any text. Frequency: only as needed for your order.</li>
+            <li>To stop order emails/texts: reply STOP to a text if you can, or email <a href="mailto:bobsburritosco@gmail.com">bobsburritosco@gmail.com</a> and we’ll remove your contact info from future outreach.</li>
+            <li>We store name, unit, email, phone (if given), and order details to fulfill the order. We do <strong>not sell</strong> your contact info or use it for third-party marketing.</li>
+          </ul>
+          <p style="margin-top:10px"><strong>Order terms (short version)</strong></p>
+          <ul>
+            <li>Delivery is for <strong>1111 Wilshire</strong> residents/guests only, Sundays <strong>9 AM–12 PM (America/Los_Angeles)</strong>.</li>
+            <li>Orders close <strong>Saturday 3:00 PM LA time</strong>. Unpaid orders by cutoff are not cooked.</li>
+            <li>Menu items may contain or be prepared near common allergens (eggs, dairy, gluten, soy, etc.). Ask us before ordering if you have a severe allergy — we are a small kitchen and cannot guarantee a fully allergen-free environment.</li>
+            <li>Placing an order does not guarantee delivery if the building is inaccessible, payment fails to match, or stock runs out; we’ll contact you if something changes.</li>
+          </ul>
+        </div>
+      </details>
 
       <button type="button" class="btn" id="submit">Place my order</button>
       <p class="err" id="err">Add at least one burrito and fill in your name, unit, and email.</p>
