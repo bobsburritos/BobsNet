@@ -1045,7 +1045,8 @@
       thanksMsg.textContent =
         'Thank you for ordering from Bob\u2019s Burritos. We\u2019ve received your order' +
         (ctx.orderId ? ' (' + ctx.orderId + ')' : '') +
-        ' and will match your payment. We look forward to serving you Sunday morning.';
+        (ctx.email ? ' and sent a confirmation to ' + ctx.email : '') +
+        '. Our kitchen has the order too. We\u2019ll match your payment and look forward to serving you Sunday morning.';
     }
     if(thanksMeta){
       var bits = [];
@@ -1446,13 +1447,17 @@
       deliveryLabel: sc.label
     };
 
-    function openOrderReceived(kind){
+    function openOrderReceived(kind, opts){
+      opts = opts || {};
       showPayStage(orderCtx);
       if(kind === 'ok'){
         if(confirmTitle) confirmTitle.textContent = 'Next: send payment';
         if(confirmMsg){
+          var mailLine = opts.customerEmailed === false
+            ? 'Your order is saved. If you don\u2019t see a confirmation in your inbox, check spam or email us at bobsburritosco@gmail.com with order <strong>' + oid + '</strong>.'
+            : 'We emailed a confirmation to <strong>' + email + '</strong>, and our kitchen got a new-order alert too.';
           confirmMsg.innerHTML =
-            'We got your order and emailed a confirmation to <strong>' + email + '</strong>. ' +
+            'We got your order. ' + mailLine + ' ' +
             'Pay the total below (include the payment note) so we can cook it. ' +
             'When you\u2019re done, tap <strong>I\u2019ve sent my payment</strong>.';
         }
@@ -1505,7 +1510,7 @@
         btn.disabled = false;
         btn.textContent = 'Place my order';
         if(res && res.ok){
-          openOrderReceived('ok');
+          openOrderReceived('ok', { customerEmailed: res.customerEmailed !== false });
         } else {
           openOrderReceived('fallback');
         }
