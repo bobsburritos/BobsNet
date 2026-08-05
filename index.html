@@ -1017,7 +1017,7 @@
   var payDestEl = document.getElementById('pay-dest');
   var payActionsEl = document.getElementById('pay-actions');
   var paidConfirmBtn = document.getElementById('paid-confirm');
-  var lastOrderCtx = null; /* { orderId, email, total, deliveryLabel } */
+  var lastOrderCtx = null; /* { orderId, email, total, deliveryLabel, customerEmailed } */
 
   function showPayStage(ctx){
     lastOrderCtx = ctx || lastOrderCtx;
@@ -1042,10 +1042,18 @@
       thanksStage.classList.add('show');
     }
     if(thanksMsg){
+      var emailBit = '';
+      if(ctx.email){
+        if(ctx.customerEmailed === false){
+          emailBit = '. We couldn\u2019t send the confirmation email right now \u2014 your order is still saved; keep this order ID';
+        } else {
+          emailBit = ' and sent a confirmation to ' + ctx.email;
+        }
+      }
       thanksMsg.textContent =
         'Thank you for ordering from Bob\u2019s Burritos. We\u2019ve received your order' +
         (ctx.orderId ? ' (' + ctx.orderId + ')' : '') +
-        (ctx.email ? ' and sent a confirmation to ' + ctx.email : '') +
+        emailBit +
         '. Our kitchen has the order too. We\u2019ll match your payment and look forward to serving you Sunday morning.';
     }
     if(thanksMeta){
@@ -1444,11 +1452,15 @@
       orderId: oid,
       email: email,
       total: total,
-      deliveryLabel: sc.label
+      deliveryLabel: sc.label,
+      customerEmailed: null
     };
 
     function openOrderReceived(kind, opts){
       opts = opts || {};
+      if(typeof opts.customerEmailed === 'boolean'){
+        orderCtx.customerEmailed = opts.customerEmailed;
+      }
       showPayStage(orderCtx);
       if(kind === 'ok'){
         if(confirmTitle) confirmTitle.textContent = 'Next: send payment';
