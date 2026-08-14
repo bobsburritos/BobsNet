@@ -371,7 +371,29 @@
     line-height:1.45;
   }
   .notice.closed{background:var(--lilac);}
+  .notice.vacation{background:var(--tangerine);}
   .notice .notice__big{display:block;font-weight:700;font-size:1.05rem;margin-bottom:2px;}
+  .vacation-panel{
+    display:none;
+    border:var(--outline);
+    border-radius:var(--radius-md);
+    padding:20px 22px;
+    background:var(--cream);
+    margin-bottom:8px;
+    line-height:1.5;
+  }
+  .vacation-panel h3{
+    font-family:'Shrikhand',cursive;
+    font-size:clamp(1.35rem,4vw,1.7rem);
+    margin-bottom:12px;
+    line-height:1.15;
+  }
+  .vacation-panel ul{margin:10px 0 12px 1.2em;}
+  .vacation-panel p + p{margin-top:10px;}
+  body.bb-closed #order-form-live{display:none;}
+  body.bb-closed #order-vacation{display:block;}
+  body.bb-closed #cart-resume{display:none !important;}
+  body.bb-closed .stepper button{opacity:.4;cursor:not-allowed;}
   .field{margin-bottom:20px;}
   .field label{display:block;font-weight:600;margin-bottom:8px;}
   .field input{
@@ -644,7 +666,7 @@
 <header class="hero">
   <div class="sun" aria-hidden="true"><div class="b1"></div><div class="b2"></div><div class="b3"></div><div class="b4"></div></div>
   <div class="hero__inner">
-    <span class="hero__eyebrow">Sunday breakfast burritos · delivered warm</span>
+    <span class="hero__eyebrow" id="hero-eyebrow">Sunday breakfast burritos · delivered warm</span>
     <h1>Bob's Burritos</h1>
     <div class="owned-badge" role="status">★ Woman-owned ★</div>
     <p class="hero__tag">A small-batch kitchen rolling breakfast burritos every Sunday — delivered to your door at 1111 Wilshire.</p>
@@ -664,8 +686,8 @@
 
 <section class="menu" id="menu">
   <div class="wrap">
-    <h2 class="sec-title">This Sunday's Menu</h2>
-    <p class="sec-sub">Made in small batches — every burrito comes with our house chipotle mayo. People come back for the sauce.</p>
+    <h2 class="sec-title" id="menu-title">This Sunday's Menu</h2>
+    <p class="sec-sub" id="menu-sub">Made in small batches — every burrito comes with our house chipotle mayo. People come back for the sauce.</p>
     <div class="cards">
 
       <article class="card" data-id="soyrizo" data-name="Soyrizo Sunrise" data-price="10" data-avo="2">
@@ -766,10 +788,25 @@
 
 <section class="order" id="order">
   <div class="wrap">
-    <h2 class="sec-title">Lock In Your Sunday</h2>
-    <p class="sec-sub">Pick your burritos above, drop your details here. Delivery is for <strong>1111 Wilshire</strong> only.</p>
+    <h2 class="sec-title" id="order-title">Lock In Your Sunday</h2>
+    <p class="sec-sub" id="order-sub">Pick your burritos above, drop your details here. Delivery is for <strong>1111 Wilshire</strong> only.</p>
     <div class="panel">
       <div class="notice" id="notice" aria-live="polite"></div>
+      <div id="order-vacation" class="vacation-panel">
+        <h3>Hey — Bob's Burritos is going on vacation</h3>
+        <p>The kitchen is taking a break. We are <strong>not taking orders</strong> right now.</p>
+        <p>Last delivery was <strong>Sunday, August 16</strong>.</p>
+        <p>We will not cook or deliver:</p>
+        <ul>
+          <li>Sunday, August 23</li>
+          <li>Sunday, August 30</li>
+          <li>Sunday, September 6</li>
+        </ul>
+        <p>Orders open again <strong>Sunday, September 6</strong>.</p>
+        <p>First delivery back: <strong>Sunday, September 13</strong> — order anytime before Saturday, September 12 at 3 PM.</p>
+        <p>See you then. ☀️</p>
+      </div>
+      <div id="order-form-live">
       <div class="field">
         <label for="f-name">Your name</label>
         <input id="f-name" type="text" autocomplete="name" placeholder="Miguel R." maxlength="80" required>
@@ -784,9 +821,9 @@
         <p class="field-hint" id="email-hint">Required for your <strong>order confirmation</strong> and payment/delivery updates. Order updates only — no marketing lists.</p>
       </div>
       <div class="field">
-        <label for="f-phone">Phone <span style="font-weight:500;text-transform:none;letter-spacing:0;opacity:.75">(optional · for delivery updates)</span></label>
-        <input id="f-phone" type="tel" autocomplete="tel" placeholder="(310) 555-0134" maxlength="30" inputmode="tel" aria-describedby="phone-hint order-disclaimer">
-        <p class="field-hint" id="phone-hint">Optional. Only if we need you the day of delivery (door issue, timing). We do <strong>not</strong> send automated texts or marketing blasts.</p>
+        <label for="f-phone">Phone</label>
+        <input id="f-phone" type="tel" autocomplete="tel" placeholder="(310) 555-0134" maxlength="30" required inputmode="tel" aria-describedby="phone-hint order-disclaimer">
+        <p class="field-hint" id="phone-hint">Required so we can reach you the day of delivery (door issue, timing). We do <strong>not</strong> send automated texts or marketing blasts.</p>
       </div>
       <!-- Honeypot: leave empty. Hidden from real users. -->
       <div class="field" aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">
@@ -809,10 +846,10 @@
           <strong>Contact consent (email &amp; phone)</strong>
           <ul>
             <li><strong>Email is required</strong> so we can send a transactional order confirmation and occasional updates about <strong>this order</strong> (payment reminder, delivery window, schedule change). Not for marketing.</li>
-            <li><strong>Phone is optional</strong> (door-day only). If you enter a number, you consent to a transactional call or text about this order only. No automated “order ready” SMS system; no marketing blasts.</li>
+            <li><strong>Phone is required</strong> so we can reach you on delivery day (door issue, timing). By entering a number, you consent to a transactional call or text about this order only. No automated “order ready” SMS system; no marketing blasts.</li>
             <li><strong>Msg &amp; data rates</strong> may apply to any text. Frequency: only as needed for your order.</li>
             <li>To stop order emails/texts: reply STOP to a text if you can, or email <a href="mailto:bobsburritosco@gmail.com">bobsburritosco@gmail.com</a> and we’ll remove your contact info from future outreach.</li>
-            <li>We store name, unit, email, phone (if given), and order details to fulfill the order. We do <strong>not sell</strong> your contact info or use it for third-party marketing.</li>
+            <li>We store name, unit, email, phone, and order details to fulfill the order. We do <strong>not sell</strong> your contact info or use it for third-party marketing.</li>
           </ul>
           <p style="margin-top:10px"><strong>Order terms (short version)</strong></p>
           <ul>
@@ -825,7 +862,8 @@
       </details>
 
       <button type="button" class="btn" id="submit">Place my order</button>
-      <p class="err" id="err">Add at least one burrito and fill in your name, unit, and email.</p>
+      <p class="err" id="err">Add at least one burrito and fill in your name, unit, email, and phone.</p>
+      </div>
 
       <div class="confirm" id="confirm" aria-live="polite">
         <div id="confirm-pay-stage">
@@ -883,7 +921,7 @@
   <p class="share-label">Share with a neighbor</p>
   <p class="legal-foot">
     Contact: <a href="mailto:bobsburritosco@gmail.com">bobsburritosco@gmail.com</a>.
-    Email and phone (if provided) are collected only to fulfill and coordinate your order; we do not sell personal information.
+    Email and phone are collected only to fulfill and coordinate your order; we do not sell personal information.
     For privacy or data-removal requests, email us with your name, unit, and order ID if you have it.
     Prices and menu subject to change. Not affiliated with the building management.
   </p>
@@ -1329,6 +1367,7 @@
   document.querySelectorAll('.variant').forEach(function(v){
     var qtyEl = v.querySelector('.qty');
     v.querySelector('.plus').addEventListener('click', function(){
+      if(isKitchenAway()) return;
       qtyEl.textContent = Math.min(10, parseInt(qtyEl.textContent,10) + 1);
       render();
     });
@@ -1362,7 +1401,28 @@
   updateCartResumeBanner();
 
   /* ---- Sunday scheduling (America/Los_Angeles) ---- */
+  /* Last open cutoff: Sat Aug 15 2026 3 PM PT (delivery Sun Aug 16).
+     Kitchen closed through Sat Sep 5. Orders reopen Sun Sep 6.
+     First delivery back: Sun Sep 13. No service Aug 23, Aug 30, or Sep 6. */
+  var VACATION_LAST_CUTOFF = new Date(2026, 7, 15, 15, 0, 0);
+  var VACATION_RESUME = new Date(2026, 8, 6, 0, 0, 0);
+  var VACATION_SKIPPED = { '2026-08-23': 1, '2026-08-30': 1, '2026-09-06': 1 };
+
+  function dateISO(d){
+    return d.getFullYear() + '-' +
+      ('0' + (d.getMonth() + 1)).slice(-2) + '-' +
+      ('0' + d.getDate()).slice(-2);
+  }
+
   function laNow(){
+    var override = '';
+    try { override = new URLSearchParams(location.search).get('at') || ''; } catch(e) {}
+    if(override){
+      var fake = new Date(override);
+      if(!isNaN(fake.getTime())){
+        return new Date(fake.getFullYear(), fake.getMonth(), fake.getDate(), fake.getHours(), fake.getMinutes());
+      }
+    }
     var parts = new Intl.DateTimeFormat('en-US', {
       timeZone:'America/Los_Angeles',
       year:'numeric', month:'numeric', day:'numeric',
@@ -1371,6 +1431,53 @@
     var v = {};
     parts.forEach(function(pt){ v[pt.type] = pt.value; });
     return new Date(+v.year, +v.month - 1, +v.day, +v.hour % 24, +v.minute);
+  }
+
+  function isKitchenAway(now){
+    now = now || laNow();
+    return now >= VACATION_LAST_CUTOFF && now < VACATION_RESUME;
+  }
+
+  function skipClosedSundays(target){
+    var guard = 0;
+    while(VACATION_SKIPPED[dateISO(target)] && guard++ < 8){
+      target = new Date(target.getFullYear(), target.getMonth(), target.getDate() + 7);
+    }
+    return target;
+  }
+
+  function isValidPhone(s){
+    var digits = String(s || '').replace(/\D/g, '');
+    if(digits.length === 11 && digits.charAt(0) === '1') digits = digits.slice(1);
+    return digits.length === 10;
+  }
+
+  function applyKitchenAway(){
+    var away = isKitchenAway();
+    document.body.classList.toggle('bb-closed', away);
+    var eyebrow = document.getElementById('hero-eyebrow');
+    var menuTitle = document.getElementById('menu-title');
+    var menuSub = document.getElementById('menu-sub');
+    var orderTitle = document.getElementById('order-title');
+    var orderSub = document.getElementById('order-sub');
+    if(eyebrow){
+      eyebrow.textContent = away
+        ? 'On vacation · back September 6'
+        : 'Sunday breakfast burritos · delivered warm';
+    }
+    if(menuTitle) menuTitle.textContent = away ? 'Our lineup' : "This Sunday's Menu";
+    if(menuSub){
+      menuSub.textContent = away
+        ? 'We will be back rolling these Sunday, September 13. Every burrito still comes with house chipotle mayo.'
+        : 'Made in small batches — every burrito comes with our house chipotle mayo. People come back for the sauce.';
+    }
+    if(orderTitle) orderTitle.textContent = away ? "We'll be back" : 'Lock In Your Sunday';
+    if(orderSub){
+      orderSub.innerHTML = away
+        ? 'Bob\u2019s Burritos is on vacation. Orders reopen <strong>Sunday, September 6</strong> for delivery <strong>Sunday, September 13</strong>.'
+        : 'Pick your burritos above, drop your details here. Delivery is for <strong>1111 Wilshire</strong> only.';
+    }
+    return away;
   }
 
   function schedule(){
@@ -1386,25 +1493,31 @@
       justMissed = true;
     }
     if(dow === 0){ justMissed = true; } /* it's delivery day; today's batch is spoken for */
+    target = skipClosedSundays(target);
     var label = target.toLocaleDateString('en-US', {weekday:'long', month:'long', day:'numeric'});
-    var iso = target.getFullYear() + '-' +
-              ('0' + (target.getMonth() + 1)).slice(-2) + '-' +
-              ('0' + target.getDate()).slice(-2);
-    return {label: label, iso: iso, justMissed: justMissed};
+    return {label: label, iso: dateISO(target), justMissed: justMissed, away: isKitchenAway(now)};
   }
 
   function renderNotice(){
+    var away = applyKitchenAway();
     var sc = schedule();
     var el = document.getElementById('notice');
-    if(sc.justMissed){
+    var lastCall = (!away && laNow() < VACATION_LAST_CUTOFF)
+      ? '<p style="margin-top:8px">Last Sunday before vacation is <strong>August 16</strong>. After Saturday 3 PM we close until September 6. No deliveries August 23, August 30, or September 6. We reopen September 6 for Sunday, September 13.</p>'
+      : '';
+    el.classList.remove('closed', 'vacation');
+    if(away){
+      el.classList.add('vacation');
+      el.innerHTML = '<span class="notice__big">Bob\u2019s Burritos is on vacation</span>' +
+        'Not taking orders until <strong>Sunday, September 6</strong>. First delivery back <strong>Sunday, September 13</strong>.';
+    } else if(sc.justMissed){
       el.classList.add('closed');
       el.innerHTML = '<span class="notice__big">This Sunday\u2019s orders are closed</span>' +
         'Thanks for your interest! You\u2019re now ordering for <strong>' + sc.label +
-        '</strong> \u2014 delivered 9 AM\u201312 PM. Order anytime before Saturday 3 PM.';
+        '</strong> \u2014 delivered 9 AM\u201312 PM. Order anytime before Saturday 3 PM.' + lastCall;
     } else {
-      el.classList.remove('closed');
       el.innerHTML = '<span class="notice__big">\u2600\uFE0F Ordering for ' + sc.label + '</span>' +
-        'Window closes <strong>Saturday 3 PM</strong>. Delivered Sunday 9 AM\u201312 PM.';
+        'Window closes <strong>Saturday 3 PM</strong>. Delivered Sunday 9 AM\u201312 PM.' + lastCall;
     }
     return sc;
   }
@@ -1414,6 +1527,13 @@
   var submitting = false;
   document.getElementById('submit').addEventListener('click', function(){
     if(submitting) return;
+    if(isKitchenAway()){
+      errEl.style.display = 'block';
+      errEl.textContent = 'We are on vacation and not taking orders until September 6.';
+      confirmEl.classList.remove('show');
+      renderNotice();
+      return;
+    }
     var items = state().filter(function(i){ return i.qty > 0; });
     var name = document.getElementById('f-name').value.trim();
     var unit = document.getElementById('f-unit').value.trim();
@@ -1427,15 +1547,20 @@
       return;
     }
 
-    if(!items.length || !name || !unit || !email){
+    if(!items.length || !name || !unit || !email || !phone){
       errEl.style.display = 'block';
-      errEl.textContent = 'Add at least one burrito and fill in your name, unit, and email.';
+      errEl.textContent = 'Add at least one burrito and fill in your name, unit, email, and phone.';
       confirmEl.classList.remove('show');
       return;
     }
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
       errEl.style.display = 'block';
       errEl.textContent = 'Please enter a valid email so we can send your confirmation.';
+      return;
+    }
+    if(!isValidPhone(phone)){
+      errEl.style.display = 'block';
+      errEl.textContent = 'Please enter a valid 10-digit phone number so we can reach you on delivery day.';
       return;
     }
     if(name.length > 80 || unit.length > 20 || email.length > 120 || phone.length > 30){
@@ -1452,8 +1577,7 @@
     errEl.style.display = 'none';
 
     var total = 0;
-    var lines = ["BOB'S BURRITOS — Sunday order", 'Name: ' + name, 'Unit: ' + unit, 'Email: ' + email];
-    if(phone){ lines.push('Phone: ' + phone); }
+    var lines = ["BOB'S BURRITOS — Sunday order", 'Name: ' + name, 'Unit: ' + unit, 'Email: ' + email, 'Phone: ' + phone];
     lines.push('---');
     items.forEach(function(i){
       var line = i.unitPrice * i.qty;

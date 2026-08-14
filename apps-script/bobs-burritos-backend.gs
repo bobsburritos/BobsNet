@@ -157,6 +157,12 @@ function isValidEmail(s) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 }
 
+function isValidPhone(s) {
+  var digits = String(s || '').replace(/\D/g, '');
+  if (digits.length === 11 && digits.charAt(0) === '1') digits = digits.substring(1);
+  return digits.length === 10;
+}
+
 function rowEmail(r) {
   if (!r || r.length < COL_EMAIL) return '';
   return cleanStr(r[COL_EMAIL - 1], MAX_EMAIL_LEN);
@@ -498,8 +504,12 @@ function insertOrder(data) {
 
   if (!name || !unit) return json({ ok: false, error: 'name and unit required' });
   if (!email || !isValidEmail(email)) return json({ ok: false, error: 'valid email required' });
+  if (!phone || !isValidPhone(phone)) return json({ ok: false, error: 'valid phone required' });
   if (!isValidOrderId(orderId)) return json({ ok: false, error: 'bad orderId' });
   if (deliveryDate && !isValidDateISO(deliveryDate)) return json({ ok: false, error: 'bad deliveryDate' });
+  if (deliveryDate === '2026-08-23' || deliveryDate === '2026-08-30' || deliveryDate === '2026-09-06') {
+    return json({ ok: false, error: 'kitchen closed that Sunday — we reopen September 6' });
+  }
 
   var qty = { soyrizo: 0, soyrizoAvo: 0, cali: 0, heavy: 0, heavyAvo: 0 };
   var items = data.items || [];

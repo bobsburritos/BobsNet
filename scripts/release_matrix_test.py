@@ -91,7 +91,7 @@ def post(url: str, payload: dict, timeout: int = 45) -> tuple[int, dict | str]:
         return 0, str(e)
 
 
-def case_happy(order_id: str, name: str, unit: str, items: list[dict], phone: str = "") -> dict:
+def case_happy(order_id: str, name: str, unit: str, items: list[dict], phone: str = "3105550100") -> dict:
     d = next_sunday_iso()
     return {
         "id": order_id,
@@ -245,6 +245,19 @@ def build_matrix() -> list[dict]:
                 "orderId": "BB-RELFAIL2",
                 "name": "X",
                 "unit": "",
+                "deliveryDate": d,
+                "items": [{"id": "cali", "qty": 1, "avo": False}],
+            },
+        ),
+        (
+            "BB-RELFAILP",
+            False,
+            "missing phone",
+            {
+                "orderId": "BB-RELFAILP",
+                "name": "X",
+                "unit": "1",
+                "phone": "",
                 "deliveryDate": d,
                 "items": [{"id": "cali", "qty": 1, "avo": False}],
             },

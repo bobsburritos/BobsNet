@@ -37,8 +37,11 @@ into the Venmo/Zelle note field. Payment status is written back to the sheet
 3. **No payment by Saturday 3 PM = order is not cooked.** The system surfaces
    unpaid orders; the rule does the enforcement.
 4. Cutoff logic runs in **America/Los_Angeles** regardless of device timezone.
-   After cutoff the form does NOT block — it rolls the order to the following
-   Sunday and says so explicitly.
+   After a normal Saturday 3 PM cutoff the form does NOT block — it rolls the
+   order to the following Sunday and says so explicitly. Vacation blackouts are
+   the exception: after **Saturday Aug 15 2026 3 PM PT** through **Sunday Sep 6
+   2026**, the form hides and orders are refused. No delivery Aug 23, Aug 30, or
+   Sep 6. Orders reopen Sep 6 for Sunday Sep 13.
 
 ---
 
@@ -127,7 +130,7 @@ One row per order. Append-only except columns N–P.
 | B | ReceivedAt | ISO 8601, LA time | `2026-08-05T18:42:11` |
 | C | DeliveryDate | `YYYY-MM-DD` | the delivery Sunday; all queries key on this |
 | D | DeliveryLabel | `Sunday, August 9` | human display only |
-| E–G | Name, Unit, Phone | strings | |
+| E–G | Name, Unit, Phone | strings | name, unit, and phone are all required |
 | H | Soyrizo | int | total soyrizo burritos |
 | I | SoyrizoAvo | int | subset of H that get avocado |
 | J | Cali | int | all Cali include avocado |
@@ -320,7 +323,7 @@ treats an unsent confirmation as a defect to be recovered from, not a lost cause
 
 - No third-party mail provider (SendGrid/Postmark). Keeps the zero-infrastructure,
   zero-cost model. Revisit only if daily volume outgrows the Gmail cap.
-- No SMS receipt. Email is the channel; phone stays optional and delivery-day only.
+- No SMS receipt. Email is the confirmation channel; phone is required for delivery-day contact only.
 - No auto-resend of `FAILED` rows. At that point something needs a human's eyes.
 
 ---
