@@ -1456,6 +1456,16 @@
     return items;
   }
 
+  function contactLines(o){
+    var bits = [];
+    if (o.email) bits.push(esc(o.email));
+    if (o.phone) {
+      var tel = String(o.phone).replace(/[^\d+]/g, '');
+      bits.push('<a href="tel:' + esc(tel) + '" style="color:inherit;font-weight:700">' + esc(o.phone) + '</a>');
+    }
+    return bits;
+  }
+
   /**
    * Receipt-state chip. Renders nothing for SENT / LEGACY / unknown so the board stays
    * quiet when all is well, and shouts only when a customer is missing their only receipt.
@@ -1524,9 +1534,7 @@
       var lines = items.map(function(it){
         return '<div class="t-line"><span class="q">' + it.q + '×</span><span class="nm">' + esc(it.n) + '</span></div>';
       }).join('') || '<div class="t-line"><span class="nm">—</span></div>';
-      var contact = [];
-      if (o.email) contact.push(esc(o.email));
-      if (o.phone) contact.push(esc(o.phone));
+      var contact = contactLines(o);
       var rcpt = receiptChip(o);
       var mailBtn = o.email
         ? '<button type="button" class="mailbtn" data-oid="' + safeId + '" title="Email customer">✉ Email</button>'
@@ -1558,14 +1566,14 @@
       var safeId = esc(o.orderId).replace(/'/g, '');
       var edge = o.paid ? 'var(--green)' : 'var(--red)';
       var bg = o.paid ? '' : 'background:var(--coral-tint)';
-      var contact = o.email ? esc(o.email) : (o.phone ? esc(o.phone) : '—');
+      var contact = contactLines(o);
       var mailBtn = o.email
         ? '<button type="button" class="mailbtn" style="min-height:36px;padding:6px 10px" data-oid="' + safeId + '">✉ Email</button> '
         : '';
       return '<tr style="border-top:2px solid rgba(61,26,92,.12);' + bg + '">' +
         '<td style="padding:11px 12px;font-weight:700;border-left:6px solid ' + edge + '">' + esc(o.unit) + '</td>' +
         '<td style="padding:11px 6px">' + esc(o.name) + '<br><small style="opacity:.65">' + esc(o.orderId) +
-          '<br>' + contact + '</small>' + receiptChip(o) + '</td>' +
+          (contact.length ? '<br>' + contact.join('<br>') : '') + '</small>' + receiptChip(o) + '</td>' +
         '<td style="padding:11px 6px;opacity:.75;font-size:13px">' + esc(itemsStr) + '</td>' +
         '<td style="padding:11px 6px;font-weight:700;text-align:right">' + moneyShort(o.total) + '</td>' +
         '<td style="padding:8px 12px">' +
