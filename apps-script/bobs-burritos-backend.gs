@@ -1071,6 +1071,7 @@ function sendKitchenDigest(deliveryDateOpt) {
     var id = String(r[0] || '');
     var name = String(r[4] || '');
     var unit = String(r[5] || '');
+    var phone = String(r[6] || '');
     var email = rowEmail(r);
     var total = Number(r[12]) || 0;
     var paid = String(r[13]).toUpperCase() === 'YES';
@@ -1084,7 +1085,8 @@ function sendKitchenDigest(deliveryDateOpt) {
     if (paid) paidRev += total; else unpaid++;
     lines.push(
       (paid ? '[PAID] ' : '[UNPAID] ') + id + ' · Unit ' + unit + ' · ' + name +
-      ' · $' + total + (email ? ' · ' + email : '') + receiptFlag
+      ' · $' + total + (email ? ' · ' + email : '') +
+      (phone ? ' · ' + phone : ' · no phone on file') + receiptFlag
     );
   }
 
