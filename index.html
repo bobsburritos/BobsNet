@@ -648,9 +648,195 @@
   .chip a{color:inherit;text-decoration:none;}
   .chip a:hover{color:var(--tangerine);}
 
+  /* =========================================================
+     VACATION POPUP (bb-* namespace) — see #bbVacationPopup
+     before </body>. Local --gold alias maps the popup's token
+     name onto this page's --sunbeam (both #FFD23F).
+     ========================================================= */
+
+  .bb-overlay {
+    --gold: var(--sunbeam);
+    position: fixed;
+    inset: 0;
+    background: rgba(42, 17, 64, 0.72);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .35s ease;
+  }
+  .bb-overlay.bb-show { opacity: 1; pointer-events: auto; }
+
+  .bb-card {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    background: var(--grape);
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 24px 64px rgba(42, 17, 64, .55);
+    transform: translateY(24px) scale(.96);
+    transition: transform .4s cubic-bezier(.34, 1.4, .5, 1);
+    text-align: center;
+  }
+  .bb-overlay.bb-show .bb-card { transform: translateY(0) scale(1); }
+
+  /* sunrise arcs — signature device */
+  .bb-arcs {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-bottom: -6px;
+  }
+
+  .bb-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 244, 220, .14);
+    color: var(--cream);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    font-family: 'Fredoka', sans-serif;
+    transition: background .2s;
+  }
+  .bb-close:hover { background: rgba(255, 244, 220, .28); }
+
+  .bb-body { padding: 8px 30px 30px; }
+
+  .bb-eyebrow {
+    display: inline-block;
+    background: var(--tangerine);
+    color: var(--grape-deep);
+    font-weight: 700;
+    font-size: .72rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+  }
+
+  .bb-title {
+    font-family: 'Shrikhand', cursive;
+    color: var(--gold);
+    font-size: 1.9rem;
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+
+  .bb-text {
+    color: var(--cream);
+    font-size: .98rem;
+    font-weight: 400;
+    line-height: 1.55;
+  }
+  .bb-text strong { color: var(--gold); font-weight: 600; }
+
+  /* date strip */
+  .bb-dates {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 20px 0;
+  }
+  .bb-date {
+    flex: 1 1 0;
+    min-width: 70px;
+    border-radius: 14px;
+    padding: 10px 6px;
+    font-weight: 600;
+  }
+  .bb-date .bb-d-day {
+    display: block;
+    font-size: 1.05rem;
+    letter-spacing: .02em;
+  }
+  .bb-date .bb-d-label {
+    display: block;
+    font-size: .62rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    margin-top: 3px;
+  }
+  .bb-date--last {
+    background: var(--gold);
+    color: var(--grape-deep);
+  }
+  .bb-date--off {
+    background: rgba(255, 244, 220, .08);
+    color: var(--lilac);
+    border: 1.5px dashed rgba(201, 167, 240, .45);
+  }
+  .bb-date--off .bb-d-day { text-decoration: line-through; text-decoration-thickness: 2px; }
+  .bb-date--back {
+    background: var(--tangerine);
+    color: var(--grape-deep);
+  }
+
+  .bb-reopen {
+    color: var(--lilac);
+    font-size: .85rem;
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+  .bb-reopen strong { color: var(--cream); font-weight: 600; }
+
+  .bb-cta {
+    display: block;
+    width: 100%;
+    background: var(--gold);
+    color: var(--grape-deep);
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 1.02rem;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform .15s, box-shadow .15s;
+    box-shadow: 0 6px 0 rgba(42, 17, 64, .35);
+  }
+  .bb-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 0 rgba(42, 17, 64, .35); }
+  .bb-cta:active { transform: translateY(1px); box-shadow: 0 3px 0 rgba(42, 17, 64, .35); }
+
+  .bb-dismiss {
+    display: inline-block;
+    margin-top: 14px;
+    background: none;
+    border: none;
+    color: var(--lilac);
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 500;
+    font-size: .85rem;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .bb-dismiss:hover { color: var(--cream); }
+
+  @media (max-width: 420px) {
+    .bb-title { font-size: 1.6rem; }
+    .bb-body { padding: 8px 20px 24px; }
+  }
+
   @media (prefers-reduced-motion:reduce){
     .ribbon__track,.sun div,.confirm.show{animation:none;}
     .card:hover,.btn:hover{transform:none;}
+    .bb-overlay,.bb-overlay .bb-card{transition:none;}
   }
 </style>
 </head>
@@ -1502,7 +1688,12 @@
     var away = applyKitchenAway();
     var sc = schedule();
     var el = document.getElementById('notice');
-    var lastCall = (!away && laNow() < VACATION_LAST_CUTOFF)
+    /* True only while the Aug 16 order window is still open. Goes false at the
+       Sat 3 PM cutoff and stays false once we reopen, so anything gated on it
+       fires once and never resurrects. Drives the vacation popup too. */
+    var lastCallLive = !away && laNow() < VACATION_LAST_CUTOFF;
+    window.bbLastCallLive = lastCallLive;
+    var lastCall = lastCallLive
       ? '<p style="margin-top:8px">Last Sunday before vacation is <strong>August 16</strong>. After Saturday 3 PM we close until September 6. No deliveries August 23, August 30, or September 6. We reopen September 6 for Sunday, September 13.</p>'
       : '';
     el.classList.remove('closed', 'vacation');
@@ -1739,6 +1930,88 @@
   closeLightbox();
   document.body.style.overflow = '';
 })();
+</script>
+
+<!-- ================= VACATION POPUP ================= -->
+<div class="bb-overlay" id="bbVacationPopup" role="dialog" aria-modal="true" aria-labelledby="bbVacTitle">
+  <div class="bb-card">
+
+    <!-- sunrise arcs: lilac outer → tangerine mid → gold inner -->
+    <svg class="bb-arcs" viewBox="0 0 440 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M60 120 A160 160 0 0 1 380 120" stroke="#C9A7F0" stroke-width="14" stroke-linecap="round"/>
+      <path d="M100 120 A120 120 0 0 1 340 120" stroke="#FF8A3D" stroke-width="14" stroke-linecap="round"/>
+      <path d="M140 120 A80 80 0 0 1 300 120" stroke="#FFD23F" stroke-width="14" stroke-linecap="round"/>
+      <circle cx="220" cy="112" r="26" fill="#FFD23F"/>
+    </svg>
+
+    <button class="bb-close" onclick="bbHideVacation()" aria-label="Close">✕</button>
+
+    <div class="bb-body">
+      <span class="bb-eyebrow">Heads up, neighbors</span>
+
+      <h2 class="bb-title" id="bbVacTitle">The kitchen's going<br>on vacation</h2>
+
+      <p class="bb-text">
+        Your last Sunday before we roll out is <strong>August&nbsp;16</strong> —
+        order by <strong>Saturday 3&nbsp;PM</strong>, same as always.
+        After that we close until September&nbsp;6.
+      </p>
+
+      <div class="bb-dates">
+        <div class="bb-date bb-date--last">
+          <span class="bb-d-day">Aug 16</span>
+          <span class="bb-d-label">Last Sunday</span>
+        </div>
+        <div class="bb-date bb-date--off">
+          <span class="bb-d-day">Aug 23</span>
+          <span class="bb-d-label">Closed</span>
+        </div>
+        <div class="bb-date bb-date--off">
+          <span class="bb-d-day">Aug 30</span>
+          <span class="bb-d-label">Closed</span>
+        </div>
+        <div class="bb-date bb-date--off">
+          <span class="bb-d-day">Sep 6</span>
+          <span class="bb-d-label">Closed</span>
+        </div>
+        <div class="bb-date bb-date--back">
+          <span class="bb-d-day">Sep 13</span>
+          <span class="bb-d-label">We're back</span>
+        </div>
+      </div>
+
+      <p class="bb-reopen">Orders reopen <strong>September 6</strong> for Sunday, <strong>September 13</strong>.</p>
+
+      <a class="bb-cta" href="#order" onclick="bbHideVacation()">Grab the last Sunday — order for Aug 16</a>
+      <button class="bb-dismiss" onclick="bbHideVacation()">Got it — see you September 13</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Shows once per page load (in-memory only — no storage APIs).
+  var bbPopup = document.getElementById('bbVacationPopup');
+
+  function bbShowVacation() { bbPopup.classList.add('bb-show'); }
+  function bbHideVacation() { bbPopup.classList.remove('bb-show'); }
+
+  // close on overlay click or Escape
+  bbPopup.addEventListener('click', function (e) {
+    if (e.target === bbPopup) bbHideVacation();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') bbHideVacation();
+  });
+
+  // Only while the Aug 16 order window is still open. window.bbLastCallLive is
+  // set by the page's vacation scheduler (renderNotice) using LA time, so this
+  // popup goes quiet at the Sat 3 PM cutoff and stays quiet through the break
+  // and after we reopen — the CTA would otherwise point at a closed form.
+  window.addEventListener('load', function () {
+    if (!window.bbLastCallLive) return;
+    // small delay so the page paints first
+    setTimeout(bbShowVacation, 400);
+  });
 </script>
 </body>
 </html>
