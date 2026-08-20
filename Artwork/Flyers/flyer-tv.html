@@ -55,6 +55,14 @@
   #qr img, #qr canvas{display:block;width:380px !important;height:380px !important;}
   .right p{font-weight:600;font-size:30px;line-height:1.5;}
   .right strong{color:var(--tangerine);}
+  /* Vacation band — closed Aug 23 & Aug 30 2026, first delivery back Sun Sep 6.
+     Remove this <p class="vac"> once Sep 6 has passed. */
+  .right .vac{
+    background:var(--sunbeam);color:var(--grape);
+    border-radius:20px;padding:14px 26px;
+    font-size:25px;font-weight:700;line-height:1.3;
+  }
+  .right .vac strong{color:var(--grape);}
 </style>
 </head>
 <body>
@@ -86,6 +94,7 @@
     <p>Order by <strong>Saturday 3 PM</strong><br>
     Delivered <strong>Sunday<br>9 AM â€“ 12 PM</strong><br>
     Venmo / Zelle</p>
+    <p class="vac">No delivery Aug 23 &amp; Aug 30<br>Back <strong>Sunday, Sept 6</strong></p>
   </div>
 </div>
 <script>

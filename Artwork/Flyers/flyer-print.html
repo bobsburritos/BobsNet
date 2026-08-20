@@ -70,6 +70,15 @@
   .cta p{font-weight:600;font-size:17.5px;line-height:1.45;}
   .cta strong{color:var(--sunbeam);}
   .cta .url{margin-top:8px;font-size:14px;font-weight:500;color:var(--lilac);word-break:break-all;}
+  /* Vacation band — closed Aug 23 & Aug 30 2026, first delivery back Sun Sep 6.
+     Remove this <p class="vac"> once Sep 6 has passed. */
+  .cta .vac{
+    display:inline-block;margin-bottom:10px;
+    background:var(--sunbeam);color:var(--grape);
+    border-radius:999px;padding:6px 18px;
+    font-weight:700;font-size:15px;
+  }
+  .cta .vac strong{color:var(--grape);}
 </style>
 </head>
 <body>
@@ -107,6 +116,7 @@
     <div class="qrbox"><div id="qr"></div></div>
     <div class="cta">
       <h2>Scan to order</h2>
+      <p class="vac">No delivery Aug 23 &amp; Aug 30 &middot; Back <strong>Sunday, Sept 6</strong></p>
       <p>Order any time before <strong>Saturday 3 PM</strong>.<br>
       Delivered to your door <strong>Sunday 9 AM â€“ 12 PM</strong>.<br>
       Pay by Venmo or Zelle when you order.</p>

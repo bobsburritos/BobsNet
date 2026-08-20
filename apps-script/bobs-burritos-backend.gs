@@ -507,8 +507,8 @@ function insertOrder(data) {
   if (!phone || !isValidPhone(phone)) return json({ ok: false, error: 'valid phone required' });
   if (!isValidOrderId(orderId)) return json({ ok: false, error: 'bad orderId' });
   if (deliveryDate && !isValidDateISO(deliveryDate)) return json({ ok: false, error: 'bad deliveryDate' });
-  if (deliveryDate === '2026-08-23' || deliveryDate === '2026-08-30' || deliveryDate === '2026-09-06') {
-    return json({ ok: false, error: 'kitchen closed that Sunday — we reopen September 6' });
+  if (deliveryDate === '2026-08-23' || deliveryDate === '2026-08-30') {
+    return json({ ok: false, error: 'kitchen closed that Sunday — first delivery back is Sunday, September 6' });
   }
 
   var qty = { soyrizo: 0, soyrizoAvo: 0, cali: 0, heavy: 0, heavyAvo: 0 };

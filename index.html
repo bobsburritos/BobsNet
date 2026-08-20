@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Bob's Burritos — Sunday Breakfast Burritos</title>
 <!-- Link previews (WhatsApp / iMessage / Slack etc). Absolute URLs only. New image path busts old embed caches. -->
 <meta property="og:type" content="website">
@@ -43,11 +43,11 @@
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
+  html{overflow-x:hidden;}
   body{
     font-family:'Fredoka',sans-serif;
     background:var(--cream);
     color:var(--grape);
-    overflow-x:hidden;
   }
   ::selection{background:var(--sunbeam);color:var(--grape);}
 
@@ -649,36 +649,64 @@
   .chip a:hover{color:var(--tangerine);}
 
   /* =========================================================
-     VACATION POPUP (bb-* namespace) — see #bbVacationPopup
-     before </body>. Local --gold alias maps the popup's token
-     name onto this page's --sunbeam (both #FFD23F).
+     DROP POPUP (bb-* namespace) — see #bbVacationPopup
+     before </body>. Same overlay on desktop and mobile.
+     Local --gold alias maps the popup's token onto --sunbeam.
      ========================================================= */
+
+  html.bb-popup-open,
+  html.bb-popup-open body {
+    overflow: hidden !important;
+    height: 100%;
+  }
 
   .bb-overlay {
     --gold: var(--sunbeam);
     position: fixed;
-    inset: 0;
-    background: rgba(42, 17, 64, 0.72);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    background: rgba(42, 17, 64, 0.78);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
-    z-index: 9999;
+    padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+    z-index: 2147483000;
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
-    transition: opacity .35s ease;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
   }
-  .bb-overlay.bb-show { opacity: 1; pointer-events: auto; }
+  .bb-overlay.bb-show {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+  @media (hover: hover) and (min-width: 641px) {
+    .bb-overlay {
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+  }
 
   .bb-card {
     position: relative;
     width: 100%;
     max-width: 440px;
+    margin: auto;
     background: var(--grape);
     border-radius: 28px;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0 24px 64px rgba(42, 17, 64, .55);
     transform: translateY(24px) scale(.96);
     transition: transform .4s cubic-bezier(.34, 1.4, .5, 1);
@@ -696,10 +724,10 @@
 
   .bb-close {
     position: absolute;
-    top: 14px;
-    right: 14px;
-    width: 36px;
-    height: 36px;
+    top: 10px;
+    right: 10px;
+    width: 44px;
+    height: 44px;
     border: none;
     border-radius: 50%;
     background: rgba(255, 244, 220, .14);
@@ -709,6 +737,7 @@
     cursor: pointer;
     font-family: 'Fredoka', sans-serif;
     transition: background .2s;
+    -webkit-tap-highlight-color: transparent;
   }
   .bb-close:hover { background: rgba(255, 244, 220, .28); }
 
@@ -743,7 +772,7 @@
   }
   .bb-text strong { color: var(--gold); font-weight: 600; }
 
-  /* date strip */
+  /* date strip — wraps on narrow phones instead of overflowing */
   .bb-dates {
     display: flex;
     gap: 8px;
@@ -752,8 +781,8 @@
     margin: 20px 0;
   }
   .bb-date {
-    flex: 1 1 0;
-    min-width: 70px;
+    flex: 1 1 88px;
+    min-width: 88px;
     border-radius: 14px;
     padding: 10px 6px;
     font-weight: 600;
@@ -803,19 +832,25 @@
     font-weight: 700;
     font-size: 1.02rem;
     padding: 15px 20px;
+    min-height: 48px;
     border: none;
     border-radius: 999px;
     cursor: pointer;
     text-decoration: none;
     transition: transform .15s, box-shadow .15s;
     box-shadow: 0 6px 0 rgba(42, 17, 64, .35);
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
   }
-  .bb-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 0 rgba(42, 17, 64, .35); }
+  @media (hover: hover) {
+    .bb-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 0 rgba(42, 17, 64, .35); }
+  }
   .bb-cta:active { transform: translateY(1px); box-shadow: 0 3px 0 rgba(42, 17, 64, .35); }
 
   .bb-dismiss {
     display: inline-block;
     margin-top: 14px;
+    padding: 12px 8px;
     background: none;
     border: none;
     color: var(--lilac);
@@ -825,12 +860,27 @@
     cursor: pointer;
     text-decoration: underline;
     text-underline-offset: 3px;
+    -webkit-tap-highlight-color: transparent;
   }
   .bb-dismiss:hover { color: var(--cream); }
 
   @media (max-width: 420px) {
-    .bb-title { font-size: 1.6rem; }
-    .bb-body { padding: 8px 20px 24px; }
+    .bb-title { font-size: 1.55rem; }
+    .bb-body { padding: 4px 16px 22px; }
+    .bb-text { font-size: .92rem; }
+  }
+
+  /* Short phone screens: pin to top and scroll the overlay, don't clip the CTA */
+  @media (max-width: 640px), (max-height: 740px) {
+    .bb-overlay {
+      align-items: flex-start;
+    }
+    .bb-card {
+      margin: 12px auto 24px;
+      transform: none;
+    }
+    .bb-overlay.bb-show .bb-card { transform: none; }
+    .bb-arcs { max-height: 88px; }
   }
 
   @media (prefers-reduced-motion:reduce){
@@ -979,17 +1029,14 @@
     <div class="panel">
       <div class="notice" id="notice" aria-live="polite"></div>
       <div id="order-vacation" class="vacation-panel">
-        <h3>Hey — Bob's Burritos is going on vacation</h3>
+        <h3>Hey — Bob's Burritos is on vacation</h3>
         <p>The kitchen is taking a break. We are <strong>not taking orders</strong> right now.</p>
-        <p>Last delivery was <strong>Sunday, August 16</strong>.</p>
         <p>We will not cook or deliver:</p>
         <ul>
           <li>Sunday, August 23</li>
           <li>Sunday, August 30</li>
-          <li>Sunday, September 6</li>
         </ul>
-        <p>Orders open again <strong>Sunday, September 6</strong>.</p>
-        <p>First delivery back: <strong>Sunday, September 13</strong> — order anytime before Saturday, September 12 at 3 PM.</p>
+        <p>First delivery back: <strong>Sunday, September 6</strong> — order anytime before Saturday, September 5 at 3 PM.</p>
         <p>See you then. ☀️</p>
       </div>
       <div id="order-form-live">
@@ -1134,6 +1181,34 @@
   var VENMO_USERNAME = 'Khushbu-Kotecha';
   var ZELLE_TO = '7148120977';  // email or mobile on Zelle
   var ZELLE_NAME = "Bob's Burritos";
+
+  /* ============================================================
+     DROP DATES — edit this object when the next Sunday changes.
+     Popup copy, date chips, banner, and the order window all
+     read from here so desktop and mobile stay in sync.
+     ============================================================ */
+  var BB_DROP = {
+    /* Form is open from this instant (LA wall time via laNow). */
+    ordersOpenFrom: new Date(2026, 7, 16, 15, 0, 0),
+    skippedSundays: { '2026-08-23': 1, '2026-08-30': 1 },
+    announceIso: '2026-09-06',
+    announceLong: 'Sunday, September 6',
+    orderByLong: 'Saturday, September 5 at 3 PM',
+    popup: {
+      eyebrow: 'Orders are open',
+      titleHtml: 'We\u2019re taking orders<br>for September 6',
+      bodyHtml: 'Next delivery is <strong>Sunday, September&nbsp;6</strong> \u2014 order anytime before <strong>Saturday, September&nbsp;5 at 3&nbsp;PM</strong>, same cutoff as always.',
+      reopenHtml: 'No deliveries <strong>August 23</strong> or <strong>August 30</strong>.',
+      cta: 'Order for September 6',
+      dismiss: 'Got it \u2014 see you September 6',
+      chips: [
+        { day: 'Aug 23', label: 'Closed', kind: 'off' },
+        { day: 'Aug 30', label: 'Closed', kind: 'off' },
+        { day: 'Sep 6', label: 'Order now', kind: 'back' }
+      ]
+    }
+  };
+  window.BB_DROP = BB_DROP;
 
   /* ---- Image lightbox (tap menu photo to enlarge) ---- */
   var lb = document.getElementById('lightbox');
@@ -1587,12 +1662,8 @@
   updateCartResumeBanner();
 
   /* ---- Sunday scheduling (America/Los_Angeles) ---- */
-  /* Last open cutoff: Sat Aug 15 2026 3 PM PT (delivery Sun Aug 16).
-     Kitchen closed through Sat Sep 5. Orders reopen Sun Sep 6.
-     First delivery back: Sun Sep 13. No service Aug 23, Aug 30, or Sep 6. */
-  var VACATION_LAST_CUTOFF = new Date(2026, 7, 15, 15, 0, 0);
-  var VACATION_RESUME = new Date(2026, 8, 6, 0, 0, 0);
-  var VACATION_SKIPPED = { '2026-08-23': 1, '2026-08-30': 1, '2026-09-06': 1 };
+  /* Closed Sundays live on BB_DROP.skippedSundays. Orders are open
+     from BB_DROP.ordersOpenFrom; next advertised drop is announceIso. */
 
   function dateISO(d){
     return d.getFullYear() + '-' +
@@ -1621,12 +1692,12 @@
 
   function isKitchenAway(now){
     now = now || laNow();
-    return now >= VACATION_LAST_CUTOFF && now < VACATION_RESUME;
+    return now < BB_DROP.ordersOpenFrom;
   }
 
   function skipClosedSundays(target){
     var guard = 0;
-    while(VACATION_SKIPPED[dateISO(target)] && guard++ < 8){
+    while(BB_DROP.skippedSundays[dateISO(target)] && guard++ < 8){
       target = new Date(target.getFullYear(), target.getMonth(), target.getDate() + 7);
     }
     return target;
@@ -1648,19 +1719,19 @@
     var orderSub = document.getElementById('order-sub');
     if(eyebrow){
       eyebrow.textContent = away
-        ? 'On vacation · back September 6'
+        ? 'On vacation · back ' + BB_DROP.announceLong.replace('Sunday, ', '')
         : 'Sunday breakfast burritos · delivered warm';
     }
     if(menuTitle) menuTitle.textContent = away ? 'Our lineup' : "This Sunday's Menu";
     if(menuSub){
       menuSub.textContent = away
-        ? 'We will be back rolling these Sunday, September 13. Every burrito still comes with house chipotle mayo.'
+        ? 'We will be back rolling these ' + BB_DROP.announceLong + '. Every burrito still comes with house chipotle mayo.'
         : 'Made in small batches — every burrito comes with our house chipotle mayo. People come back for the sauce.';
     }
     if(orderTitle) orderTitle.textContent = away ? "We'll be back" : 'Lock In Your Sunday';
     if(orderSub){
       orderSub.innerHTML = away
-        ? 'Bob\u2019s Burritos is on vacation. Orders reopen <strong>Sunday, September 6</strong> for delivery <strong>Sunday, September 13</strong>.'
+        ? 'Bob\u2019s Burritos is on vacation. First delivery back <strong>' + BB_DROP.announceLong + '</strong>.'
         : 'Pick your burritos above, drop your details here. Delivery is for <strong>1111 Wilshire</strong> only.';
     }
     return away;
@@ -1688,27 +1759,28 @@
     var away = applyKitchenAway();
     var sc = schedule();
     var el = document.getElementById('notice');
-    /* True only while the Aug 16 order window is still open. Goes false at the
-       Sat 3 PM cutoff and stays false once we reopen, so anything gated on it
-       fires once and never resurrects. Drives the vacation popup too. */
-    var lastCallLive = !away && laNow() < VACATION_LAST_CUTOFF;
-    window.bbLastCallLive = lastCallLive;
-    var lastCall = lastCallLive
-      ? '<p style="margin-top:8px">Last Sunday before vacation is <strong>August 16</strong>. After Saturday 3 PM we close until September 6. No deliveries August 23, August 30, or September 6. We reopen September 6 for Sunday, September 13.</p>'
+    var announcing = !away && sc.iso === BB_DROP.announceIso;
+    window.bbShowDropPopup = announcing;
+    var skipNote = announcing
+      ? '<p style="margin-top:8px">No deliveries August 23 or August 30. This order is for <strong>' + BB_DROP.announceLong + '</strong> \u2014 order by <strong>' + BB_DROP.orderByLong + '</strong>.</p>'
       : '';
+    if(!away && announcing){
+      var eyebrow = document.getElementById('hero-eyebrow');
+      if(eyebrow) eyebrow.textContent = 'Ordering for ' + BB_DROP.announceLong;
+    }
     el.classList.remove('closed', 'vacation');
     if(away){
       el.classList.add('vacation');
       el.innerHTML = '<span class="notice__big">Bob\u2019s Burritos is on vacation</span>' +
-        'Not taking orders until <strong>Sunday, September 6</strong>. First delivery back <strong>Sunday, September 13</strong>.';
+        'First delivery back <strong>' + BB_DROP.announceLong + '</strong>. Order by <strong>' + BB_DROP.orderByLong + '</strong>.';
     } else if(sc.justMissed){
       el.classList.add('closed');
       el.innerHTML = '<span class="notice__big">This Sunday\u2019s orders are closed</span>' +
         'Thanks for your interest! You\u2019re now ordering for <strong>' + sc.label +
-        '</strong> \u2014 delivered 9 AM\u201312 PM. Order anytime before Saturday 3 PM.' + lastCall;
+        '</strong> \u2014 delivered 9 AM\u201312 PM. Order anytime before Saturday 3 PM.' + skipNote;
     } else {
       el.innerHTML = '<span class="notice__big">\u2600\uFE0F Ordering for ' + sc.label + '</span>' +
-        'Window closes <strong>Saturday 3 PM</strong>. Delivered Sunday 9 AM\u201312 PM.' + lastCall;
+        'Window closes <strong>Saturday 3 PM</strong>. Delivered Sunday 9 AM\u201312 PM.' + skipNote;
     }
     return sc;
   }
@@ -1720,7 +1792,7 @@
     if(submitting) return;
     if(isKitchenAway()){
       errEl.style.display = 'block';
-      errEl.textContent = 'We are on vacation and not taking orders until September 6.';
+      errEl.textContent = 'We are on vacation and not taking orders until ' + BB_DROP.announceLong + '.';
       confirmEl.classList.remove('show');
       renderNotice();
       return;
@@ -1932,8 +2004,8 @@
 })();
 </script>
 
-<!-- ================= VACATION POPUP ================= -->
-<div class="bb-overlay" id="bbVacationPopup" role="dialog" aria-modal="true" aria-labelledby="bbVacTitle">
+<!-- ================= DROP POPUP (copy filled from BB_DROP) ================= -->
+<div class="bb-overlay" id="bbVacationPopup" role="dialog" aria-modal="true" aria-labelledby="bbVacTitle" aria-hidden="true">
   <div class="bb-card">
 
     <!-- sunrise arcs: lilac outer → tangerine mid → gold inner -->
@@ -1944,24 +2016,19 @@
       <circle cx="220" cy="112" r="26" fill="#FFD23F"/>
     </svg>
 
-    <button class="bb-close" onclick="bbHideVacation()" aria-label="Close">✕</button>
+    <button class="bb-close" type="button" onclick="bbHideVacation()" aria-label="Close">✕</button>
 
     <div class="bb-body">
-      <span class="bb-eyebrow">Heads up, neighbors</span>
+      <span class="bb-eyebrow" id="bbVacEyebrow">Orders are open</span>
 
-      <h2 class="bb-title" id="bbVacTitle">The kitchen's going<br>on vacation</h2>
+      <h2 class="bb-title" id="bbVacTitle">We&rsquo;re taking orders<br>for September 6</h2>
 
-      <p class="bb-text">
-        Your last Sunday before we roll out is <strong>August&nbsp;16</strong> —
-        order by <strong>Saturday 3&nbsp;PM</strong>, same as always.
-        After that we close until September&nbsp;6.
+      <p class="bb-text" id="bbVacText">
+        Next delivery is <strong>Sunday, September&nbsp;6</strong> &mdash;
+        order anytime before <strong>Saturday, September&nbsp;5 at 3&nbsp;PM</strong>, same cutoff as always.
       </p>
 
-      <div class="bb-dates">
-        <div class="bb-date bb-date--last">
-          <span class="bb-d-day">Aug 16</span>
-          <span class="bb-d-label">Last Sunday</span>
-        </div>
+      <div class="bb-dates" id="bbVacDates">
         <div class="bb-date bb-date--off">
           <span class="bb-d-day">Aug 23</span>
           <span class="bb-d-label">Closed</span>
@@ -1970,32 +2037,67 @@
           <span class="bb-d-day">Aug 30</span>
           <span class="bb-d-label">Closed</span>
         </div>
-        <div class="bb-date bb-date--off">
-          <span class="bb-d-day">Sep 6</span>
-          <span class="bb-d-label">Closed</span>
-        </div>
         <div class="bb-date bb-date--back">
-          <span class="bb-d-day">Sep 13</span>
-          <span class="bb-d-label">We're back</span>
+          <span class="bb-d-day">Sep 6</span>
+          <span class="bb-d-label">Order now</span>
         </div>
       </div>
 
-      <p class="bb-reopen">Orders reopen <strong>September 6</strong> for Sunday, <strong>September 13</strong>.</p>
+      <p class="bb-reopen" id="bbVacReopen">No deliveries <strong>August 23</strong> or <strong>August 30</strong>.</p>
 
-      <a class="bb-cta" href="#order" onclick="bbHideVacation()">Grab the last Sunday — order for Aug 16</a>
-      <button class="bb-dismiss" onclick="bbHideVacation()">Got it — see you September 13</button>
+      <a class="bb-cta" id="bbVacCta" href="#order" onclick="bbHideVacation()">Order for September 6</a>
+      <button class="bb-dismiss" id="bbVacDismiss" type="button" onclick="bbHideVacation()">Got it — see you September 6</button>
     </div>
   </div>
 </div>
 
 <script>
-  // Shows once per page load (in-memory only — no storage APIs).
+  /* Popup is the same on desktop and mobile. Dates come from window.BB_DROP
+     so changing that object updates the chips and copy on every viewport.
+     Do not wait for window.load — fonts/CDN on phones were hiding this. */
   var bbPopup = document.getElementById('bbVacationPopup');
 
-  function bbShowVacation() { bbPopup.classList.add('bb-show'); }
-  function bbHideVacation() { bbPopup.classList.remove('bb-show'); }
+  function bbFillDropPopup() {
+    var d = window.BB_DROP;
+    if (!d || !d.popup || !bbPopup) return;
+    var p = d.popup;
+    var el = document.getElementById('bbVacEyebrow');
+    if (el) el.textContent = p.eyebrow;
+    el = document.getElementById('bbVacTitle');
+    if (el) el.innerHTML = p.titleHtml;
+    el = document.getElementById('bbVacText');
+    if (el) el.innerHTML = p.bodyHtml;
+    el = document.getElementById('bbVacReopen');
+    if (el) el.innerHTML = p.reopenHtml;
+    el = document.getElementById('bbVacCta');
+    if (el) el.textContent = p.cta;
+    el = document.getElementById('bbVacDismiss');
+    if (el) el.textContent = p.dismiss;
+    var row = document.getElementById('bbVacDates');
+    if (row && p.chips && p.chips.length) {
+      row.innerHTML = p.chips.map(function (c) {
+        return '<div class="bb-date bb-date--' + c.kind + '">' +
+          '<span class="bb-d-day">' + c.day + '</span>' +
+          '<span class="bb-d-label">' + c.label + '</span></div>';
+      }).join('');
+    }
+  }
 
-  // close on overlay click or Escape
+  function bbShowVacation() {
+    if (!bbPopup) return;
+    bbFillDropPopup();
+    bbPopup.classList.add('bb-show');
+    bbPopup.setAttribute('aria-hidden', 'false');
+    document.documentElement.classList.add('bb-popup-open');
+  }
+  function bbHideVacation() {
+    if (!bbPopup) return;
+    bbPopup.classList.remove('bb-show');
+    bbPopup.setAttribute('aria-hidden', 'true');
+    document.documentElement.classList.remove('bb-popup-open');
+    window.bbPopupDismissed = true;
+  }
+
   bbPopup.addEventListener('click', function (e) {
     if (e.target === bbPopup) bbHideVacation();
   });
@@ -2003,15 +2105,15 @@
     if (e.key === 'Escape') bbHideVacation();
   });
 
-  // Only while the Aug 16 order window is still open. window.bbLastCallLive is
-  // set by the page's vacation scheduler (renderNotice) using LA time, so this
-  // popup goes quiet at the Sat 3 PM cutoff and stays quiet through the break
-  // and after we reopen — the CTA would otherwise point at a closed form.
-  window.addEventListener('load', function () {
-    if (!window.bbLastCallLive) return;
-    // small delay so the page paints first
-    setTimeout(bbShowVacation, 400);
-  });
+  function bbMaybeShowDropPopup() {
+    bbFillDropPopup();
+    if (window.bbPopupDismissed) return;
+    if (!window.bbShowDropPopup) return;
+    bbShowVacation();
+  }
+
+  bbMaybeShowDropPopup();
+  window.addEventListener('pageshow', bbMaybeShowDropPopup);
 </script>
 </body>
 </html>

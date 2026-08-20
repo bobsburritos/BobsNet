@@ -38,10 +38,11 @@ into the Venmo/Zelle note field. Payment status is written back to the sheet
    unpaid orders; the rule does the enforcement.
 4. Cutoff logic runs in **America/Los_Angeles** regardless of device timezone.
    After a normal Saturday 3 PM cutoff the form does NOT block — it rolls the
-   order to the following Sunday and says so explicitly. Vacation blackouts are
-   the exception: after **Saturday Aug 15 2026 3 PM PT** through **Sunday Sep 6
-   2026**, the form hides and orders are refused. No delivery Aug 23, Aug 30, or
-   Sep 6. Orders reopen Sep 6 for Sunday Sep 13.
+   order to the following Sunday and says so explicitly. Vacation blackouts skip
+   delivery on **Aug 23** and **Aug 30**. The form is open now for first
+   delivery back **Sunday Sep 6** (cutoff **Saturday Sep 5 3 PM PT**). Sep 13
+   and onward are normal Sundays. Edit dates in the order page `BB_DROP` object
+   so the popup, banner, and window stay in sync on desktop and mobile.
 
 ---
 
