@@ -22,3 +22,6 @@ Thumbs.db
 *.swp
 .vscode/
 .idea/
+
+# Business financials — revenue, margins, supplier costs. Local only.
+docs/PURCHASE_LOG.md

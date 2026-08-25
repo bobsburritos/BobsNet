@@ -1,7 +1,7 @@
 # Costco / warehouse COGS reference
 
 **Purpose:** Pack prices for kitchen estimates.  
-**Last update:** 2026-08-03 (user Costco shelf + TJ product link)  
+**Last update:** 2026-08-24 (locked takeout boxes from Amazon receipt)  
 **Kitchen code:** `kitchen/index.html`
 
 ### Two systems in kitchen (v2 flow)
@@ -53,6 +53,7 @@ Goal: same cart every Costco/TJ run, minimize $/burrito without changing the rec
 | **Chipotle sauce** | La Costeña Medium Chipotle **220 ml** | — | **$1.59** | Confirmed (for house mayo) |
 | **Foil** | Kirkland Reynolds Foodservice HD **18" × 500 ft** | **#31684** | **$45.99** | Confirmed; ~400 wraps est. |
 | **Hash browns** | Ore-Ida shredded **6 lb** | **#42125** | **$6.99** | Confirmed frozen |
+| **Takeout boxes** | JOLLY CHEF clamshell 9x6 compostable **75-ct** | Amazon | **$19.48** | Confirmed 2026-08-14 ($0.26/box) |
 
 TJ link: https://www.traderjoes.com/home/products/pdp/soy-chorizo-092463
 
@@ -74,7 +75,6 @@ TJ link: https://www.traderjoes.com/home/products/pdp/soy-chorizo-092463
 | Cilantro | 1 bunch | $1.29 | Grocery |
 | Taco seasoning | 1 packet | $1.29 | Cali beef |
 | Sauce cups + lids | 100-ct | $11.99 | Supply |
-| Takeout boxes | 50-ct | $18.99 | Supply |
 
 ## How kitchen math works
 
