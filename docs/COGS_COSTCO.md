@@ -74,7 +74,7 @@ TJ link: https://www.traderjoes.com/home/products/pdp/soy-chorizo-092463
 | Yellow onions | ~5 lb bag | $5.49 | Produce |
 | Cilantro | 1 bunch | $1.29 | Grocery |
 | Taco seasoning | 1 packet | $1.29 | Cali beef |
-| Sauce cups + lids | 100-ct | $11.99 | Supply |
+| Sauce cups | First Street 2 oz souffle, 125-ct plastic | $3.79 | Supply — size/price from Smart & Final listing, package not yet seen |
 
 ## How kitchen math works
 
